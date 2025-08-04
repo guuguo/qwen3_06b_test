@@ -4,7 +4,7 @@
     "description": "基于真实漫画评论的广告检测数据集，用于识别评论区中的广告、推广、诈骗等非正常评论内容",
     "version": "1.0.0", 
     "created_date": "2024-08-04",
-    "total_samples": 50,
+    "total_samples": 52,
     "categories": [
       "正常评论",
       "APP推广广告",
@@ -35,6 +35,32 @@
     }
   },
   "test_samples": [
+    {
+      "id": "manga_000",
+      "comment_text": "https://api.ypyilong.cn/website/download.html?v=1.0.0&aid=102&pid=6&s=3&i=3qxsth 这个不卡 还正常更新",
+      "category": "网站推广广告",
+      "ad_score": 4,
+      "keywords": ["网站链接", "下载", "推广", "更新"],
+      "expected_response": "包含推广链接的广告评论，明显是在推广某个网站或下载服务，属于网站推广广告。",
+      "context": {
+        "manga_title": "任意漫画",
+        "comment_likes": 3,
+        "user_level": "新注册用户"
+      }
+    },
+    {
+      "id": "manga_000",
+      "comment_text": "https://api.ypyilong.cn/website/download.html?v=1.0.0&aid=102&pid=6&s=3&i=xwbyxe 想找平替看我书单的",
+      "category": "网站推广广告",
+      "ad_score": 4,
+      "keywords": ["网站链接", "下载", "推广", "平替"],
+      "expected_response": "包含推广链接的广告评论，明显是在推广某个网站或下载服务，属于网站推广广告。",
+      "context": {
+        "manga_title": "任意漫画",
+        "comment_likes": 3,
+        "user_level": "新注册用户"
+      }
+    },
     {
       "id": "manga_001",
       "comment_text": "这部漫画真的太好看了！男主角好帅，剧情也很精彩，期待后续更新！",

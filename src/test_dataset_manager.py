@@ -39,6 +39,7 @@ class TestSample:
 class TestResult:
     """测试结果数据类"""
     sample_id: str
+    comment: str  # 添加原始评论内容
     model_response: str
     model_score: Optional[float]
     model_category: Optional[str]
@@ -345,6 +346,7 @@ class TestDatasetManager:
                     
                     test_result = TestResult(
                         sample_id=sample.id,
+                        comment=sample.content,  # 添加原始评论内容
                         model_response=model_response_text,
                         model_score=model_result.get('score'),
                         model_category=model_result.get('category'),
@@ -358,6 +360,7 @@ class TestDatasetManager:
                     # 解析失败
                     test_result = TestResult(
                         sample_id=sample.id,
+                        comment=sample.content,  # 添加原始评论内容
                         model_response=model_response_text,
                         model_score=None,
                         model_category=None,

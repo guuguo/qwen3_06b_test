@@ -72,6 +72,17 @@ class LocalDashboard:
         self.file_monitor = None
         self.perf_monitor = None
         self.dataset_manager = None
+        
+        # 进度跟踪
+        self.test_progress = {
+            'current': 0,
+            'total': 0,
+            'current_sample_id': '',
+            'status': 'idle',  # idle, running, completed, error
+            'start_time': None,
+            'dataset_name': '',
+            'model_name': ''
+        }
         self.local_tester = None
         
         # 运行状态
@@ -441,6 +452,39 @@ class LocalDashboard:
                 self.logger.error(f"获取测试集样本失败: {e}")
                 return jsonify({'error': str(e)}), 500
         
+        def progress_callback(self, current: int, total: int, current_sample_id: str):
+            """测试进度回调函数"""
+            self.test_progress.update({
+                'current': current,
+                'total': total,
+                'current_sample_id': current_sample_id,
+                'status': 'completed' if current >= total else 'running'
+            })
+            self.logger.info(f"测试进度: {current}/{total} - {current_sample_id}")
+        
+        @self.app.route('/api/test/progress', methods=['GET'])
+        def api_test_progress():
+            """获取测试进度"""
+            progress = self.test_progress.copy()
+            
+            # 添加计算字段
+            if progress['total'] > 0:
+                progress['percentage'] = (progress['current'] / progress['total']) * 100
+            else:
+                progress['percentage'] = 0
+            
+            # 计算预估剩余时间
+            if progress['start_time'] and progress['current'] > 0 and progress['status'] == 'running':
+                elapsed = time.time() - progress['start_time']
+                avg_time_per_sample = elapsed / progress['current']
+                remaining_samples = progress['total'] - progress['current']
+                estimated_remaining = avg_time_per_sample * remaining_samples
+                progress['estimated_remaining_seconds'] = int(estimated_remaining)
+            else:
+                progress['estimated_remaining_seconds'] = None
+            
+            return jsonify(progress)
+        
         @self.app.route('/api/test/dataset', methods=['POST'])
         def api_test_dataset():
             """运行测试集评估"""
@@ -456,12 +500,28 @@ class LocalDashboard:
                 if not dataset_name:
                     return jsonify({'error': '缺少测试集名称'}), 400
                 
+                # 检查是否已有测试在运行
+                if self.test_progress['status'] == 'running':
+                    return jsonify({'error': '已有测试在运行中，请等待完成'}), 400
+                
+                # 初始化进度状态
+                self.test_progress.update({
+                    'current': 0,
+                    'total': 0,
+                    'current_sample_id': '初始化中...',
+                    'status': 'running',
+                    'start_time': time.time(),
+                    'dataset_name': dataset_name,
+                    'model_name': model_name
+                })
+                
                 # 运行测试集评估
                 start_time = time.time()
                 report = self.local_tester.run_dataset_evaluation(
                     model_name, 
                     dataset_name, 
-                    sample_count=sample_count
+                    sample_count=sample_count,
+                    progress_callback=self.progress_callback
                 )
                 end_time = time.time()
                 
@@ -473,6 +533,7 @@ class LocalDashboard:
                 for result in report.detailed_results:
                     detailed_results.append({
                         'sample_id': result.sample_id,
+                        'comment': result.comment,  # 添加原始评论内容
                         'model_response': result.model_response[:500] + '...' if len(result.model_response) > 500 else result.model_response,
                         'model_score': result.model_score,
                         'model_category': result.model_category,

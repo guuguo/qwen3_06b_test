@@ -1128,7 +1128,8 @@ class SimpleLocalTester:
     
     def run_dataset_evaluation(self, model: str, dataset_name: str,
                              sample_count: Optional[int] = None,
-                             categories: Optional[List[str]] = None) -> EvaluationReport:
+                             categories: Optional[List[str]] = None,
+                             progress_callback: Optional[callable] = None) -> EvaluationReport:
         """
         运行测试集评估
         
@@ -1137,6 +1138,7 @@ class SimpleLocalTester:
             dataset_name: 测试集名称
             sample_count: 样本数量限制
             categories: 筛选特定类别
+            progress_callback: 进度回调函数，接收(current_index, total_count, current_sample_id)
             
         Returns:
             EvaluationReport: 评估报告
@@ -1162,19 +1164,32 @@ class SimpleLocalTester:
         
         # 执行模型推理
         model_responses = []
+        total_count = len(prompts)
+        
         for i, prompt in enumerate(prompts):
             try:
-                self.logger.info(f"处理样本 {i+1}/{len(prompts)}")
+                current_sample_id = test_samples[i].get('id', f'sample_{i+1}')
+                self.logger.info(f"处理样本 {i+1}/{total_count}: {current_sample_id}")
+                
+                # 调用进度回调
+                if progress_callback:
+                    progress_callback(i + 1, total_count, current_sample_id)
+                
                 response = self.ollama.inference_with_metrics(model, prompt)
                 model_responses.append(response)
             except Exception as e:
-                self.logger.error(f"样本 {i+1} 推理失败: {e}")
+                current_sample_id = test_samples[i].get('id', f'sample_{i+1}')
+                self.logger.error(f"样本 {current_sample_id} 推理失败: {e}")
                 model_responses.append({
                     'response': '',
                     'latency_ms': 0,
                     'status': 'error',
                     'error': str(e)
                 })
+        
+        # 调用完成回调
+        if progress_callback:
+            progress_callback(total_count, total_count, "评估完成")
         
         # 评估结果
         test_results = self.dataset_manager.evaluate_model_responses(
