@@ -1168,7 +1168,7 @@ class SimpleLocalTester:
         
         for i, prompt in enumerate(prompts):
             try:
-                current_sample_id = test_samples[i].get('id', f'sample_{i+1}')
+                current_sample_id = test_samples[i].id if hasattr(test_samples[i], 'id') else f'sample_{i+1}'
                 self.logger.info(f"处理样本 {i+1}/{total_count}: {current_sample_id}")
                 
                 # 调用进度回调
@@ -1178,7 +1178,7 @@ class SimpleLocalTester:
                 response = self.ollama.inference_with_metrics(model, prompt)
                 model_responses.append(response)
             except Exception as e:
-                current_sample_id = test_samples[i].get('id', f'sample_{i+1}')
+                current_sample_id = test_samples[i].id if hasattr(test_samples[i], 'id') else f'sample_{i+1}'
                 self.logger.error(f"样本 {current_sample_id} 推理失败: {e}")
                 model_responses.append({
                     'response': '',

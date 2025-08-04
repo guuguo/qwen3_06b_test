@@ -452,19 +452,20 @@ class LocalDashboard:
                 self.logger.error(f"获取测试集样本失败: {e}")
                 return jsonify({'error': str(e)}), 500
         
-        def progress_callback(self, current: int, total: int, current_sample_id: str):
-            """测试进度回调函数"""
-            self.test_progress.update({
-                'current': current,
-                'total': total,
-                'current_sample_id': current_sample_id,
-                'status': 'completed' if current >= total else 'running'
-            })
-            self.logger.info(f"测试进度: {current}/{total} - {current_sample_id}")
+        # 静态文件路由
+        @self.app.route('/static/<path:filename>')
+        def static_files(filename):
+            """静态文件服务"""
+            static_dir = Path(__file__).parent.parent / 'static'
+            if not static_dir.exists():
+                static_dir.mkdir(parents=True, exist_ok=True)
+            return send_from_directory(str(static_dir), filename)
         
+        # 测试相关路由
         @self.app.route('/api/test/progress', methods=['GET'])
         def api_test_progress():
             """获取测试进度"""
+            self.logger.info("获取测试进度API被调用")
             progress = self.test_progress.copy()
             
             # 添加计算字段
@@ -483,25 +484,32 @@ class LocalDashboard:
             else:
                 progress['estimated_remaining_seconds'] = None
             
+            self.logger.info(f"返回测试进度: {progress}")
             return jsonify(progress)
         
         @self.app.route('/api/test/dataset', methods=['POST'])
         def api_test_dataset():
             """运行测试集评估"""
+            self.logger.info("测试集评估API被调用")
             try:
                 data = request.get_json()
                 if not data:
+                    self.logger.error("缺少请求数据")
                     return jsonify({'error': '缺少请求数据'}), 400
                 
                 model_name = data.get('model', 'qwen3:0.6b')
                 dataset_name = data.get('dataset')
                 sample_count = data.get('sample_count', 10)
                 
+                self.logger.info(f"开始测试集评估: model={model_name}, dataset={dataset_name}, samples={sample_count}")
+                
                 if not dataset_name:
+                    self.logger.error("缺少测试集名称")
                     return jsonify({'error': '缺少测试集名称'}), 400
                 
                 # 检查是否已有测试在运行
                 if self.test_progress['status'] == 'running':
+                    self.logger.warning("已有测试在运行中")
                     return jsonify({'error': '已有测试在运行中，请等待完成'}), 400
                 
                 # 初始化进度状态
@@ -521,7 +529,7 @@ class LocalDashboard:
                     model_name, 
                     dataset_name, 
                     sample_count=sample_count,
-                    progress_callback=self.progress_callback
+                    progress_callback=lambda current, total, sample_id: self.progress_callback(current, total, sample_id)
                 )
                 end_time = time.time()
                 
@@ -531,8 +539,24 @@ class LocalDashboard:
                 # 准备详细结果数据
                 detailed_results = []
                 for result in report.detailed_results:
+                    # 调试日志：检查每个result的内容
+                    self.logger.info(f"处理结果 - sample_id: {result.sample_id}, comment长度: {len(result.comment) if result.comment else 0}, model_response长度: {len(result.model_response) if result.model_response else 0}")
+                    
+                    # 确保sample_id不包含长文本（可能是数据错误）
+                    clean_sample_id = result.sample_id
+                    if len(str(clean_sample_id)) > 50:  # 如果sample_id过长，可能是错误数据
+                        self.logger.warning(f"异常的sample_id长度: {len(str(clean_sample_id))}, 内容前50字符: {str(clean_sample_id)[:50]}")
+                        # 尝试从ID中提取真正的sample_id（如果包含manga_xxx格式）
+                        import re
+                        match = re.search(r'manga_\d+', str(clean_sample_id))
+                        if match:
+                            clean_sample_id = match.group()
+                            self.logger.info(f"从异常数据中提取到sample_id: {clean_sample_id}")
+                        else:
+                            clean_sample_id = 'Unknown'
+                    
                     detailed_results.append({
-                        'sample_id': result.sample_id,
+                        'sample_id': clean_sample_id,
                         'comment': result.comment,  # 添加原始评论内容
                         'model_response': result.model_response[:500] + '...' if len(result.model_response) > 500 else result.model_response,
                         'model_score': result.model_score,
@@ -545,6 +569,8 @@ class LocalDashboard:
                         'error': result.error,
                         'score_diff': abs(result.model_score - result.expected_score) if result.model_score else None
                     })
+                
+                self.logger.info(f"测试集评估完成: {len(detailed_results)} 个结果")
                 
                 return jsonify({
                     'success': True,
@@ -559,21 +585,24 @@ class LocalDashboard:
                         'category_accuracy': report.category_accuracy,
                         'avg_response_time_ms': report.avg_response_time_ms,
                         'success_rate': report.successful_tests / max(report.total_samples, 1),
-                        'score_distribution': report.score_distribution,
-                        'category_distribution': report.category_distribution,
                         'detailed_results': detailed_results
                     },
                     'html_report_path': html_report_path,
                     'execution_time_ms': (end_time - start_time) * 1000
                 })
                 
+                
             except Exception as e:
                 self.logger.error(f"运行测试集评估失败: {e}")
                 return jsonify({'error': str(e)}), 500
+            finally:
+                # 重置进度状态
+                self.test_progress['status'] = 'idle'
         
         @self.app.route('/api/test/all-datasets', methods=['POST'])
         def api_test_all_datasets():
             """运行所有测试集评估"""
+            self.logger.info("所有测试集评估API被调用")
             try:
                 data = request.get_json()
                 if not data:
@@ -592,6 +621,24 @@ class LocalDashboard:
                 
                 report_summaries = []
                 for report in reports:
+                    # 准备详细结果数据
+                    detailed_results = []
+                    for result in report.detailed_results:
+                        detailed_results.append({
+                            'sample_id': result.sample_id,
+                            'comment': result.comment,  # 添加原始评论内容
+                            'model_response': result.model_response[:500] + '...' if len(result.model_response) > 500 else result.model_response,
+                            'model_score': result.model_score,
+                            'model_category': result.model_category,
+                            'expected_score': result.expected_score,
+                            'expected_category': result.expected_category,
+                            'score_accuracy': result.score_accuracy,
+                            'category_match': result.category_match,
+                            'response_time_ms': result.response_time_ms,
+                            'error': result.error,
+                            'score_diff': abs(result.model_score - result.expected_score) if result.model_score else None
+                        })
+                    
                     summary = {
                         'dataset_name': report.dataset_name,
                         'model_name': report.model_name,
@@ -602,7 +649,8 @@ class LocalDashboard:
                         'avg_score_accuracy': report.avg_score_accuracy,
                         'category_accuracy': report.category_accuracy,
                         'avg_response_time_ms': report.avg_response_time_ms,
-                        'success_rate': report.successful_tests / max(report.total_samples, 1)
+                        'success_rate': report.successful_tests / max(report.total_samples, 1),
+                        'detailed_results': detailed_results  # 添加详细结果
                     }
                     report_summaries.append(summary)
                 
@@ -616,15 +664,22 @@ class LocalDashboard:
             except Exception as e:
                 self.logger.error(f"运行所有测试集评估失败: {e}")
                 return jsonify({'error': str(e)}), 500
-
-        # 静态文件路由
-        @self.app.route('/static/<path:filename>')
-        def static_files(filename):
-            """静态文件服务"""
-            static_dir = Path(__file__).parent.parent / 'static'
-            if not static_dir.exists():
-                static_dir.mkdir(parents=True, exist_ok=True)
-            return send_from_directory(str(static_dir), filename)
+                
+        self.logger.info("路由注册完成")
+        
+        # 调试：打印所有注册的路由
+        for rule in self.app.url_map.iter_rules():
+            self.logger.info(f"已注册路由: {rule.rule} [{', '.join(rule.methods)}]")
+    
+    def progress_callback(self, current: int, total: int, current_sample_id: str):
+        """测试进度回调函数"""
+        self.test_progress.update({
+            'current': current,
+            'total': total,
+            'current_sample_id': current_sample_id,
+            'status': 'completed' if current >= total else 'running'
+        })
+        self.logger.info(f"测试进度: {current}/{total} - {current_sample_id}")
     
     def _prepare_chart_data(self, system_metrics: List, request_metrics: List) -> Dict[str, Any]:
         """准备图表数据"""

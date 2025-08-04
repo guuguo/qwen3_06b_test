@@ -377,6 +377,7 @@ class TestDatasetManager:
             except Exception as e:
                 error_result = TestResult(
                     sample_id=sample.id,
+                    comment=sample.content,  # 添加原始评论内容
                     model_response=str(response),
                     model_score=None,
                     model_category=None,

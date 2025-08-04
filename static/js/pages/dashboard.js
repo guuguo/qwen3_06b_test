@@ -723,21 +723,33 @@
                     <tbody class="divide-y divide-slate-200">
         `;
         
-        results.forEach(result => {
+        results.forEach((result, index) => {
             const scoreStatus = getScoreStatus(result.score_accuracy);
             const categoryStatus = result.category_match ? 'correct' : 'incorrect';
             
             // 确保正确提取样本ID - 直接使用sample_id字段
             const sampleId = result.sample_id || 'Unknown';
             
+            // 详细调试输出 - 检查样本ID和评论内容
+            console.log('=== DEBUG INFO ===');
+            console.log('Sample ID:', sampleId, 'Type:', typeof sampleId, 'Length:', sampleId.length);
+            console.log('Comment field:', result.comment ? result.comment.substring(0, 100) + '...' : 'NULL');
+            console.log('Model response field:', result.model_response ? result.model_response.substring(0, 100) + '...' : 'NULL');
+            console.log('Full result keys:', Object.keys(result));
+            console.log('==================');
+            
             // 获取评论内容，优先使用comment字段，其次使用comment_text
             const commentText = result.comment || result.comment_text || result.original_comment || '无评论内容';
+            
+            // 将结果数据存储到全局变量中，避免JSON字符串转义问题
+            if (!window.testResults) window.testResults = {};
+            window.testResults[`result_${index}`] = result;
             
             html += `
                 <tr class="result-row hover:bg-slate-50" data-status="${scoreStatus}" data-category="${result.category_match}">
                     <td class="px-3 py-3">
                         <strong class="clickable-sample text-indigo-600 hover:text-indigo-800 cursor-pointer" 
-                                onclick="showSampleDetail('${sampleId}', ${JSON.stringify(result).replace(/'/g, '&apos;')})"
+                                onclick="showSampleDetail('${sampleId}', 'result_${index}')"
                                 title="${commentText.replace(/"/g, '&quot;').substring(0, 200)}${commentText.length > 200 ? '...' : ''}"
                         >${sampleId}</strong>
                     </td>
@@ -938,18 +950,37 @@
     };
     
     // 显示样本详情
-    window.showSampleDetail = function(sampleId, resultData) {
+    window.showSampleDetail = function(sampleId, resultKey) {
         const modal = document.getElementById('sampleModal');
         const modalBody = document.getElementById('sampleModalBody');
         
-        // 解析结果数据
+        // 从全局变量获取结果数据
         let result;
-        try {
-            result = typeof resultData === 'string' ? JSON.parse(resultData) : resultData;
-        } catch (e) {
-            console.error('解析样本数据失败:', e);
+        if (typeof resultKey === 'string' && resultKey.startsWith('result_')) {
+            result = window.testResults[resultKey];
+        } else {
+            // 兼容旧的JSON字符串方式
+            try {
+                result = typeof resultKey === 'string' ? JSON.parse(resultKey) : resultKey;
+            } catch (e) {
+                console.error('解析样本数据失败:', e);
+                return;
+            }
+        }
+        
+        if (!result) {
+            console.error('未找到样本数据:', resultKey);
             return;
         }
+        
+        // 详细调试输出
+        console.log('=== MODAL DEBUG INFO ===');
+        console.log('Passed sampleId:', sampleId);
+        console.log('Result key:', resultKey);
+        console.log('Parsed result sample_id:', result.sample_id);
+        console.log('Parsed result comment:', result.comment ? result.comment.substring(0, 100) + '...' : 'NULL');
+        console.log('Parsed result model_response:', result.model_response ? result.model_response.substring(0, 100) + '...' : 'NULL');
+        console.log('========================');
         
         // 确保使用正确的样本ID
         const actualSampleId = sampleId || result.sample_id || 'Unknown';
