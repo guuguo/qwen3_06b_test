@@ -1,0 +1,19 @@
+<!-- 图表组件 -->
+<!-- 使用方式: {% include 'components/ui/chart.html' %} -->
+<div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 overflow-hidden transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
+    <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-semibold text-slate-800">{{ title }}</h3>
+        {% if unit %}
+        <span class="text-xs text-slate-500 bg-slate-100 px-2 py-1 rounded-full">{{ unit }}</span>
+        {% endif %}
+        {% if status %}
+        <span class="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium bg-emerald-100 text-emerald-800 rounded-full">
+            <div class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
+            {{ status }}
+        </span>
+        {% endif %}
+    </div>
+    <div id="{{ chart_id }}" class="w-full h-[280px]">
+        <!-- 图表将在此渲染 -->
+    </div>
+</div>

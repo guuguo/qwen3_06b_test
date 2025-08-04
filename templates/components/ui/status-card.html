@@ -1,0 +1,22 @@
+<!-- 状态卡片组件 -->
+<!-- 使用方式: {% include 'components/ui/status-card.html' %} -->
+<div class="bg-white rounded-xl p-6 shadow-sm border border-slate-200 min-h-[140px] flex flex-col justify-between transition-all duration-300 relative overflow-hidden hover:-translate-y-0.5 hover:shadow-lg hover:border-indigo-500 group">
+    <!-- 左侧装饰条 -->
+    <div class="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-indigo-500 to-purple-600 rounded-r-sm"></div>
+    
+    <div class="flex-1">
+        <div class="flex items-center justify-between mb-3">
+            <h3 class="text-sm font-medium text-slate-600 uppercase tracking-wide">{{ title }}</h3>
+            {% if status_indicator %}
+            <div class="w-2 h-2 {{ status_color or 'bg-emerald-500' }} rounded-full animate-pulse"></div>
+            {% endif %}
+        </div>
+        <div class="text-3xl font-bold text-slate-900 mb-1 bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent">{{ value }}</div>
+        {% if subtitle %}
+        <div class="text-sm text-slate-500">{{ subtitle }}</div>
+        {% endif %}
+        {% if description %}
+        <div class="text-xs text-slate-400">{{ description }}</div>
+        {% endif %}
+    </div>
+</div>

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="min-h-screen">
+    <!-- 页头 -->
+    {% include 'components/header.html' %}
+    
+    <!-- 主内容区 -->
+    <main class="max-w-6xl mx-auto px-8 py-6">
+        {% block page_content %}{% endblock %}
+    </main>
+</div>
+
+<!-- 全局模态框容器 -->
+<div id="modal-root"></div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/pages/dashboard.js') }}"></script>
+{% endblock %}
