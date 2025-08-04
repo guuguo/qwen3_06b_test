@@ -5,7 +5,62 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ title }}</title>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            /* 品牌主色 - AI/科技类应用 */
+            --primary-color: #667eea;
+            --primary-light: #8fa4f3;
+            --primary-dark: #4c63d2;
+            
+            /* 渐变色系 */
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-soft: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-cool: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --gradient-ai: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            
+            /* 中性色系 */
+            --neutral-50: #f8fafc;
+            --neutral-100: #f1f5f9;
+            --neutral-200: #e2e8f0;
+            --neutral-300: #cbd5e1;
+            --neutral-400: #94a3b8;
+            --neutral-500: #64748b;
+            --neutral-600: #475569;
+            --neutral-700: #334155;
+            --neutral-800: #1e293b;
+            --neutral-900: #0f172a;
+            
+            /* 功能色系 */
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+            --info-color: #3b82f6;
+            
+            /* 背景色系 */
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #f1f5f9;
+            --bg-overlay: rgba(15, 23, 42, 0.5);
+            
+            /* 文字色系 */
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-tertiary: #64748b;
+            --text-inverse: #ffffff;
+            
+            /* 动画时长 */
+            --duration-fast: 150ms;
+            --duration-normal: 300ms;
+            --duration-slow: 500ms;
+            
+            --easing-ease: cubic-bezier(0.4, 0, 0.2, 1);
+            --easing-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            --easing-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
         * {
             margin: 0;
             padding: 0;
@@ -13,22 +68,99 @@
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: #f5f5f5;
-            color: #333;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
             line-height: 1.6;
+            font-size: 14px;
+            font-weight: 400;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
         
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 1rem 2rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: var(--bg-primary);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--neutral-200);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: all var(--duration-normal) var(--easing-ease);
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .header-logo {
+            width: 32px;
+            height: 32px;
+            background: var(--gradient-ai);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--text-inverse);
+            font-size: 0.875rem;
         }
         
         .header h1 {
-            font-size: 1.8rem;
+            font-size: 1.25rem;
             font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+        
+        .header-subtitle {
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+            font-weight: 400;
+            margin-top: 2px;
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            background: var(--neutral-50);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success-color);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
         
         .container {
@@ -37,29 +169,97 @@
             padding: 2rem;
         }
         
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        .section {
+            background: var(--bg-primary);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 
+                0 1px 3px rgba(0, 0, 0, 0.1),
+                0 1px 2px rgba(0, 0, 0, 0.06);
+            border: 1px solid var(--neutral-200);
+            transition: all var(--duration-normal) var(--easing-ease);
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+        
+        .section-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .section-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+        }
+        
         .status-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(4, 1fr);
             gap: 1.5rem;
-            margin-bottom: 2rem;
         }
         
         .status-card {
-            background: white;
-            border-radius: 8px;
+            background: var(--bg-primary);
+            border-radius: 12px;
             padding: 1.5rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            border-left: 4px solid #667eea;
+            box-shadow: 
+                0 1px 3px rgba(0, 0, 0, 0.1),
+                0 1px 2px rgba(0, 0, 0, 0.06);
+            border: 1px solid var(--neutral-200);
             min-height: 140px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            transition: all var(--duration-normal) var(--easing-ease);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .status-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--gradient-ai);
+            border-radius: 0 2px 2px 0;
+        }
+        
+        .status-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 10px 25px rgba(0, 0, 0, 0.1),
+                0 4px 10px rgba(0, 0, 0, 0.06);
+            border-color: var(--primary-color);
         }
         
         .status-card h3 {
-            color: #667eea;
+            color: var(--text-primary);
             margin-bottom: 0;
-            font-size: 1.1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
         
         .card-header {
@@ -71,113 +271,192 @@
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
-            gap: 0.5rem;
+            gap: 0.75rem;
         }
         
         .status-indicator {
-            display: inline-block;
-            width: 12px;
-            height: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
-            margin-right: 8px;
+            flex-shrink: 0;
         }
         
-        .status-online {
-            background-color: #4CAF50;
+        .status-online .status-dot {
+            background-color: var(--success-color);
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
         }
         
-        .status-offline {
-            background-color: #f44336;
+        .status-offline .status-dot {
+            background-color: var(--error-color);
+            box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
         }
         
         .metric-value {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #333;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.2;
+            background: var(--gradient-ai);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         
         .metric-label {
-            color: #666;
-            font-size: 0.9rem;
+            color: var(--text-tertiary);
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
         
-        .charts-section {
-            margin: 2rem 0;
+        .metric-secondary {
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            font-weight: 400;
         }
         
         .charts-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
         }
         
         .chart-container {
-            background: white;
-            border-radius: 8px;
+            background: var(--bg-primary);
+            border-radius: 12px;
+            box-shadow: 
+                0 1px 3px rgba(0, 0, 0, 0.1),
+                0 1px 2px rgba(0, 0, 0, 0.06);
+            border: 1px solid var(--neutral-200);
             padding: 1rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 100%;
             overflow: hidden;
+            transition: all var(--duration-normal) var(--easing-ease);
         }
         
-        .test-section {
-            background: white;
-            border-radius: 8px;
-            padding: 2rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            margin: 2rem 0;
+        .chart-container:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 10px 25px rgba(0, 0, 0, 0.1),
+                0 4px 10px rgba(0, 0, 0, 0.06);
+        }
+        
+        .chart-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
         
         .test-form {
             display: grid;
-            gap: 1rem;
-            max-width: 600px;
+            gap: 1.5rem;
+            max-width: none;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
         }
         
         .form-group {
             display: flex;
             flex-direction: column;
+            gap: 0.5rem;
         }
         
         .form-group label {
-            margin-bottom: 0.5rem;
             font-weight: 500;
-            color: #333;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
         
         .form-group input,
         .form-group select,
         .form-group textarea {
-            padding: 0.75rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 1rem;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--neutral-300);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            transition: all var(--duration-fast) var(--easing-ease);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: inherit;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
         
         .form-group textarea {
             resize: vertical;
             min-height: 100px;
+            font-family: 'Inter', monospace;
         }
         
         .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
             padding: 0.75rem 1.5rem;
-            background: #667eea;
-            color: white;
-            border: none;
-            border-radius: 4px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.875rem;
+            line-height: 1.25rem;
+            transition: all var(--duration-fast) var(--easing-ease);
             cursor: pointer;
-            font-size: 1rem;
-            transition: background-color 0.3s;
+            border: none;
+            text-decoration: none;
+            font-family: inherit;
         }
         
-        .btn:hover {
-            background: #5a6fd8;
+        .btn-primary {
+            background: var(--gradient-ai);
+            color: var(--text-inverse);
+            box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            border: 1px solid var(--neutral-300);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--neutral-50);
+            border-color: var(--primary-color);
         }
         
         .btn:disabled {
-            background: #ccc;
+            background: var(--neutral-300);
+            color: var(--neutral-500);
             cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
         
         .response-area {
@@ -559,8 +838,8 @@
         }
         
         .response-preview {
-            max-width: 300px;
-            max-height: 100px;
+            max-width: 500px;
+            max-height: 120px;
             overflow: hidden;
             position: relative;
             background: #f8f9fa;
@@ -568,6 +847,8 @@
             border-radius: 4px;
             font-family: monospace;
             font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
             line-height: 1.3;
         }
         
@@ -618,59 +899,225 @@
             font-size: 0.9rem;
         }
         
-        @media (max-width: 768px) {
-            .container {
-                padding: 1rem;
-            }
-            
-            .status-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .charts-grid {
-                grid-template-columns: 1fr;
-            }
+        /* 模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            animation: fadeIn 0.3s;
         }
+        
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 2rem;
+            padding: 2rem;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            animation: slideIn 0.3s;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .close:hover {
+            color: #333;
+        }
+        
+        .sample-detail {
+            margin-bottom: 1.5rem;
+        }
+        
+        .sample-detail h4 {
+            color: #667eea;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+        
+        .sample-content {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 4px;
+            border-left: 4px solid #667eea;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .sample-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .meta-item {
+            background: #f8f9fa;
+            padding: 0.75rem;
+            border-radius: 4px;
+        }
+        
+        .meta-label {
+            font-weight: 600;
+            color: #666;
+            font-size: 0.8rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .meta-value {
+            color: #333;
+            font-size: 0.9rem;
+        }
+        
+        .clickable-sample {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .clickable-sample:hover {
+            background-color: #e3f2fd !important;
+            transform: scale(1.01);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        /* 桌面端固定布局，无需响应式 */
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>{{ title }}</h1>
+        <div class="header-content">
+            <div class="header-brand">
+                <div class="header-logo">Q3</div>
+                <div>
+                    <h1>{{ title }}</h1>
+                    <div class="header-subtitle">AI模型监控与测试平台</div>
+                </div>
+            </div>
+            <div class="header-actions">
+                <div class="status-indicator">
+                    <div class="status-dot"></div>
+                    <span>系统运行中</span>
+                </div>
+            </div>
+        </div>
     </div>
     
     <div class="container">
-        <!-- 系统状态 -->
-        <div class="status-grid" id="statusGrid">
-            <div class="loading">正在加载系统状态...</div>
-        </div>
-        
-        <!-- 图表区域 -->
-        <div class="charts-section">
-            <h2>性能监控</h2>
-            <div class="charts-grid" id="chartsGrid">
-                <div class="loading">正在加载图表数据...</div>
+        <div class="main-content">
+            <!-- 系统状态 -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-title">
+                        <div class="section-icon">📊</div>
+                        系统状态
+                    </div>
+                </div>
+                <div class="status-grid" id="statusGrid">
+                    <div class="loading">正在加载系统状态...</div>
+                </div>
             </div>
-        </div>
+            
+            <!-- 图表区域 -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-title">
+                        <div class="section-icon">📈</div>
+                        性能监控
+                    </div>
+                </div>
+                <div class="charts-grid" id="chartsGrid">
+                    <div class="loading">正在加载图表数据...</div>
+                </div>
+            </div>
         
-        <!-- 测试工具 -->
-        <div class="test-section">
-            <h2>推理测试</h2>
-            <div class="test-form">
-                <div class="form-group">
-                    <label for="modelSelect">模型:</label>
-                    <select id="modelSelect">
-                        <option value="qwen3:0.6b">qwen3:0.6b</option>
-                        <option value="qwen3:1.7b">qwen3:1.7b</option>
-                    </select>
+            <!-- 测试工具 -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-title">
+                        <div class="section-icon">🧪</div>
+                        推理测试
+                    </div>
                 </div>
+                <div class="test-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="modelSelect">模型选择</label>
+                            <select id="modelSelect">
+                                <option value="qwen3:0.6b">Qwen3 0.6B</option>
+                                <option value="qwen3:1.7b">Qwen3 1.7B</option>
+                            </select>
+                        </div>
                 
                 <div class="form-group">
-                    <label for="promptInput">提示词:</label>
-                    <textarea id="promptInput" placeholder="请输入测试提示词...">你好，请介绍一下自己</textarea>
+                    <label for="promptInput">测试内容</label>
+                    <textarea id="promptInput" placeholder="请输入要测试的文本内容…">这个产品真的很棒！</textarea>
                 </div>
-                
-                <button class="btn" id="testBtn" onclick="runTest()">运行测试</button>
-                
+                    </div>
+                    
+                    <div style="display: flex; gap: 1rem; justify-content: flex-start;">
+                        <button class="btn btn-primary" onclick="runTest()" id="testBtn">
+                            <span>🚀</span>
+                            运行测试
+                        </button>
+                        <button class="btn btn-secondary" onclick="clearResults()">
+                            <span>🗑️</span>
+                            清空结果
+                        </button>
+                    </div>
+                </div>
+            </div>    
                 <div id="responseArea" class="response-area" style="display: none;"></div>
             </div>
         </div>
@@ -769,7 +1216,7 @@
     
     <script>
         // 全局变量
-        let refreshInterval = {{ refresh_interval }} * 1000; // 转换为毫秒
+        let refreshInterval = 5000; // 5秒刷新间隔，桌面端固定配置
         let refreshTimer;
         
         // 全局状态
@@ -890,35 +1337,12 @@
                 chartContainer.id = chartId;
                 chartsGrid.appendChild(chartContainer);
                 
-                // 确保布局设置正确
-                const layout = {
-                    ...chartConfig.layout,
-                    autosize: true,
-                    responsive: true
-                };
-                
-                Plotly.newPlot(chartId, chartConfig.data, layout, {
-                    responsive: true,
+                // 桌面端固定尺寸配置
+                Plotly.newPlot(chartId, chartConfig.data, chartConfig.layout, {
                     displayModeBar: false,
-                    staticPlot: false,
-                    autosize: true
-                }).then(() => {
-                    // 图表创建完成后立即调整大小
-                    Plotly.Plots.resize(chartId);
+                    staticPlot: false
                 });
             });
-            
-            // 全局resize事件处理
-            if (!window.chartResizeHandler) {
-                window.chartResizeHandler = function() {
-                    Object.keys(charts).forEach(chartId => {
-                        if (document.getElementById(chartId)) {
-                            Plotly.Plots.resize(chartId);
-                        }
-                    });
-                };
-                window.addEventListener('resize', window.chartResizeHandler);
-            }
         }
         
         // 渲染最近请求
@@ -1370,9 +1794,13 @@
                 const scoreStatus = getScoreStatus(result.score_accuracy);
                 const categoryStatus = result.category_match ? 'correct' : 'incorrect';
                 
+                // 确保正确提取样本ID
+                const sampleId = typeof result.sample_id === 'string' ? result.sample_id : 
+                                (result.sample_id && result.sample_id.sample_id) || 'Unknown';
+                
                 html += `
                     <tr class="result-row" data-status="${scoreStatus}" data-category="${result.category_match}">
-                        <td><strong>${result.sample_id}</strong></td>
+                        <td><strong class="clickable-sample" onclick="showSampleDetail('${sampleId}', ${JSON.stringify(result).replace(/'/g, '&apos;')})">${sampleId}</strong></td>
                         <td>
                             <div class="score-comparison">
                                 <div class="score-expected">期望: ${result.expected_score}</div>
@@ -1433,9 +1861,13 @@
                 const description = result.error || `评分偏差过大 (期望: ${result.expected_score}, 实际: ${result.model_score})`;
                 const suggestion = result.error ? '检查模型输出格式' : '调整评分标准或提示词';
                 
+                // 确保正确提取样本ID
+                const sampleId = typeof result.sample_id === 'string' ? result.sample_id : 
+                                (result.sample_id && result.sample_id.sample_id) || 'Unknown';
+                
                 html += `
                     <tr>
-                        <td><strong>${result.sample_id}</strong></td>
+                        <td><strong class="clickable-sample" onclick="showSampleDetail('${sampleId}', ${JSON.stringify(result).replace(/'/g, '&apos;')})">${sampleId}</strong></td>
                         <td><span class="status-incorrect">${errorType}</span></td>
                         <td>${description}</td>
                         <td>
@@ -1557,10 +1989,119 @@
             }
         }
         
+        // 显示样本详情
+        function showSampleDetail(sampleId, resultData) {
+            const modal = document.getElementById('sampleModal');
+            const modalBody = document.getElementById('sampleModalBody');
+            
+            // 解析结果数据
+            let result;
+            try {
+                result = typeof resultData === 'string' ? JSON.parse(resultData) : resultData;
+            } catch (e) {
+                console.error('解析样本数据失败:', e);
+                return;
+            }
+            
+            // 确保使用正确的样本ID
+            const actualSampleId = sampleId || result.sample_id || 'Unknown';
+            
+            // 生成样本详情HTML
+            const html = `
+                <div class="sample-meta">
+                    <div class="meta-item">
+                        <div class="meta-label">样本ID</div>
+                        <div class="meta-value">${actualSampleId}</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">期望评分</div>
+                        <div class="meta-value">${result.expected_score}</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">模型评分</div>
+                        <div class="meta-value">${result.model_score || 'N/A'}</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">评分准确性</div>
+                        <div class="meta-value">${(result.score_accuracy * 100).toFixed(1)}%</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">期望类别</div>
+                        <div class="meta-value">${result.expected_category}</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">模型类别</div>
+                        <div class="meta-value">${result.model_category || 'N/A'}</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">类别匹配</div>
+                        <div class="meta-value">${result.category_match ? '✅ 匹配' : '❌ 不匹配'}</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">响应时间</div>
+                        <div class="meta-value">${result.response_time_ms}ms</div>
+                    </div>
+                </div>
+                
+                <div class="sample-detail">
+                    <h4>📝 原始评论</h4>
+                    <div class="sample-content">${result.comment || '无评论内容'}</div>
+                </div>
+                
+                <div class="sample-detail">
+                    <h4>🤖 模型响应</h4>
+                    <div class="sample-content">${result.model_response || '无响应内容'}</div>
+                </div>
+                
+                ${result.error ? `
+                <div class="sample-detail">
+                    <h4>❌ 错误信息</h4>
+                    <div class="sample-content" style="border-left-color: #dc3545; background: #fff5f5;">${result.error}</div>
+                </div>
+                ` : ''}
+            `;
+            
+            modalBody.innerHTML = html;
+            modal.classList.add('show');
+        }
+        
+        // 关闭样本详情模态框
+        function closeSampleModal() {
+            const modal = document.getElementById('sampleModal');
+            modal.classList.remove('show');
+        }
+        
+        // 点击模态框背景关闭
+        document.getElementById('sampleModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeSampleModal();
+            }
+        });
+        
+        // ESC键关闭模态框
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeSampleModal();
+            }
+        });
+        
         // 页面卸载时清理
         window.addEventListener('beforeunload', function() {
             stopAutoRefresh();
         });
     </script>
+    
+    <!-- 样本详情模态框 -->
+    <div id="sampleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">样本详情</h3>
+                <button class="close" onclick="closeSampleModal()">&times;</button>
+            </div>
+            <div id="sampleModalBody">
+                <!-- 样本详情内容将在这里动态加载 -->
+            </div>
+        </div>
+    </div>
 </body>
 </html>

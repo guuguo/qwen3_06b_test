@@ -584,15 +584,17 @@ class LocalDashboard:
                         'type': 'scatter',
                         'mode': 'lines+markers',
                         'name': 'CPU使用率',
-                        'line': {'color': '#1f77b4'}
+                        'line': {'color': '#667eea', 'width': 2}
                     }],
                     'layout': {
-                        'title': 'CPU使用率 (%)',
-                        'xaxis': {'title': '时间'},
-                        'yaxis': {'title': 'CPU (%)'},
-                        'height': 300,
-                        'margin': {'l': 50, 'r': 20, 't': 50, 'b': 50},
-                        'autosize': True
+                        'title': {'text': 'CPU使用率 (%)', 'font': {'size': 16, 'color': '#334155'}},
+                        'xaxis': {'title': '时间', 'gridcolor': '#e2e8f0'},
+                        'yaxis': {'title': 'CPU (%)', 'gridcolor': '#e2e8f0'},
+                        'height': 280,
+                        'width': 540,
+                        'margin': {'l': 60, 'r': 40, 't': 60, 'b': 60},
+                        'plot_bgcolor': '#ffffff',
+                        'paper_bgcolor': '#ffffff'
                     }
                 }
                 
@@ -604,15 +606,17 @@ class LocalDashboard:
                         'type': 'scatter',
                         'mode': 'lines+markers',
                         'name': '内存使用率',
-                        'line': {'color': '#ff7f0e'}
+                        'line': {'color': '#10b981', 'width': 2}
                     }],
                     'layout': {
-                        'title': '内存使用率 (%)',
-                        'xaxis': {'title': '时间'},
-                        'yaxis': {'title': '内存 (%)'},
-                        'height': 300,
-                        'margin': {'l': 50, 'r': 20, 't': 50, 'b': 50},
-                        'autosize': True
+                        'title': {'text': '内存使用率 (%)', 'font': {'size': 16, 'color': '#334155'}},
+                        'xaxis': {'title': '时间', 'gridcolor': '#e2e8f0'},
+                        'yaxis': {'title': '内存 (%)', 'gridcolor': '#e2e8f0'},
+                        'height': 280,
+                        'width': 540,
+                        'margin': {'l': 60, 'r': 40, 't': 60, 'b': 60},
+                        'plot_bgcolor': '#ffffff',
+                        'paper_bgcolor': '#ffffff'
                     }
                 }
             
@@ -630,15 +634,17 @@ class LocalDashboard:
                             'type': 'scatter',
                             'mode': 'markers',
                             'name': '请求延迟',
-                            'marker': {'color': '#2ca02c'}
+                            'marker': {'color': '#f59e0b', 'size': 6}
                         }],
                         'layout': {
-                            'title': '请求延迟 (ms)',
-                            'xaxis': {'title': '时间'},
-                            'yaxis': {'title': '延迟 (ms)'},
-                            'height': 300,
-                            'margin': {'l': 50, 'r': 20, 't': 50, 'b': 50},
-                            'autosize': True
+                            'title': {'text': '请求延迟 (ms)', 'font': {'size': 16, 'color': '#334155'}},
+                            'xaxis': {'title': '时间', 'gridcolor': '#e2e8f0'},
+                            'yaxis': {'title': '延迟 (ms)', 'gridcolor': '#e2e8f0'},
+                            'height': 280,
+                            'width': 540,
+                            'margin': {'l': 60, 'r': 40, 't': 60, 'b': 60},
+                            'plot_bgcolor': '#ffffff',
+                            'paper_bgcolor': '#ffffff'
                         }
                     }
                 
@@ -653,13 +659,16 @@ class LocalDashboard:
                             'labels': list(status_counts.keys()),
                             'values': list(status_counts.values()),
                             'type': 'pie',
-                            'name': '请求状态分布'
+                            'name': '请求状态分布',
+                            'marker': {'colors': ['#10b981', '#ef4444', '#f59e0b']}
                         }],
                         'layout': {
-                            'title': '请求状态分布',
-                            'height': 300,
-                            'margin': {'l': 20, 'r': 20, 't': 50, 'b': 20},
-                            'autosize': True
+                            'title': {'text': '请求状态分布', 'font': {'size': 16, 'color': '#334155'}},
+                            'height': 280,
+                            'width': 540,
+                            'margin': {'l': 40, 'r': 40, 't': 60, 'b': 40},
+                            'plot_bgcolor': '#ffffff',
+                            'paper_bgcolor': '#ffffff'
                         }
                     }
             
