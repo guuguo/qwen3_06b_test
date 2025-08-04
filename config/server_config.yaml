@@ -1,0 +1,677 @@
+# Qwen-3 服务器部署配置文件
+# 适用于生产环境和服务器部署
+
+# Ollama 服务配置
+ollama:
+  # Ollama 服务地址
+  base_url: "http://localhost:11434"
+  
+  # 连接超时设置（秒）
+  timeout: 60
+  
+  # 重试配置
+  retry:
+    max_attempts: 5
+    backoff_factor: 2.0
+    max_delay: 30
+  
+  # 连接池配置
+  connection_pool:
+    max_connections: 50
+    max_keepalive_connections: 20
+    keepalive_expiry: 600
+  
+  # 生产环境模型列表
+  production_models:
+    - "qwen3:0.6b"
+    - "qwen3:1.7b"
+  
+  # 模型缓存配置
+  model_cache:
+    enabled: true
+    ttl_seconds: 1800  # 30分钟缓存
+    max_entries: 100
+  
+  # 健康检查配置
+  health_check:
+    enabled: true
+    interval_seconds: 30
+    timeout_seconds: 10
+    failure_threshold: 3
+
+# 服务器配置
+server:
+  # 服务监听配置
+  listen:
+    host: "0.0.0.0"
+    port: 8000
+  
+  # 工作进程配置
+  workers:
+    # 进程数量（0表示自动检测CPU核心数）
+    count: 0
+    
+    # 工作模式
+    worker_class: "sync"
+    
+    # 每个进程的线程数
+    threads: 2
+    
+    # 最大请求数（重启阈值）
+    max_requests: 1000
+    
+    # 请求数抖动
+    max_requests_jitter: 100
+  
+  # 超时配置
+  timeouts:
+    # 请求超时（秒）
+    request_timeout: 300
+    
+    # 保持连接超时（秒）
+    keepalive_timeout: 5
+    
+    # 优雅关闭超时（秒）
+    graceful_timeout: 30
+  
+  # SSL/TLS配置
+  ssl:
+    enabled: false
+    cert_file: "/etc/ssl/certs/qwen3.crt"
+    key_file: "/etc/ssl/private/qwen3.key"
+    ca_file: ""
+  
+  # 访问日志配置
+  access_log:
+    enabled: true
+    format: '%(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s" %(D)s'
+    file: "/var/log/qwen3/access.log"
+
+# 监控配置
+monitoring:
+  # Prometheus指标配置
+  prometheus:
+    enabled: true
+    port: 9090
+    path: "/metrics"
+    
+    # 指标收集配置
+    metrics:
+      # 是否收集系统指标
+      system_metrics: true
+      
+      # 是否收集应用指标
+      application_metrics: true
+      
+      # 是否收集自定义指标
+      custom_metrics: true
+      
+      # 指标标签
+      labels:
+        service: "qwen3"
+        environment: "production"
+        version: "1.0.0"
+  
+  # 健康检查端点
+  health_check:
+    enabled: true
+    path: "/health"
+    port: 8001
+    
+    # 检查项配置
+    checks:
+      ollama_connection: true
+      model_availability: true
+      system_resources: true
+      database_connection: false
+  
+  # 日志监控
+  log_monitoring:
+    enabled: true
+    
+    # 日志目录
+    log_dir: "/var/log/qwen3"
+    
+    # 日志轮转配置
+    rotation:
+      max_size_mb: 100
+      backup_count: 10
+      compress: true
+    
+    # 日志级别统计
+    level_stats: true
+    
+    # 错误日志告警
+    error_alerting:
+      enabled: true
+      threshold: 10  # 每分钟错误数阈值
+      window_minutes: 5
+
+# 性能配置
+performance:
+  # 缓存配置
+  caching:
+    # Redis缓存
+    redis:
+      enabled: false
+      host: "localhost"
+      port: 6379
+      db: 0
+      password: ""
+      
+      # 连接池配置
+      connection_pool:
+        max_connections: 20
+        retry_on_timeout: true
+      
+      # 缓存策略
+      cache_strategy:
+        # 模型响应缓存TTL（秒）
+        model_response_ttl: 3600
+        
+        # 系统指标缓存TTL（秒）
+        system_metrics_ttl: 300
+    
+    # 内存缓存
+    memory_cache:
+      enabled: true
+      max_size_mb: 512
+      ttl_seconds: 1800
+  
+  # 请求队列配置
+  request_queue:
+    # 队列大小
+    max_size: 1000
+    
+    # 队列超时（秒）
+    timeout: 60
+    
+    # 优先级队列
+    priority_enabled: false
+  
+  # 资源限制
+  resource_limits:
+    # 最大并发请求数
+    max_concurrent_requests: 100
+    
+    # 内存使用限制（MB）
+    max_memory_mb: 4096
+    
+    # CPU使用限制（百分比）
+    max_cpu_percent: 80
+
+# 数据库配置
+database:
+  # 是否启用数据库
+  enabled: false
+  
+  # 数据库类型
+  type: "postgresql"
+  
+  # 连接配置
+  connection:
+    host: "localhost"
+    port: 5432
+    database: "qwen3"
+    username: "qwen3"
+    password: ""
+    
+    # 连接池配置
+    pool:
+      min_connections: 5
+      max_connections: 20
+      max_idle_time: 300
+  
+  # 表配置
+  tables:
+    # 请求日志表
+    request_logs:
+      enabled: true
+      retention_days: 30
+    
+    # 系统指标表
+    system_metrics:
+      enabled: true
+      retention_days: 7
+    
+    # 用户会话表
+    user_sessions:
+      enabled: false
+      retention_days: 1
+
+# 安全配置
+security:
+  # API认证
+  authentication:
+    enabled: true
+    
+    # 认证方式
+    method: "api_key"  # api_key, jwt, oauth2
+    
+    # API密钥配置
+    api_key:
+      header_name: "X-API-Key"
+      keys:
+        - "your-production-api-key-here"
+    
+    # JWT配置
+    jwt:
+      secret_key: "your-jwt-secret-key"
+      algorithm: "HS256"
+      expiration_hours: 24
+  
+  # 访问控制
+  access_control:
+    # IP白名单
+    ip_whitelist:
+      enabled: false
+      allowed_ips: []
+    
+    # CORS配置
+    cors:
+      enabled: true
+      allowed_origins: ["*"]
+      allowed_methods: ["GET", "POST", "PUT", "DELETE"]
+      allowed_headers: ["*"]
+  
+  # 请求限制
+  rate_limiting:
+    enabled: true
+    
+    # 全局限制
+    global:
+      requests_per_minute: 1000
+      requests_per_hour: 10000
+    
+    # 每IP限制
+    per_ip:
+      requests_per_minute: 60
+      requests_per_hour: 1000
+    
+    # 每API密钥限制
+    per_api_key:
+      requests_per_minute: 300
+      requests_per_hour: 5000
+  
+  # 输入验证
+  input_validation:
+    # 最大提示长度
+    max_prompt_length: 4096
+    
+    # 禁用词过滤
+    content_filter:
+      enabled: false
+      blocked_words: []
+    
+    # 请求大小限制（MB）
+    max_request_size_mb: 10
+
+# 日志配置
+logging:
+  # 日志级别
+  level: "INFO"
+  
+  # 日志格式
+  format: "%(asctime)s - %(name)s - %(levelname)s - [%(process)d:%(thread)d] - %(message)s"
+  
+  # 日期格式
+  date_format: "%Y-%m-%d %H:%M:%S"
+  
+  # 文件日志配置
+  file_logging:
+    enabled: true
+    
+    # 应用日志
+    application:
+      filename: "/var/log/qwen3/application.log"
+      max_size_mb: 100
+      backup_count: 10
+      compress: true
+    
+    # 错误日志
+    error:
+      filename: "/var/log/qwen3/error.log"
+      max_size_mb: 50
+      backup_count: 20
+      compress: true
+    
+    # 访问日志
+    access:
+      filename: "/var/log/qwen3/access.log"
+      max_size_mb: 200
+      backup_count: 15
+      compress: true
+  
+  # 系统日志配置
+  syslog:
+    enabled: false
+    facility: "local0"
+    address: "/dev/log"
+  
+  # 特定模块日志级别
+  loggers:
+    "ollama_integration": "INFO"
+    "simple_monitor": "INFO"
+    "performance_testing": "INFO"
+    "api_server": "INFO"
+    "gunicorn": "WARNING"
+
+# 部署配置
+deployment:
+  # 部署环境
+  environment: "production"
+  
+  # 服务用户
+  user: "qwen3"
+  
+  # 服务组
+  group: "qwen3"
+  
+  # 工作目录
+  working_directory: "/opt/qwen3"
+  
+  # PID文件
+  pid_file: "/var/run/qwen3/qwen3.pid"
+  
+  # 环境变量
+  environment_variables:
+    PYTHONPATH: "/opt/qwen3/src"
+    PYTHONUNBUFFERED: "1"
+    TZ: "Asia/Shanghai"
+  
+  # 系统服务配置
+  systemd:
+    enabled: true
+    service_name: "qwen3"
+    description: "Qwen-3 Large Language Model Service"
+    
+    # 服务依赖
+    dependencies:
+      - "network.target"
+      - "ollama.service"
+    
+    # 重启策略
+    restart_policy: "always"
+    restart_delay_seconds: 10
+  
+  # Supervisor配置
+  supervisor:
+    enabled: true
+    program_name: "qwen3"
+    
+    # 进程管理
+    process_management:
+      autostart: true
+      autorestart: true
+      startsecs: 10
+      startretries: 3
+      
+      # 输出重定向
+      stdout_logfile: "/var/log/qwen3/supervisor_stdout.log"
+      stderr_logfile: "/var/log/qwen3/supervisor_stderr.log"
+      
+      # 日志轮转
+      stdout_logfile_maxbytes: "50MB"
+      stdout_logfile_backups: 10
+      stderr_logfile_maxbytes: "50MB"
+      stderr_logfile_backups: 10
+
+# 反向代理配置
+reverse_proxy:
+  # Nginx配置
+  nginx:
+    enabled: true
+    
+    # 上游服务器配置
+    upstream:
+      name: "qwen3_backend"
+      servers:
+        - "127.0.0.1:8000"
+      
+      # 负载均衡方法
+      load_balancing: "round_robin"
+      
+      # 健康检查
+      health_check:
+        enabled: true
+        interval: "30s"
+        fails: 3
+        passes: 2
+    
+    # 虚拟主机配置
+    server:
+      server_name: "qwen3.example.com"
+      listen_port: 80
+      
+      # SSL配置
+      ssl:
+        enabled: false
+        listen_port: 443
+        certificate: "/etc/ssl/certs/qwen3.crt"
+        certificate_key: "/etc/ssl/private/qwen3.key"
+      
+      # 代理配置
+      proxy:
+        # 代理超时
+        connect_timeout: "60s"
+        send_timeout: "60s"
+        read_timeout: "300s"
+        
+        # 缓冲配置
+        buffering: true
+        buffer_size: "4k"
+        buffers: "8 4k"
+        
+        # 请求头配置
+        headers:
+          Host: "$host"
+          X-Real-IP: "$remote_addr"
+          X-Forwarded-For: "$proxy_add_x_forwarded_for"
+          X-Forwarded-Proto: "$scheme"
+      
+      # 静态文件配置
+      static_files:
+        enabled: true
+        location: "/static"
+        root: "/opt/qwen3/static"
+        expires: "1d"
+      
+      # 访问限制
+      access_control:
+        # 请求大小限制
+        client_max_body_size: "10m"
+        
+        # 请求频率限制
+        rate_limit:
+          enabled: true
+          rate: "10r/s"
+          burst: 20
+
+# 备份配置
+backup:
+  # 是否启用备份
+  enabled: false
+  
+  # 备份策略
+  strategy:
+    # 备份类型
+    type: "incremental"  # full, incremental, differential
+    
+    # 备份频率
+    frequency: "daily"
+    
+    # 备份时间
+    schedule: "02:00"
+    
+    # 保留策略
+    retention:
+      daily: 7
+      weekly: 4
+      monthly: 3
+  
+  # 备份目标
+  targets:
+    # 配置文件备份
+    config:
+      enabled: true
+      paths:
+        - "/opt/qwen3/config"
+        - "/etc/nginx/sites-available/qwen3"
+        - "/etc/supervisor/conf.d/qwen3.conf"
+    
+    # 日志备份
+    logs:
+      enabled: true
+      paths:
+        - "/var/log/qwen3"
+    
+    # 数据备份
+    data:
+      enabled: false
+      paths:
+        - "/opt/qwen3/data"
+  
+  # 备份存储
+  storage:
+    # 本地存储
+    local:
+      enabled: true
+      path: "/backup/qwen3"
+    
+    # 远程存储
+    remote:
+      enabled: false
+      type: "s3"  # s3, ftp, rsync
+      
+      # S3配置
+      s3:
+        bucket: "qwen3-backups"
+        region: "us-east-1"
+        access_key: ""
+        secret_key: ""
+
+# 告警配置
+alerting:
+  # 是否启用告警
+  enabled: true
+  
+  # 告警规则
+  rules:
+    # 系统资源告警
+    system_resources:
+      # CPU使用率告警
+      cpu_usage:
+        threshold: 80
+        duration: "5m"
+        severity: "warning"
+      
+      # 内存使用率告警
+      memory_usage:
+        threshold: 85
+        duration: "3m"
+        severity: "critical"
+      
+      # 磁盘使用率告警
+      disk_usage:
+        threshold: 90
+        duration: "1m"
+        severity: "critical"
+    
+    # 应用性能告警
+    application_performance:
+      # 响应时间告警
+      response_time:
+        threshold: 5000  # 毫秒
+        duration: "2m"
+        severity: "warning"
+      
+      # 错误率告警
+      error_rate:
+        threshold: 0.05  # 5%
+        duration: "1m"
+        severity: "critical"
+      
+      # 请求队列告警
+      request_queue:
+        threshold: 100
+        duration: "30s"
+        severity: "warning"
+    
+    # 服务可用性告警
+    service_availability:
+      # Ollama服务告警
+      ollama_service:
+        enabled: true
+        check_interval: "30s"
+        timeout: "10s"
+        severity: "critical"
+      
+      # 数据库连接告警
+      database_connection:
+        enabled: false
+        check_interval: "60s"
+        timeout: "5s"
+        severity: "critical"
+  
+  # 告警通知
+  notifications:
+    # 邮件通知
+    email:
+      enabled: false
+      smtp_server: "smtp.example.com"
+      smtp_port: 587
+      username: "alerts@example.com"
+      password: ""
+      from_address: "qwen3-alerts@example.com"
+      to_addresses:
+        - "admin@example.com"
+        - "ops@example.com"
+    
+    # Webhook通知
+    webhook:
+      enabled: false
+      url: "https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK"
+      headers:
+        Content-Type: "application/json"
+      
+      # 消息模板
+      message_template: |
+        {
+          "text": "Qwen-3 Alert: {{ alert.rule_name }}",
+          "attachments": [
+            {
+              "color": "{{ 'danger' if alert.severity == 'critical' else 'warning' }}",
+              "fields": [
+                {
+                  "title": "Severity",
+                  "value": "{{ alert.severity }}",
+                  "short": true
+                },
+                {
+                  "title": "Threshold",
+                  "value": "{{ alert.threshold }}",
+                  "short": true
+                },
+                {
+                  "title": "Current Value",
+                  "value": "{{ alert.current_value }}",
+                  "short": true
+                },
+                {
+                  "title": "Duration",
+                  "value": "{{ alert.duration }}",
+                  "short": true
+                }
+              ]
+            }
+          ]
+        }
+    
+    # PagerDuty通知
+    pagerduty:
+      enabled: false
+      integration_key: ""
+      severity_mapping:
+        critical: "critical"
+        warning: "warning"
+        info: "info"

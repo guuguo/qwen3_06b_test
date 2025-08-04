@@ -1,0 +1,689 @@
+{
+  "dataset_info": {
+    "name": "漫画评论区广告检测测试集",
+    "description": "基于真实漫画评论的广告检测数据集，用于识别评论区中的广告、推广、诈骗等非正常评论内容",
+    "version": "1.0.0", 
+    "created_date": "2024-08-04",
+    "total_samples": 50,
+    "categories": [
+      "正常评论",
+      "APP推广广告",
+      "QQ/微信联系广告", 
+      "网站推广广告",
+      "诈骗类广告",
+      "色情引流广告",
+      "游戏推广广告",
+      "其他商业广告"
+    ],
+    "detection_criteria": {
+      "广告检测评分": {
+        "0分": "明确的正常评论，无任何广告嫌疑",
+        "1分": "疑似广告，包含轻微推广元素但不确定",
+        "2分": "可能是广告，包含明显的推广意图",
+        "3分": "很可能是广告，包含联系方式或明确推广内容",
+        "4分": "确定是广告，包含完整的推广信息",
+        "5分": "明显的垃圾广告，可能涉及诈骗或违法内容"
+      },
+      "广告类型特征": {
+        "APP推广": "推广漫画APP、阅读软件等",
+        "联系方式": "包含QQ、微信、电话等联系方式",
+        "网站推广": "推广网站、链接等",
+        "诈骗类": "涉及金钱交易、中奖、刷单等",
+        "色情引流": "含有色情暗示或引流内容",
+        "游戏推广": "推广游戏、充值等"
+      }
+    }
+  },
+  "test_samples": [
+    {
+      "id": "manga_001",
+      "comment_text": "这部漫画真的太好看了！男主角好帅，剧情也很精彩，期待后续更新！",
+      "category": "正常评论",
+      "ad_score": 0,
+      "keywords": ["好看", "男主角", "剧情", "期待更新"],
+      "expected_response": "这是正常的漫画评论，表达对作品的喜爱和期待，无广告内容。",
+      "context": {
+        "manga_title": "恋爱漫画",
+        "comment_likes": 15,
+        "user_level": "普通用户"
+      }
+    },
+    {
+      "id": "manga_002", 
+      "comment_text": "无删减漫画app，全网最全资源，联系我QQ1315729273，免费分享！",
+      "category": "APP推广广告",
+      "ad_score": 5,
+      "keywords": ["无删减", "漫画app", "QQ", "免费分享"],
+      "expected_response": "明显的APP推广广告，包含联系方式和诱导性词语，属于垃圾广告。",
+      "context": {
+        "manga_title": "热门漫画",
+        "comment_likes": 0,
+        "user_level": "新注册用户"
+      }
+    },
+    {
+      "id": "manga_003",
+      "comment_text": "作者画风真的很棒，每一帧都很用心，支持正版！",
+      "category": "正常评论", 
+      "ad_score": 0,
+      "keywords": ["画风", "用心", "支持正版"],
+      "expected_response": "正常的读者评论，赞扬作者技艺并倡导正版，无广告嫌疑。",
+      "context": {
+        "manga_title": "原创漫画",
+        "comment_likes": 28,
+        "user_level": "活跃用户"
+      }
+    },
+    {
+      "id": "manga_004",
+      "comment_text": "想看完整版的加我微信：comic2024，内部资源，你懂的~",
+      "category": "QQ/微信联系广告",
+      "ad_score": 4,
+      "keywords": ["完整版", "微信", "内部资源", "你懂的"],
+      "expected_response": "明确的引流广告，提供微信联系方式推广所谓内部资源，属于广告。",
+      "context": {
+        "manga_title": "付费漫画",
+        "comment_likes": 2,
+        "user_level": "新注册用户"
+      }
+    },
+    {
+      "id": "manga_005",
+      "comment_text": "这个转折太突然了吧，作者是不是想不出剧情了？",
+      "category": "正常评论",
+      "ad_score": 0,
+      "keywords": ["转折突然", "作者", "剧情"],
+      "expected_response": "读者对剧情发展的正常评价和质疑，属于正常的讨论评论。",
+      "context": {
+        "manga_title": "悬疑漫画",
+        "comment_likes": 8,
+        "user_level": "普通用户"
+      }
+    },
+    {
+      "id": "manga_006",
+      "comment_text": "百度搜索【漫画大全网】，海量资源免费看，无广告无弹窗！",
+      "category": "网站推广广告",
+      "ad_score": 4,
+      "keywords": ["百度搜索", "漫画大全网", "海量资源", "免费看"],
+      "expected_response": "网站推广广告，引导用户搜索特定网站，明显的商业推广行为。",
+      "context": {
+        "manga_title": "热门漫画",
+        "comment_likes": 1,
+        "user_level": "新注册用户"
+      }
+    },
+    {
+      "id": "manga_007",
+      "comment_text": "女主角的人设有点玛丽苏，不过画得很美，继续追下去。",
+      "category": "正常评论",
+      "ad_score": 0,
+      "keywords": ["女主角", "玛丽苏", "画得很美", "继续追"],
+      "expected_response": "对漫画角色和画风的正常评价，有批评也有肯定，属于正常读者反馈。",
+      "context": {
+        "manga_title": "少女漫画",
+        "comment_likes": 12,
+        "user_level": "活跃用户"
+      }
+    },
+    {
+      "id": "manga_008",
+      "comment_text": "恭喜您中奖了！点击链接 http://fake-prize.com 领取iPhone15一部！",
+      "category": "诈骗类广告",
+      "ad_score": 5,
+      "keywords": ["恭喜中奖", "点击链接", "iPhone15", "领取"],
+      "expected_response": "典型的中奖诈骗广告，包含虚假链接，属于违法垃圾广告。",
+      "context": {
+        "manga_title": "任意漫画",
+        "comment_likes": 0,
+        "user_level": "新注册用户"
+      }
+    },
+    {
+      "id": "manga_009",
+      "comment_text": "更新太慢了，一周才一话，等得我都忘记前面的剧情了。",
+      "category": "正常评论",
+      "ad_score": 0,
+      "keywords": ["更新慢", "一周一话", "忘记剧情"],
+      "expected_response": "读者对更新频率的正常抱怨，属于常见的读者反馈。",
+      "context": {
+        "manga_title": "连载漫画",
+        "comment_likes": 45,
+        "user_level": "活跃用户"
+      }
+    },
+    {
+      "id": "manga_010",
+      "comment_text": "小姐姐们看过来，高质量约会软件推荐，私聊QQ：9876543",
+      "category": "色情引流广告",
+      "ad_score": 5,
+      "keywords": ["小姐姐", "约会软件", "私聊QQ"],
+      "expected_response": "色情引流广告，涉及不当内容推广，属于违规垃圾广告。",
+      "context": {
+        "manga_title": "任意漫画",
+        "comment_likes": 0,
+        "user_level": "新注册用户"
+      }
+    },
+    {
+      "id": "manga_011",
+      "comment_text": "这章的分镜做得很棒，打斗场面很有张力！",
+      "category": "正常评论",
+      "ad_score": 0,
+      "keywords": ["分镜", "打斗场面", "张力"],
+      "expected_response": "专业的漫画技法评论，属于高质量的正常读者反馈。",
+      "context": {
+        "manga_title": "动作漫画",
+        "comment_likes": 22,
+        "user_level": "资深用户"
+      }
+    },
+    {
+      "id": "manga_012",
+      "comment_text": "【超级漫画阅读器】下载量破千万，免费无广告，应用商店搜索下载！",
+      "category": "APP推广广告",
+      "ad_score": 4,
+      "keywords": ["超级漫画阅读器", "下载量", "应用商店"],
+      "expected_response": "APP推广广告，宣传下载量和功能，引导用户下载，属于商业广告。",
+      "context": {
+        "manga_title": "任意漫画",
+        "comment_likes": 3,
+        "user_level": "营销账号"
+      }
+    },
+    {
+      "id": "manga_013",
+      "comment_text": "男二号比男主还帅，为什么不选他？作者是不是眼瞎？",
+      "category": "正常评论",
+      "ad_score": 0,
+      "keywords": ["男二号", "比男主帅", "作者眼瞎"],
+      "expected_response": "读者对角色喜好的强烈表达，虽然用词激烈但属于正常的作品讨论。",
+      "context": {
+        "manga_title": "言情漫画",
+        "comment_likes": 38,
+        "user_level": "普通用户"
+      }
+    },
+    {
+      "id": "manga_014",
+      "comment_text": "兼职刷单日赚200+，在家就能做，详询QQ：1122334455",
+      "category": "诈骗类广告",
+      "ad_score": 5,
+      "keywords": ["兼职刷单", "日赚200", "在家", "详询QQ"],
+      "expected_response": "刷单诈骗广告，承诺高收入诱导用户联系，属于违法广告。",
+      "context": {
+        "manga_title": "任意漫画",
+        "comment_likes": 0,
+        "user_level": "新注册用户"
+      }
+    },
+    {
+      "id": "manga_015",
+      "comment_text": "终于等到大结局了！虽然有点仓促，但整体还是很满意的。",
+      "category": "正常评论",
+      "ad_score": 0,
+      "keywords": ["大结局", "仓促", "整体满意"],
+      "expected_response": "对漫画完结的正常评价，有遗憾但总体积极，属于正常读者感想。",
+      "context": {
+        "manga_title": "完结漫画",
+        "comment_likes": 67,
+        "user_level": "忠实读者"
+      }
+    },
+    {
+      "id": "manga_016",
+      "comment_text": "【王者荣耀】新皮肤免费领取，点击头像私信获取激活码！",
+      "category": "游戏推广广告", 
+      "ad_score": 4,
+      "keywords": ["王者荣耀", "新皮肤", "免费领取", "激活码"],
+      "expected_response": "游戏推广广告，利用免费皮肤诱导用户私信，属于营销广告。",
+      "context": {
+        "manga_title": "游戏题材漫画",
+        "comment_likes": 5,
+        "user_level": "营销账号"
+      }
+    },
+    {
+      "id": "manga_017",
+      "comment_text": "这个梗我在其他作品里也见过，作者是不是参考太多了？",
+      "category": "正常评论",
+      "ad_score": 0,
+      "keywords": ["这个梗", "其他作品", "参考太多"],
+      "expected_response": "读者对作品原创性的正常质疑，属于合理的批评性评论。",
+      "context": {
+        "manga_title": "搞笑漫画",
+        "comment_likes": 14,
+        "user_level": "普通用户"
+      }
+    },
+    {
+      "id": "manga_018",
+      "comment_text": "漫画免费网站推荐www.free-manga.xyz，全网最快更新！",
+      "category": "网站推广广告",
+      "ad_score": 4,
+      "keywords": ["免费网站", "全网最快", "更新"],
+      "expected_response": "盗版网站推广广告，推广非法漫画网站，属于违规广告。",
+      "context": {
+        "manga_title": "付费漫画", 
+        "comment_likes": 2,
+        "user_level": "新注册用户"
+      }
+    },
+    {
+      "id": "manga_019",
+      "comment_text": "作者的伏笔埋得真深，现在才明白前面那些细节的意思。",
+      "category": "正常评论",
+      "ad_score": 0,
+      "keywords": ["伏笔", "明白", "细节"],
+      "expected_response": "读者对作品结构的深度理解和赞赏，属于高质量的正常评论。",
+      "context": {
+        "manga_title": "悬疑推理漫画",
+        "comment_likes": 89,
+        "user_level": "资深读者"
+      }
+    },
+    {
+      "id": "manga_020",
+      "comment_text": "美女直播间，24小时在线陪聊，点击进入：live-beauty.com",
+      "category": "色情引流广告",
+      "ad_score": 5,
+      "keywords": ["美女直播", "24小时", "陪聊", "点击进入"],
+      "expected_response": "色情直播广告，包含不当内容链接，属于违法垃圾广告。",
+      "context": {
+        "manga_title": "任意漫画",
+        "comment_likes": 0,
+        "user_level": "违规账号"
+      }
+    },
+    {
+      "id": "manga_021",
+      "comment_text": "这部漫画治愈了我的抑郁症，真心感谢作者！",
+      "category": "正常评论",
+      "ad_score": 0,
+      "keywords": ["治愈", "抑郁症", "感谢作者"],
+      "expected_response": "读者分享漫画带来的积极影响，表达真诚感谢，属于正常的情感分享。",
+      "context": {
+        "manga_title": "治愈系漫画",
+        "comment_likes": 156,
+        "user_level": "长期用户"
+      }
+    },
+    {
+      "id": "manga_022",
+      "comment_text": "专业代练上分，王者/英雄联盟，价格便宜，微信：game123456",
+      "category": "游戏推广广告",
+      "ad_score": 4,
+      "keywords": ["代练上分", "王者", "英雄联盟", "微信"],
+      "expected_response": "游戏代练服务广告，提供微信联系方式，属于商业服务推广。",
+      "context": {
+        "manga_title": "电竞题材漫画",
+        "comment_likes": 1,
+        "user_level": "新注册用户"
+      }
+    },
+    {
+      "id": "manga_023",
+      "comment_text": "画风突然变了，是不是换助手了？感觉没有以前精细。",
+      "category": "正常评论",
+      "ad_score": 0,
+      "keywords": ["画风变了", "换助手", "没有精细"],
+      "expected_response": "读者对画风变化的敏锐观察和评价，属于专业性的正常评论。",
+      "context": {
+        "manga_title": "长篇连载漫画",
+        "comment_likes": 31,
+        "user_level": "资深读者"
+      }
+    },
+    {
+      "id": "manga_024",
+      "comment_text": "❤️高端外围服务❤️，颜值身材一流，联系电话：138xxxx8888",
+      "category": "色情引流广告",
+      "ad_score": 5,
+      "keywords": ["高端外围", "颜值身材", "联系电话"],
+      "expected_response": "色情服务广告，涉及违法内容和联系方式，属于严重违规广告。",
+      "context": {
+        "manga_title": "任意漫画",
+        "comment_likes": 0,
+        "user_level": "违规账号"
+      }
+    },
+    {
+      "id": "manga_025",
+      "comment_text": "剧情发展有点慢，希望作者能加快节奏，不要拖沓。",
+      "category": "正常评论",
+      "ad_score": 0,
+      "keywords": ["剧情慢", "加快节奏", "不要拖沓"],
+      "expected_response": "读者对剧情节奏的建设性意见，属于正常的作品反馈。",
+      "context": {
+        "manga_title": "冒险漫画",
+        "comment_likes": 19,
+        "user_level": "普通用户"
+      }
+    },
+    {
+      "id": "manga_026",
+      "comment_text": "【漫画神器APP】内测版本免费下载，抢先体验新功能！私信获取下载链接。",
+      "category": "APP推广广告",
+      "ad_score": 3,
+      "keywords": ["漫画神器APP", "内测版本", "私信", "下载链接"],
+      "expected_response": "APP推广广告，以内测为噱头吸引用户私信，属于软性广告推广。",
+      "context": {
+        "manga_title": "热门漫画",
+        "comment_likes": 7,
+        "user_level": "营销账号"
+      }
+    },
+    {
+      "id": "manga_027",
+      "comment_text": "这对CP我磕了！希望作者不要BE，给个HE结局吧！",
+      "category": "正常评论",
+      "ad_score": 0,
+      "keywords": ["CP", "不要BE", "HE结局"],
+      "expected_response": "读者对角色配对的喜爱和对结局的期待，使用网络用语但属于正常讨论。",
+      "context": {
+        "manga_title": "BL漫画",
+        "comment_likes": 78,
+        "user_level": "腐女用户"
+      }
+    },
+    {
+      "id": "manga_028",
+      "comment_text": "网贷秒批，无需抵押，当天放款，需要的联系QQ：loan666888",
+      "category": "诈骗类广告",
+      "ad_score": 5,
+      "keywords": ["网贷秒批", "无需抵押", "当天放款", "联系QQ"],
+      "expected_response": "网贷诈骗广告，承诺不现实的贷款条件，属于金融诈骗广告。",
+      "context": {
+        "manga_title": "任意漫画",
+        "comment_likes": 0,
+        "user_level": "违规账号"
+      }
+    },
+    {
+      "id": "manga_029",
+      "comment_text": "第一次看这种题材的漫画，没想到这么有趣，已入坑！",
+      "category": "正常评论",
+      "ad_score": 0,
+      "keywords": ["第一次看", "有趣", "已入坑"],
+      "expected_response": "新读者对作品类型的积极反馈，表达入坑决心，属于正常的读者分享。",
+      "context": {
+        "manga_title": "小众题材漫画",
+        "comment_likes": 25,
+        "user_level": "新用户"
+      }
+    },
+    {
+      "id": "manga_030",
+      "comment_text": "出售漫画周边，手办模型应有尽有，淘宝店铺：二次元paradise",
+      "category": "其他商业广告",
+      "ad_score": 3,
+      "keywords": ["出售周边", "手办模型", "淘宝店铺"],
+      "expected_response": "漫画周边商品推广，虽是商业广告但与漫画相关性较高，属于软性广告。",
+      "context": {
+        "manga_title": "人气漫画",
+        "comment_likes": 12,
+        "user_level": "商家账号"
+      }
+    },
+    {
+      "id": "manga_031",
+      "comment_text": "配色真的很棒，尤其是那个夕阳场景，美哭了！",
+      "category": "正常评论",
+      "ad_score": 0,
+      "keywords": ["配色", "夕阳场景", "美哭了"],
+      "expected_response": "读者对漫画视觉效果的赞美，体现对艺术细节的欣赏，属于高质量评论。",
+      "context": {
+        "manga_title": "艺术风格漫画",
+        "comment_likes": 43,
+        "user_level": "艺术爱好者"
+      }
+    },
+    {
+      "id": "manga_032",
+      "comment_text": "💰投资理财首选💰，日收益5%，月赚翻倍！咨询微信：money888999",
+      "category": "诈骗类广告",
+      "ad_score": 5,
+      "keywords": ["投资理财", "日收益5%", "月赚翻倍", "咨询微信"],
+      "expected_response": "投资理财诈骗广告，承诺不现实的高收益，属于金融诈骗违法广告。",
+      "context": {
+        "manga_title": "任意漫画",
+        "comment_likes": 0,
+        "user_level": "违规账号"
+      }
+    },
+    {
+      "id": "manga_033",
+      "comment_text": "作者终于开始虐男主了，等了这么久终于爽了！",
+      "category": "正常评论",
+      "ad_score": 0,
+      "keywords": ["虐男主", "等了这么久", "终于爽了"],
+      "expected_response": "读者对剧情发展的情绪表达，体现对虐文情节的偏好，属于正常反应。",
+      "context": {
+        "manga_title": "虐恋漫画",
+        "comment_likes": 52,
+        "user_level": "重口味读者"
+      }
+    },
+    {
+      "id": "manga_034",
+      "comment_text": "限时特价！正版漫画大礼包仅售9.9元，包含100本经典作品，速购！",
+      "category": "其他商业广告",
+      "ad_score": 2,
+      "keywords": ["限时特价", "正版漫画", "大礼包", "速购"],
+      "expected_response": "漫画商品促销广告，虽是商业推广但涉及正版内容，广告性质较轻。",
+      "context": {
+        "manga_title": "经典漫画",
+        "comment_likes": 8,
+        "user_level": "商家账号"
+      }
+    },
+    {
+      "id": "manga_035",
+      "comment_text": "看到这里想起了我的初恋，青春真美好啊～",
+      "category": "正常评论",
+      "ad_score": 0,
+      "keywords": ["想起初恋", "青春美好"],
+      "expected_response": "读者的情感共鸣和回忆分享，体现作品的情感代入感，属于正常感想。",
+      "context": {
+        "manga_title": "青春校园漫画",
+        "comment_likes": 34,
+        "user_level": "怀旧用户"
+      }
+    },
+    {
+      "id": "manga_036",
+      "comment_text": "【紧急通知】账户存在风险，请立即点击链接：secure-check.fake进行验证！",
+      "category": "诈骗类广告",
+      "ad_score": 5,
+      "keywords": ["紧急通知", "账户风险", "点击链接", "验证"],
+      "expected_response": "钓鱼诈骗广告，伪装成安全通知诱导点击虚假链接，属于严重违法广告。",
+      "context": {
+        "manga_title": "任意漫画", 
+        "comment_likes": 0,
+        "user_level": "违规账号"
+      }
+    },
+    {
+      "id": "manga_037",
+      "comment_text": "反转反转再反转，作者的脑洞真的无敌了！",
+      "category": "正常评论",
+      "ad_score": 0,
+      "keywords": ["反转", "脑洞无敌"],
+      "expected_response": "读者对剧情设计的惊叹和赞赏，体现对作者创意的认可，属于正面评价。",
+      "context": {
+        "manga_title": "烧脑悬疑漫画",
+        "comment_likes": 91,
+        "user_level": "推理爱好者"
+      }
+    },
+    {
+      "id": "manga_038",
+      "comment_text": "手机游戏【二次元恋爱】现已上线，注册送豪华大礼包！搜索下载~",
+      "category": "游戏推广广告",
+      "ad_score": 3,
+      "keywords": ["手机游戏", "二次元恋爱", "注册送", "搜索下载"],
+      "expected_response": "二次元游戏推广广告，与漫画受众有一定重合度，属于软性推广广告。",
+      "context": {
+        "manga_title": "恋爱题材漫画",
+        "comment_likes": 15,
+        "user_level": "游戏推广"
+      }
+    },
+    {
+      "id": "manga_039",
+      "comment_text": "女主的三观真的很正，给现在的小说界树立了好榜样。",
+      "category": "正常评论",
+      "ad_score": 0,
+      "keywords": ["三观正", "好榜样", "小说界"],
+      "expected_response": "读者对角色价值观的正面评价，体现对正能量内容的认可，属于有深度的评论。",
+      "context": {
+        "manga_title": "现实题材漫画",
+        "comment_likes": 67,
+        "user_level": "价值观用户"
+      }
+    },
+    {
+      "id": "manga_040",
+      "comment_text": "兼职打字员招聘，工作轻松在家即可，日薪200-500元，QQ：typing123",
+      "category": "诈骗类广告", 
+      "ad_score": 5,
+      "keywords": ["兼职打字员", "工作轻松", "日薪200-500", "QQ"],
+      "expected_response": "兼职诈骗广告，以高薪打字工作为诱饵进行诈骗，属于违法广告。",
+      "context": {
+        "manga_title": "任意漫画",
+        "comment_likes": 0,
+        "user_level": "诈骗账号"
+      }
+    },
+    {
+      "id": "manga_041",
+      "comment_text": "终于有人把这个梗用好了，之前看的几部都很尴尬。",
+      "category": "正常评论",
+      "ad_score": 0,
+      "keywords": ["梗用好了", "之前尴尬"],
+      "expected_response": "读者对同类作品的比较性评价，体现阅读经验丰富，属于专业性评论。",
+      "context": {
+        "manga_title": "搞笑漫画",
+        "comment_likes": 28,
+        "user_level": "资深读者"
+      }
+    },
+    {
+      "id": "manga_042",
+      "comment_text": "福利姬私人定制，各种角色扮演，加微信：cosplay666看样品图~",
+      "category": "色情引流广告",
+      "ad_score": 5,
+      "keywords": ["福利姬", "私人定制", "角色扮演", "微信", "样品图"],
+      "expected_response": "色情服务广告，以cosplay为幌子进行不当内容推广，属于违规广告。",
+      "context": {
+        "manga_title": "二次元漫画",
+        "comment_likes": 0,
+        "user_level": "违规账号"
+      }
+    },
+    {
+      "id": "manga_043",
+      "comment_text": "这章信息量好大，需要反复看几遍才能理解。",
+      "category": "正常评论",
+      "ad_score": 0,
+      "keywords": ["信息量大", "反复看", "理解"],
+      "expected_response": "读者对内容密度的反应，体现认真阅读的态度，属于正常的阅读体验分享。",
+      "context": {
+        "manga_title": "科幻漫画",
+        "comment_likes": 16,
+        "user_level": "认真读者"
+      }
+    },
+    {
+      "id": "manga_044",
+      "comment_text": "【漫画资源分享群】QQ群：123456789，群内分享最新漫画，秒传不限速！",
+      "category": "QQ/微信联系广告",
+      "ad_score": 4,
+      "keywords": ["资源分享群", "QQ群", "最新漫画", "秒传"],
+      "expected_response": "漫画资源分享群广告，涉及版权问题的资源分享，属于明确的广告推广。",
+      "context": {
+        "manga_title": "热门连载",
+        "comment_likes": 23,
+        "user_level": "资源分享者"
+      }
+    },
+    {
+      "id": "manga_045",
+      "comment_text": "看到这里眼泪止不住地流，作者真的太会戳泪点了！",
+      "category": "正常评论",
+      "ad_score": 0,
+      "keywords": ["眼泪", "戳泪点"],
+      "expected_response": "读者的强烈情感反应，体现作品的感染力，属于典型的正面情感反馈。",
+      "context": {
+        "manga_title": "催泪漫画",
+        "comment_likes": 134,
+        "user_level": "感性读者"
+      }
+    },
+    {
+      "id": "manga_046",
+      "comment_text": "专业PS修图，证件照、艺术照、产品图，价格实惠，微信：ps123456",
+      "category": "其他商业广告",
+      "ad_score": 3,
+      "keywords": ["专业PS", "修图", "价格实惠", "微信"],
+      "expected_response": "PS修图服务广告，虽然与漫画无直接关系但不涉及违法内容，属于一般商业广告。",
+      "context": {
+        "manga_title": "任意漫画",
+        "comment_likes": 2,
+        "user_level": "服务商"
+      }
+    },
+    {
+      "id": "manga_047",
+      "comment_text": "这部作品应该被更多人知道，太可惜了，明明质量这么高。",
+      "category": "正常评论",
+      "ad_score": 0,
+      "keywords": ["更多人知道", "太可惜", "质量高"],
+      "expected_response": "读者对优质作品未得到应有关注的惋惜，体现推荐心理，属于正常的推广心态。",
+      "context": {
+        "manga_title": "小众精品漫画",
+        "comment_likes": 89,
+        "user_level": "推荐达人"
+      }
+    },
+    {
+      "id": "manga_048",
+      "comment_text": "💎代购奢侈品💎，LV、香奈儿、爱马仕，全球直邮，微信：luxury888",
+      "category": "其他商业广告",
+      "ad_score": 4,
+      "keywords": ["代购奢侈品", "LV", "香奈儿", "全球直邮", "微信"],
+      "expected_response": "奢侈品代购广告，与漫画内容完全无关的商业推广，属于典型的垃圾广告。",
+      "context": {
+        "manga_title": "任意漫画",
+        "comment_likes": 0,
+        "user_level": "代购商"
+      }
+    },
+    {
+      "id": "manga_049",
+      "comment_text": "连载了这么久终于要揭晓真相了，激动得睡不着！",
+      "category": "正常评论",
+      "ad_score": 0,
+      "keywords": ["揭晓真相", "激动", "睡不着"],
+      "expected_response": "读者对剧情发展的强烈期待和兴奋，体现对作品的深度投入，属于正常的情感表达。",
+      "context": {
+        "manga_title": "长篇悬疑漫画",
+        "comment_likes": 78,
+        "user_level": "忠实粉丝"
+      }
+    },
+    {
+      "id": "manga_050",
+      "comment_text": "股票内幕消息，明日涨停股推荐，准确率90%以上！联系QQ：stock666777",
+      "category": "诈骗类广告",
+      "ad_score": 5,
+      "keywords": ["股票内幕", "涨停股", "准确率90%", "联系QQ"],
+      "expected_response": "股票诈骗广告，以内幕消息和高准确率为诱饵进行诈骗，属于金融违法广告。",
+      "context": {
+        "manga_title": "任意漫画",
+        "comment_likes": 0,
+        "user_level": "诈骗账号"
+      }
+    }
+  ]
+}

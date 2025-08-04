@@ -1,0 +1,366 @@
+# Qwen-3 本地部署配置文件
+# 适用于本地开发和测试环境
+
+# Ollama 服务配置
+ollama:
+  # Ollama 服务地址
+  base_url: "http://localhost:11434"
+  
+  # 连接超时设置（秒）
+  timeout: 30
+  
+  # 重试配置
+  retry:
+    max_attempts: 3
+    backoff_factor: 1.5
+    max_delay: 10
+  
+  # 连接池配置
+  connection_pool:
+    max_connections: 10
+    max_keepalive_connections: 5
+    keepalive_expiry: 300
+  
+  # 默认模型列表
+  default_models:
+    - "qwen3:0.6b"
+    - "qwen3:1.7b"
+  
+  # 模型缓存配置
+  model_cache:
+    enabled: true
+    ttl_seconds: 300  # 5分钟缓存
+    max_entries: 50
+
+# 监控配置
+monitoring:
+  # 文件监控配置
+  file_monitor:
+    # 日志目录
+    log_dir: "./logs"
+    
+    # 最大保留日志文件数
+    max_log_files: 30
+    
+    # 日志文件格式
+    log_format: "jsonl"
+    
+    # 是否启用请求日志
+    enable_request_logging: true
+    
+    # 是否启用系统指标日志
+    enable_system_logging: true
+  
+  # 性能监控配置
+  performance_monitor:
+    # 指标收集间隔（秒）
+    collection_interval: 60
+    
+    # 是否自动启动监控
+    auto_start: true
+    
+    # 内存缓存配置
+    cache:
+      max_request_entries: 1000
+      max_system_entries: 288  # 24小时，5分钟间隔
+    
+    # 系统指标配置
+    system_metrics:
+      # 是否收集CPU指标
+      collect_cpu: true
+      
+      # 是否收集内存指标
+      collect_memory: true
+      
+      # 是否收集磁盘指标
+      collect_disk: true
+      
+      # 是否收集网络IO指标
+      collect_network: true
+      
+      # 是否收集负载平均值
+      collect_load_average: true
+      
+      # CPU采样间隔（秒）
+      cpu_interval: 1
+
+# 本地Web界面配置
+web_dashboard:
+  # 是否启用Web界面
+  enabled: true
+  
+  # 监听地址
+  host: "127.0.0.1"
+  
+  # 监听端口
+  port: 8080
+  
+  # 调试模式
+  debug: true
+  
+  # 自动重载
+  auto_reload: true
+  
+  # 静态文件目录
+  static_folder: "static"
+  
+  # 模板目录
+  template_folder: "templates"
+  
+  # 会话配置
+  session:
+    secret_key: "qwen3-local-dev-key"
+    permanent: false
+  
+  # 页面刷新间隔（秒）
+  refresh_interval: 5
+  
+  # 图表配置
+  charts:
+    # 历史数据点数
+    max_data_points: 100
+    
+    # 图表更新间隔（毫秒）
+    update_interval: 5000
+
+# 性能测试配置
+performance_testing:
+  # 测试套件配置
+  test_suites:
+    # 基础性能测试
+    basic:
+      # 并发用户数
+      concurrent_users: 1
+      
+      # 测试持续时间（秒）
+      duration: 60
+      
+      # 请求间隔（秒）
+      request_interval: 1
+      
+      # 测试提示词
+      test_prompts:
+        - "你好，请介绍一下自己"
+        - "请解释什么是人工智能"
+        - "写一个简单的Python函数"
+        - "今天天气怎么样？"
+    
+    # 压力测试
+    stress:
+      concurrent_users: 5
+      duration: 300
+      request_interval: 0.5
+      test_prompts:
+        - "生成一个200字的故事"
+        - "解释量子计算的基本原理"
+        - "编写一个排序算法"
+    
+    # 长时间测试
+    endurance:
+      concurrent_users: 2
+      duration: 3600  # 1小时
+      request_interval: 2
+      test_prompts:
+        - "简单问答测试"
+        - "代码生成测试"
+  
+  # 结果输出配置
+  output:
+    # 结果目录
+    results_dir: "./test_results"
+    
+    # 是否生成HTML报告
+    generate_html_report: true
+    
+    # 是否生成CSV数据
+    generate_csv_data: true
+    
+    # 是否保存详细日志
+    save_detailed_logs: true
+
+# 日志配置
+logging:
+  # 日志级别
+  level: "INFO"
+  
+  # 日志格式
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  
+  # 日期格式
+  date_format: "%Y-%m-%d %H:%M:%S"
+  
+  # 文件日志配置
+  file_logging:
+    # 是否启用文件日志
+    enabled: true
+    
+    # 日志文件路径
+    filename: "./logs/qwen3_local.log"
+    
+    # 日志轮转配置
+    rotation:
+      # 最大文件大小（MB）
+      max_size_mb: 10
+      
+      # 保留文件数量
+      backup_count: 5
+      
+      # 是否按时间轮转
+      time_based: false
+  
+  # 控制台日志配置
+  console_logging:
+    # 是否启用控制台日志
+    enabled: true
+    
+    # 控制台日志级别
+    level: "INFO"
+  
+  # 特定模块日志级别
+  loggers:
+    "ollama_integration": "DEBUG"
+    "simple_monitor": "INFO"
+    "performance_testing": "INFO"
+    "web_dashboard": "INFO"
+
+# 数据存储配置
+storage:
+  # 数据目录
+  data_dir: "./data"
+  
+  # 是否启用数据持久化
+  enable_persistence: true
+  
+  # 数据保留策略
+  retention:
+    # 请求数据保留天数
+    request_data_days: 30
+    
+    # 系统指标保留天数
+    system_metrics_days: 7
+    
+    # 测试结果保留天数
+    test_results_days: 90
+  
+  # 数据压缩配置
+  compression:
+    # 是否启用压缩
+    enabled: false
+    
+    # 压缩算法
+    algorithm: "gzip"
+    
+    # 压缩级别
+    level: 6
+
+# 安全配置
+security:
+  # API访问控制
+  api_access:
+    # 是否启用访问控制
+    enabled: false
+    
+    # 允许的IP地址列表
+    allowed_ips:
+      - "127.0.0.1"
+      - "::1"
+  
+  # 请求限制
+  rate_limiting:
+    # 是否启用请求限制
+    enabled: false
+    
+    # 每分钟最大请求数
+    max_requests_per_minute: 60
+    
+    # 每小时最大请求数
+    max_requests_per_hour: 1000
+
+# 开发配置
+development:
+  # 是否启用开发模式
+  debug_mode: true
+  
+  # 是否启用详细错误信息
+  verbose_errors: true
+  
+  # 是否启用性能分析
+  enable_profiling: false
+  
+  # 是否启用热重载
+  hot_reload: true
+  
+  # 测试数据配置
+  test_data:
+    # 是否生成测试数据
+    generate_test_data: true
+    
+    # 测试数据数量
+    test_data_count: 100
+  
+  # 模拟配置
+  simulation:
+    # 是否启用模拟模式
+    enabled: false
+    
+    # 模拟延迟范围（毫秒）
+    latency_range: [100, 2000]
+    
+    # 模拟错误率
+    error_rate: 0.05
+
+# 通知配置
+notifications:
+  # 是否启用通知
+  enabled: false
+  
+  # 通知方式
+  methods:
+    # 邮件通知
+    email:
+      enabled: false
+      smtp_server: ""
+      smtp_port: 587
+      username: ""
+      password: ""
+      from_address: ""
+      to_addresses: []
+    
+    # Webhook通知
+    webhook:
+      enabled: false
+      url: ""
+      headers: {}
+  
+  # 通知触发条件
+  triggers:
+    # 错误率阈值
+    error_rate_threshold: 0.1
+    
+    # 延迟阈值（毫秒）
+    latency_threshold: 5000
+    
+    # 内存使用阈值
+    memory_threshold: 0.9
+    
+    # CPU使用阈值
+    cpu_threshold: 0.9
+
+# 实验性功能
+experimental:
+  # 是否启用实验性功能
+  enabled: false
+  
+  # 功能开关
+  features:
+    # 自动模型切换
+    auto_model_switching: false
+    
+    # 智能缓存
+    intelligent_caching: false
+    
+    # 预测性扩容
+    predictive_scaling: false
+    
+    # A/B测试
+    ab_testing: false

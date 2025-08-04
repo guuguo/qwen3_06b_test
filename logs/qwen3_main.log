@@ -1,0 +1,441 @@
+2025-08-04 15:46:15,478 - __main__ - INFO - Qwen-3 启动器初始化完成: 环境=local
+2025-08-04 15:46:15,478 - __main__ - INFO - 启动Web监控界面...
+2025-08-04 15:46:15,484 - config_manager - INFO - 已加载配置文件: config/local_config.yaml
+2025-08-04 15:46:15,485 - config_manager - INFO - 配置验证通过
+2025-08-04 15:46:15,488 - config_manager - INFO - 配置文件监控已启动
+2025-08-04 15:46:15,488 - config_manager - INFO - 配置管理器初始化完成: 环境=local, 热重载=启用
+2025-08-04 15:46:15,489 - ollama_integration - INFO - Ollama 集成初始化完成: http://localhost:11434
+2025-08-04 15:46:15,489 - simple_monitor - INFO - 文件监控器初始化完成: logs
+2025-08-04 15:46:15,489 - simple_monitor - INFO - 性能监控器初始化完成
+2025-08-04 15:46:15,489 - simple_monitor - INFO - 性能监控已启动，收集间隔: 60秒
+2025-08-04 15:46:15,489 - test_dataset_manager - INFO - 测试集管理器初始化完成，目录: ./test_datasets
+2025-08-04 15:46:15,489 - test_dataset_manager - INFO - 测试集管理器初始化完成，目录: ./test_datasets
+2025-08-04 15:46:15,489 - local_tester - INFO - 本地测试器初始化完成，结果目录: ./test_results
+2025-08-04 15:46:15,489 - src.local_dashboard - INFO - 组件初始化完成
+2025-08-04 15:46:15,491 - src.local_dashboard - INFO - 本地监控界面初始化完成: 127.0.0.1:8080
+2025-08-04 15:46:15,491 - src.local_dashboard - INFO - 启动本地监控界面: http://127.0.0.1:8080
+2025-08-04 15:46:15,603 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:8080
+2025-08-04 15:46:15,603 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-08-04 15:46:16,497 - src.local_dashboard - INFO - 本地监控界面启动成功
+2025-08-04 15:46:16,497 - __main__ - INFO - ✅ Web监控界面启动成功
+2025-08-04 15:46:16,498 - __main__ - INFO - 🌐 访问地址: http://127.0.0.1:8080
+2025-08-04 15:46:16,498 - __main__ - INFO - 📊 健康检查: http://127.0.0.1:8080/health
+2025-08-04 15:46:16,498 - __main__ - INFO - 程序运行中，按 Ctrl+C 停止...
+2025-08-04 15:46:18,991 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:46:18] "GET / HTTP/1.1" 200 -
+2025-08-04 15:46:21,429 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:46:21] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:46:21,431 - test_dataset_manager - INFO - 测试集加载成功: call_semantic_complaints, 样本数: 50
+2025-08-04 15:46:21,433 - test_dataset_manager - INFO - 测试集加载成功: manga_comment_ad_detection, 样本数: 50
+2025-08-04 15:46:21,433 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:46:21] "GET /api/datasets HTTP/1.1" 200 -
+2025-08-04 15:46:21,482 - ollama_integration - INFO - 获取模型列表成功: 2 个模型
+2025-08-04 15:46:21,482 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:46:21] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:46:21,522 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:46:21] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-08-04 15:46:26,429 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:46:26] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:46:26,433 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:46:26] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:46:31,430 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:46:31] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:46:31,443 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:46:31] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:46:36,435 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:46:36] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:46:36,441 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:46:36] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:46:41,432 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:46:41] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:46:41,440 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:46:41] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:46:46,436 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:46:46] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:46:46,444 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:46:46] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:46:51,437 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:46:51] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:46:51,443 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:46:51] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:46:56,439 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:46:56] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:46:56,451 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:46:56] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:47:01,438 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:47:01] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:47:01,448 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:47:01] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:47:06,431 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:47:06] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:47:06,445 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:47:06] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:47:10,888 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:47:10] "GET / HTTP/1.1" 200 -
+2025-08-04 15:47:10,951 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:47:10] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:47:10,954 - test_dataset_manager - INFO - 测试集加载成功: call_semantic_complaints, 样本数: 50
+2025-08-04 15:47:10,954 - test_dataset_manager - INFO - 测试集加载成功: manga_comment_ad_detection, 样本数: 50
+2025-08-04 15:47:10,955 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:47:10] "GET /api/datasets HTTP/1.1" 200 -
+2025-08-04 15:47:10,961 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:47:10] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:47:15,955 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:47:15] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:47:15,960 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:47:15] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:47:19,875 - ollama_integration - INFO - 推理成功: qwen3:0.6b, 延迟: 2154.32ms, TPS: 1.86
+2025-08-04 15:47:19,875 - src.local_dashboard - ERROR - 测试推理失败: 'dict' object has no attribute 'response'
+2025-08-04 15:47:19,876 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:47:19] "[35m[1mPOST /api/test HTTP/1.1[0m" 500 -
+2025-08-04 15:47:20,953 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:47:20] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:47:20,966 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:47:20] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:47:25,955 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:47:25] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:47:25,959 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:47:25] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:47:30,958 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:47:30] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:47:30,968 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:47:30] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:47:35,954 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:47:35] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:47:35,962 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:47:35] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:47:40,955 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:47:40] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:47:40,967 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:47:40] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:47:45,954 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:47:45] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:47:45,960 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:47:45] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:47:50,954 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:47:50] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:47:50,961 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:47:50] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:47:55,954 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:47:55] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:47:55,958 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:47:55] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:47:58,283 - local_tester - INFO - 开始测试集评估: qwen3:0.6b on manga_comment_ad_detection
+2025-08-04 15:47:58,283 - test_dataset_manager - INFO - 测试集加载成功: manga_comment_ad_detection, 样本数: 50
+2025-08-04 15:47:58,284 - test_dataset_manager - INFO - 获取测试样本: 10 个
+2025-08-04 15:47:58,284 - local_tester - INFO - 获取到 10 个测试样本
+2025-08-04 15:47:58,284 - local_tester - INFO - 处理样本 1/10
+2025-08-04 15:48:00,956 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:48:00] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:48:00,959 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:48:00] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:48:01,697 - ollama_integration - INFO - 推理成功: qwen3:0.6b, 延迟: 3413.19ms, TPS: 4.69
+2025-08-04 15:48:01,697 - local_tester - INFO - 处理样本 2/10
+2025-08-04 15:48:04,886 - ollama_integration - INFO - 推理成功: qwen3:0.6b, 延迟: 3188.90ms, TPS: 4.70
+2025-08-04 15:48:04,886 - local_tester - INFO - 处理样本 3/10
+2025-08-04 15:48:05,954 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:48:05] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:48:05,960 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:48:05] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:48:08,424 - ollama_integration - INFO - 推理成功: qwen3:0.6b, 延迟: 3537.61ms, TPS: 3.96
+2025-08-04 15:48:08,424 - local_tester - INFO - 处理样本 4/10
+2025-08-04 15:48:10,955 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:48:10] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:48:10,958 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:48:10] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:48:13,956 - ollama_integration - INFO - 推理成功: qwen3:0.6b, 延迟: 5531.27ms, TPS: 3.25
+2025-08-04 15:48:13,956 - local_tester - INFO - 处理样本 5/10
+2025-08-04 15:48:15,958 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:48:15] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:48:15,960 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:48:15] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:48:19,299 - ollama_integration - INFO - 推理成功: qwen3:0.6b, 延迟: 5343.07ms, TPS: 3.37
+2025-08-04 15:48:19,299 - local_tester - INFO - 处理样本 6/10
+2025-08-04 15:48:20,955 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:48:20] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:48:20,959 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:48:20] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:48:23,252 - ollama_integration - INFO - 推理成功: qwen3:0.6b, 延迟: 3952.50ms, TPS: 4.05
+2025-08-04 15:48:23,252 - local_tester - INFO - 处理样本 7/10
+2025-08-04 15:48:25,951 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:48:25] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:48:25,955 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:48:25] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:48:27,258 - ollama_integration - INFO - 推理成功: qwen3:0.6b, 延迟: 4005.35ms, TPS: 4.24
+2025-08-04 15:48:27,258 - local_tester - INFO - 处理样本 8/10
+2025-08-04 15:48:27,375 - test_dataset_manager - INFO - 获取测试样本: 3 个
+2025-08-04 15:48:27,375 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:48:27] "GET /api/datasets/manga_comment_ad_detection/samples?count=3 HTTP/1.1" 200 -
+2025-08-04 15:48:30,952 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:48:30] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:48:30,972 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:48:30] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:48:31,702 - ollama_integration - INFO - 推理成功: qwen3:0.6b, 延迟: 4443.95ms, TPS: 3.83
+2025-08-04 15:48:31,702 - local_tester - INFO - 处理样本 9/10
+2025-08-04 15:48:35,717 - ollama_integration - INFO - 推理成功: qwen3:0.6b, 延迟: 4014.41ms, TPS: 4.23
+2025-08-04 15:48:35,717 - local_tester - INFO - 处理样本 10/10
+2025-08-04 15:48:35,957 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:48:35] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:48:35,959 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:48:35] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:48:39,047 - ollama_integration - INFO - 推理成功: qwen3:0.6b, 延迟: 3330.07ms, TPS: 4.80
+2025-08-04 15:48:39,048 - test_dataset_manager - INFO - 评估报告已保存: test_results/manga_comment_ad_detection_qwen3:0.6b_20250804_154839_evaluation.json
+2025-08-04 15:48:39,048 - test_dataset_manager - INFO - HTML评估报告已生成: test_results/manga_comment_ad_detection_qwen3:0.6b_20250804_154839_report.html
+2025-08-04 15:48:39,049 - local_tester - INFO - 测试集评估完成
+2025-08-04 15:48:39,049 - local_tester - INFO - JSON报告: test_results/manga_comment_ad_detection_qwen3:0.6b_20250804_154839_evaluation.json
+2025-08-04 15:48:39,049 - local_tester - INFO - HTML报告: test_results/manga_comment_ad_detection_qwen3:0.6b_20250804_154839_report.html
+2025-08-04 15:48:39,049 - test_dataset_manager - INFO - HTML评估报告已生成: test_results/manga_comment_ad_detection_qwen3:0.6b_20250804_154839_report.html
+2025-08-04 15:48:39,049 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:48:39] "POST /api/test/dataset HTTP/1.1" 200 -
+2025-08-04 15:48:40,952 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:48:40] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:48:40,956 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:48:40] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:48:45,954 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:48:45] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:48:45,957 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:48:45] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:48:50,020 - test_dataset_manager - INFO - 获取测试样本: 3 个
+2025-08-04 15:48:50,020 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:48:50] "GET /api/datasets/manga_comment_ad_detection/samples?count=3 HTTP/1.1" 200 -
+2025-08-04 15:48:50,952 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:48:50] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:48:50,957 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:48:50] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:48:55,954 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:48:55] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:48:55,957 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:48:55] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:49:00,955 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:49:00] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:49:00,961 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:49:00] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:49:05,954 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:49:05] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:49:05,962 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:49:05] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:49:10,954 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:49:10] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:49:10,958 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:49:10] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:49:15,957 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:49:15] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:49:15,974 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:49:15] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:49:20,955 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:49:20] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:49:20,962 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:49:20] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:49:25,956 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:49:25] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:49:25,961 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:49:25] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:49:30,957 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:49:30] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:49:30,967 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:49:30] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:49:35,954 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:49:35] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:49:35,959 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:49:35] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:49:40,956 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:49:40] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:49:40,962 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:49:40] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:49:45,960 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:49:45] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:49:45,963 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:49:45] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:49:50,954 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:49:50] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:49:50,962 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:49:50] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:49:55,952 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:49:55] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:49:55,955 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:49:55] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:50:00,955 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:50:00] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:50:00,960 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:50:00] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:50:05,952 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:50:05] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:50:05,957 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:50:05] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:50:10,955 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:50:10] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:50:10,963 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:50:10] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:50:15,957 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:50:15] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:50:15,972 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:50:15] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:50:20,955 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:50:20] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:50:20,958 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:50:20] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:50:22,268 - ollama_integration - INFO - 推理成功: qwen3:0.6b, 延迟: 2519.64ms, TPS: 2.78
+2025-08-04 15:50:22,268 - src.local_dashboard - ERROR - 测试推理失败: 'dict' object has no attribute 'response'
+2025-08-04 15:50:22,269 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:50:22] "[35m[1mPOST /api/test HTTP/1.1[0m" 500 -
+2025-08-04 15:50:25,955 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:50:25] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:50:25,961 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:50:25] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:50:30,954 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:50:30] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:50:30,961 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:50:30] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:50:35,953 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:50:35] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:50:35,957 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:50:35] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:50:40,953 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:50:40] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:50:40,961 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:50:40] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:50:45,956 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:50:45] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:50:45,962 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:50:45] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:50:50,955 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:50:50] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:50:50,960 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:50:50] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:50:55,954 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:50:55] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:50:55,962 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:50:55] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:51:00,971 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:51:00] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:51:00,972 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:51:00] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2025-08-04 15:51:00,975 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:51:00] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:51:05,959 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:51:05] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:51:05,980 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:51:05] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:51:10,955 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:51:10] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:51:10,963 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:51:10] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:51:15,958 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:51:15] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:51:15,962 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:51:15] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:51:20,956 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:51:20] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:51:20,970 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:51:20] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:51:25,951 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:51:25] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:51:25,960 - ollama_integration - INFO - 获取模型列表成功: 2 个模型
+2025-08-04 15:51:25,960 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:51:25] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:51:30,952 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:51:30] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:51:30,956 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:51:30] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:51:35,953 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:51:35] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:51:35,960 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:51:35] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:51:40,955 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:51:40] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:51:40,959 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:51:40] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:51:45,955 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:51:45] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:51:45,960 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:51:45] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:51:50,954 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:51:50] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:51:50,957 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:51:50] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:51:55,956 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:51:55] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:51:55,959 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:51:55] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:52:00,957 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:52:00] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:52:00,970 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:52:00] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:52:05,956 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:52:05] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:52:05,962 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:52:05] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:52:10,953 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:52:10] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:52:10,962 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:52:10] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:52:16,343 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:52:16] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:52:16,346 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:52:16] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:52:21,350 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:52:21] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:52:21,355 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:52:21] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:52:26,386 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:52:26] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:52:26,395 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:52:26] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:52:31,450 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:52:31] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:52:31,459 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:52:31] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:52:36,347 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:52:36] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:52:36,355 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:52:36] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:52:41,355 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:52:41] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:52:41,359 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:52:41] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:52:46,352 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:52:46] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:52:46,356 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:52:46] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:52:51,363 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:52:51] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:52:51,367 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:52:51] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:52:56,354 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:52:56] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:52:56,358 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:52:56] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:53:01,342 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:53:01] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:53:01,346 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:53:01] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:53:06,357 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:53:06] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:53:06,365 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:53:06] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:53:11,235 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:53:11] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:53:11,243 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:53:11] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:53:25,523 - __main__ - INFO - 收到信号 2，正在关闭...
+2025-08-04 15:53:25,523 - __main__ - INFO - 停止所有组件...
+2025-08-04 15:53:30,528 - simple_monitor - INFO - 性能监控已停止
+2025-08-04 15:53:30,528 - src.local_dashboard - INFO - 本地监控界面已停止
+2025-08-04 15:53:30,529 - __main__ - INFO - ✅ dashboard 已停止
+2025-08-04 15:53:30,529 - __main__ - INFO - 👋 所有组件已停止
+2025-08-04 15:53:30,529 - __main__ - INFO - 停止所有组件...
+2025-08-04 15:53:30,529 - __main__ - INFO - ✅ dashboard 已停止
+2025-08-04 15:53:30,529 - __main__ - INFO - 👋 所有组件已停止
+2025-08-04 15:53:31,951 - __main__ - INFO - Qwen-3 启动器初始化完成: 环境=local
+2025-08-04 15:53:31,951 - __main__ - INFO - 启动Web监控界面...
+2025-08-04 15:53:31,957 - config_manager - INFO - 已加载配置文件: config/local_config.yaml
+2025-08-04 15:53:31,957 - config_manager - INFO - 配置验证通过
+2025-08-04 15:53:31,959 - config_manager - INFO - 配置文件监控已启动
+2025-08-04 15:53:31,959 - config_manager - INFO - 配置管理器初始化完成: 环境=local, 热重载=启用
+2025-08-04 15:53:31,960 - ollama_integration - INFO - Ollama 集成初始化完成: http://localhost:11434
+2025-08-04 15:53:31,960 - simple_monitor - INFO - 文件监控器初始化完成: logs
+2025-08-04 15:53:31,960 - simple_monitor - INFO - 性能监控器初始化完成
+2025-08-04 15:53:31,960 - simple_monitor - INFO - 性能监控已启动，收集间隔: 60秒
+2025-08-04 15:53:31,960 - test_dataset_manager - INFO - 测试集管理器初始化完成，目录: ./test_datasets
+2025-08-04 15:53:31,960 - test_dataset_manager - INFO - 测试集管理器初始化完成，目录: ./test_datasets
+2025-08-04 15:53:31,960 - local_tester - INFO - 本地测试器初始化完成，结果目录: ./test_results
+2025-08-04 15:53:31,961 - src.local_dashboard - INFO - 组件初始化完成
+2025-08-04 15:53:31,962 - src.local_dashboard - INFO - 本地监控界面初始化完成: 127.0.0.1:8080
+2025-08-04 15:53:31,962 - src.local_dashboard - INFO - 启动本地监控界面: http://127.0.0.1:8080
+2025-08-04 15:53:32,013 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:8080
+2025-08-04 15:53:32,013 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-08-04 15:53:32,967 - src.local_dashboard - INFO - 本地监控界面启动成功
+2025-08-04 15:53:32,967 - __main__ - INFO - ✅ Web监控界面启动成功
+2025-08-04 15:53:32,967 - __main__ - INFO - 🌐 访问地址: http://127.0.0.1:8080
+2025-08-04 15:53:32,967 - __main__ - INFO - 📊 健康检查: http://127.0.0.1:8080/health
+2025-08-04 15:53:32,967 - __main__ - INFO - 程序运行中，按 Ctrl+C 停止...
+2025-08-04 15:53:36,406 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:53:36] "GET / HTTP/1.1" 200 -
+2025-08-04 15:53:36,538 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:53:36] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:53:36,587 - test_dataset_manager - INFO - 测试集加载成功: call_semantic_complaints, 样本数: 50
+2025-08-04 15:53:36,588 - test_dataset_manager - INFO - 测试集加载成功: manga_comment_ad_detection, 样本数: 50
+2025-08-04 15:53:36,588 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:53:36] "GET /api/datasets HTTP/1.1" 200 -
+2025-08-04 15:53:36,630 - ollama_integration - INFO - 获取模型列表成功: 2 个模型
+2025-08-04 15:53:36,631 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:53:36] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:53:41,537 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:53:41] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:53:41,543 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:53:41] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:53:46,533 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:53:46] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:53:46,536 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:53:46] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:53:51,537 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:53:51] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:53:51,542 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:53:51] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:53:56,537 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:53:56] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:53:56,546 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:53:56] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:54:01,535 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:54:01] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:54:01,538 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:54:01] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:54:06,537 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:54:06] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:54:06,541 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:54:06] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:54:11,534 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:54:11] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:54:11,548 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:54:11] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:54:16,538 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:54:16] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:54:16,548 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:54:16] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:54:21,534 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:54:21] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:54:21,539 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:54:21] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:54:26,536 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:54:26] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:54:26,545 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:54:26] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:54:31,538 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:54:31] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:54:31,544 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:54:31] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:54:36,532 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:54:36] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:54:36,542 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:54:36] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:54:41,535 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:54:41] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:54:41,540 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:54:41] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:54:46,537 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:54:46] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:54:46,545 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:54:46] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:54:50,585 - local_tester - INFO - 开始测试集评估: qwen3:0.6b on manga_comment_ad_detection
+2025-08-04 15:54:50,586 - test_dataset_manager - INFO - 测试集加载成功: manga_comment_ad_detection, 样本数: 50
+2025-08-04 15:54:50,586 - test_dataset_manager - INFO - 获取测试样本: 10 个
+2025-08-04 15:54:50,586 - local_tester - INFO - 获取到 10 个测试样本
+2025-08-04 15:54:50,586 - local_tester - INFO - 处理样本 1/10
+2025-08-04 15:54:51,535 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:54:51] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:54:51,544 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:54:51] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:54:53,505 - ollama_integration - INFO - 推理成功: qwen3:0.6b, 延迟: 2919.04ms, TPS: 5.48
+2025-08-04 15:54:53,506 - local_tester - INFO - 处理样本 2/10
+2025-08-04 15:54:56,533 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:54:56] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:54:56,538 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:54:56] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:54:57,421 - ollama_integration - INFO - 推理成功: qwen3:0.6b, 延迟: 3915.33ms, TPS: 3.83
+2025-08-04 15:54:57,422 - local_tester - INFO - 处理样本 3/10
+2025-08-04 15:55:00,554 - ollama_integration - INFO - 推理成功: qwen3:0.6b, 延迟: 3129.49ms, TPS: 5.11
+2025-08-04 15:55:00,554 - local_tester - INFO - 处理样本 4/10
+2025-08-04 15:55:01,532 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:55:01] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:55:01,535 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:55:01] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:55:04,783 - ollama_integration - INFO - 推理成功: qwen3:0.6b, 延迟: 4228.45ms, TPS: 3.78
+2025-08-04 15:55:04,783 - local_tester - INFO - 处理样本 5/10
+2025-08-04 15:55:06,530 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:55:06] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:55:06,533 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:55:06] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:55:08,243 - ollama_integration - INFO - 推理成功: qwen3:0.6b, 延迟: 3459.74ms, TPS: 4.91
+2025-08-04 15:55:08,244 - local_tester - INFO - 处理样本 6/10
+2025-08-04 15:55:10,154 - test_dataset_manager - INFO - 获取测试样本: 3 个
+2025-08-04 15:55:10,156 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:55:10] "GET /api/datasets/manga_comment_ad_detection/samples?count=3 HTTP/1.1" 200 -
+2025-08-04 15:55:11,040 - test_dataset_manager - INFO - 获取测试样本: 3 个
+2025-08-04 15:55:11,041 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:55:11] "GET /api/datasets/manga_comment_ad_detection/samples?count=3 HTTP/1.1" 200 -
+2025-08-04 15:55:11,530 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:55:11] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:55:11,533 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:55:11] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:55:13,041 - ollama_integration - INFO - 推理成功: qwen3:0.6b, 延迟: 4797.41ms, TPS: 3.34
+2025-08-04 15:55:13,041 - local_tester - INFO - 处理样本 7/10
+2025-08-04 15:55:16,428 - ollama_integration - INFO - 推理成功: qwen3:0.6b, 延迟: 3386.54ms, TPS: 4.13
+2025-08-04 15:55:16,428 - local_tester - INFO - 处理样本 8/10
+2025-08-04 15:55:16,537 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:55:16] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:55:16,539 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:55:16] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:55:19,922 - ollama_integration - INFO - 推理成功: qwen3:0.6b, 延迟: 3494.07ms, TPS: 4.87
+2025-08-04 15:55:19,922 - local_tester - INFO - 处理样本 9/10
+2025-08-04 15:55:21,538 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:55:21] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:55:21,542 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:55:21] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:55:23,442 - ollama_integration - INFO - 推理成功: qwen3:0.6b, 延迟: 3519.46ms, TPS: 5.40
+2025-08-04 15:55:23,442 - local_tester - INFO - 处理样本 10/10
+2025-08-04 15:55:26,534 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:55:26] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:55:26,537 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:55:26] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:55:27,831 - ollama_integration - INFO - 推理成功: qwen3:0.6b, 延迟: 4388.87ms, TPS: 3.87
+2025-08-04 15:55:27,833 - test_dataset_manager - INFO - 评估报告已保存: test_results/manga_comment_ad_detection_qwen3:0.6b_20250804_155527_evaluation.json
+2025-08-04 15:55:27,833 - test_dataset_manager - INFO - HTML评估报告已生成: test_results/manga_comment_ad_detection_qwen3:0.6b_20250804_155527_report.html
+2025-08-04 15:55:27,834 - local_tester - INFO - 测试集评估完成
+2025-08-04 15:55:27,834 - local_tester - INFO - JSON报告: test_results/manga_comment_ad_detection_qwen3:0.6b_20250804_155527_evaluation.json
+2025-08-04 15:55:27,834 - local_tester - INFO - HTML报告: test_results/manga_comment_ad_detection_qwen3:0.6b_20250804_155527_report.html
+2025-08-04 15:55:27,834 - test_dataset_manager - INFO - HTML评估报告已生成: test_results/manga_comment_ad_detection_qwen3:0.6b_20250804_155527_report.html
+2025-08-04 15:55:27,834 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:55:27] "POST /api/test/dataset HTTP/1.1" 200 -
+2025-08-04 15:55:31,532 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:55:31] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:55:31,536 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:55:31] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:55:36,534 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:55:36] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:55:36,540 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:55:36] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:55:41,530 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:55:41] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:55:41,543 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:55:41] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:55:46,532 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:55:46] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:55:46,536 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:55:46] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:55:51,538 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:55:51] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:55:51,563 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:55:51] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:55:56,532 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:55:56] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:55:56,537 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:55:56] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:56:01,533 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:56:01] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:56:01,543 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:56:01] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:56:06,536 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:56:06] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:56:06,543 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:56:06] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:56:11,538 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:56:11] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:56:11,543 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:56:11] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:56:16,537 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:56:16] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:56:16,543 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:56:16] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:56:21,637 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:56:21] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:56:21,645 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:56:21] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:56:26,537 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:56:26] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:56:26,545 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:56:26] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:56:31,537 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:56:31] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:56:31,547 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:56:31] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:56:36,534 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:56:36] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:56:36,540 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:56:36] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:56:41,539 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:56:41] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:56:41,542 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:56:41] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:56:46,538 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:56:46] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:56:46,542 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:56:46] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:56:51,532 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:56:51] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:56:51,538 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:56:51] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:56:56,531 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:56:56] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:56:56,539 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:56:56] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:57:01,532 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:57:01] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:57:01,538 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:57:01] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:57:06,534 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:57:06] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:57:06,542 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:57:06] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:57:11,533 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:57:11] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:57:11,539 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:57:11] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:57:16,534 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:57:16] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:57:16,544 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:57:16] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:57:21,532 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:57:21] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:57:21,539 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:57:21] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:57:26,539 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:57:26] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:57:26,544 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:57:26] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:57:31,532 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:57:31] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:57:31,538 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:57:31] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:57:36,533 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:57:36] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:57:36,536 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:57:36] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:57:41,539 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:57:41] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:57:41,544 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:57:41] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:57:46,531 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:57:46] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:57:46,535 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:57:46] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:57:51,531 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:57:51] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:57:51,535 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:57:51] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:57:56,534 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:57:56] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:57:56,537 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:57:56] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:58:01,530 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:58:01] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:58:01,534 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:58:01] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:58:06,534 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:58:06] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:58:06,543 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:58:06] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:58:11,533 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:58:11] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:58:11,538 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:58:11] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:58:16,564 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:58:16] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:58:16,582 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:58:16] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:58:21,534 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:58:21] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:58:21,538 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:58:21] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:58:26,536 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:58:26] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:58:26,542 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:58:26] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:58:31,533 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:58:31] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:58:31,539 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:58:31] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:58:36,534 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:58:36] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:58:36,538 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:58:36] "GET /api/status HTTP/1.1" 200 -
+2025-08-04 15:58:41,533 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:58:41] "GET /api/metrics?hours=1 HTTP/1.1" 200 -
+2025-08-04 15:58:41,545 - ollama_integration - INFO - 获取模型列表成功: 2 个模型
+2025-08-04 15:58:41,545 - werkzeug - INFO - 127.0.0.1 - - [04/Aug/2025 15:58:41] "GET /api/status HTTP/1.1" 200 -
