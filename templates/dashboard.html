@@ -204,65 +204,73 @@
             </h2>
             
             <!-- 测试集选择 -->
-            <div class="test-form">
-                <div class="form-group">
-                    <label for="datasetSelect">选择测试集:</label>
-                    <select id="datasetSelect" onchange="loadDatasetInfo()">
+            <div class="flex flex-col gap-6">
+                <div class="flex flex-col gap-2">
+                    <label for="datasetSelect" class="text-sm font-medium text-slate-600 uppercase tracking-wide">选择测试集:</label>
+                    <select id="datasetSelect" onchange="loadDatasetInfo()" class="px-4 py-3 border border-slate-300 rounded-lg text-sm transition-all duration-150 bg-white text-slate-900 focus:outline-none focus:border-indigo-500 focus:ring-3 focus:ring-indigo-500/10">
                         <option value="">正在加载测试集...</option>
                     </select>
                 </div>
                 
-                <div id="datasetInfo" class="dataset-info" style="display: none;">
-                    <div class="info-card">
-                        <h4 id="datasetTitle">测试集信息</h4>
-                        <p id="datasetDescription">描述信息</p>
-                        <div class="info-metrics">
-                            <span class="metric">📊 总样本: <strong id="datasetSamples">0</strong></span>
-                            <span class="metric">🏷️ 类别: <strong id="datasetCategories">0</strong></span>
-                            <span class="metric">📌 版本: <strong id="datasetVersion">1.0.0</strong></span>
+                <div id="datasetInfo" class="hidden">
+                    <div class="bg-slate-50 border border-slate-200 rounded-lg p-4">
+                        <h4 id="datasetTitle" class="text-indigo-600 mb-2 font-semibold">测试集信息</h4>
+                        <p id="datasetDescription" class="text-slate-700 mb-3">描述信息</p>
+                        <div class="flex gap-4 flex-wrap">
+                            <span class="bg-white px-3 py-1 rounded border border-slate-200 text-sm">
+                                📊 总样本: <strong id="datasetSamples" class="text-indigo-600">0</strong>
+                            </span>
+                            <span class="bg-white px-3 py-1 rounded border border-slate-200 text-sm">
+                                🏷️ 类别: <strong id="datasetCategories" class="text-indigo-600">0</strong>
+                            </span>
+                            <span class="bg-white px-3 py-1 rounded border border-slate-200 text-sm">
+                                📌 版本: <strong id="datasetVersion" class="text-indigo-600">1.0.0</strong>
+                            </span>
                         </div>
                     </div>
                 </div>
                 
-                <div class="form-group">
-                    <label for="testModelSelect">测试模型:</label>
-                    <select id="testModelSelect"> 
-                        <option value="qwen3:0.6b">qwen3:0.6b</option>
-                        <option value="qwen3:1.7b">qwen3:1.7b</option>
-                    </select>
+                <div class="grid grid-cols-2 gap-6">
+                    <div class="flex flex-col gap-2">
+                        <label for="testModelSelect" class="text-sm font-medium text-slate-600 uppercase tracking-wide">测试模型:</label>
+                        <select id="testModelSelect" class="px-4 py-3 border border-slate-300 rounded-lg text-sm transition-all duration-150 bg-white text-slate-900 focus:outline-none focus:border-indigo-500 focus:ring-3 focus:ring-indigo-500/10"> 
+                            <option value="qwen3:0.6b">qwen3:0.6b</option>
+                            <option value="qwen3:1.7b">qwen3:1.7b</option>
+                        </select>
+                    </div>
+                    
+                    <div class="flex flex-col gap-2">
+                        <label for="sampleCountInput" class="text-sm font-medium text-slate-600 uppercase tracking-wide">样本数量:</label>
+                        <input type="number" id="sampleCountInput" min="1" max="50" value="10" placeholder="测试样本数量" class="px-4 py-3 border border-slate-300 rounded-lg text-sm transition-all duration-150 bg-white text-slate-900 placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-3 focus:ring-indigo-500/10">
+                    </div>
                 </div>
                 
-                <div class="form-group">
-                    <label for="sampleCountInput">样本数量:</label>
-                    <input type="number" id="sampleCountInput" min="1" max="50" value="10" placeholder="测试样本数量">
-                </div>
-                
-                <div class="button-group">
-                    <button class="btn btn-primary" id="runDatasetBtn" onclick="runDatasetTest()">
+                <div class="flex gap-4 flex-wrap">
+                    <button class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-medium text-sm text-white bg-gradient-to-r from-indigo-500 to-purple-600 shadow-sm transition-all duration-150 hover:-translate-y-0.5 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none" id="runDatasetBtn" onclick="runDatasetTest()">
                         🚀 运行测试集评估
                     </button>
-                    <button class="btn btn-secondary" id="runAllDatasetsBtn" onclick="runAllDatasetsTest()">
+                    <button class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-medium text-sm text-slate-700 bg-white border border-slate-300 shadow-sm transition-all duration-150 hover:bg-slate-50 hover:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed" id="runAllDatasetsBtn" onclick="runAllDatasetsTest()">
                         📊 运行所有测试集
                     </button>
-                    <button class="btn btn-outline" id="previewSamplesBtn" onclick="previewSamples()">
+                    <button class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-medium text-sm text-indigo-600 bg-transparent border border-indigo-500 shadow-sm transition-all duration-150 hover:bg-indigo-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed" id="previewSamplesBtn" onclick="previewSamples()">
                         👀 预览样本
                     </button>
                 </div>
                 
-                <div id="datasetTestProgress" class="progress-area" style="display: none;">
-                    <div class="progress-header">
-                        <h4>测试进度</h4>
-                        <div class="progress-status" id="progressStatus">准备中...</div>
+                <div id="datasetTestProgress" class="mt-4 p-4 bg-slate-50 rounded-lg border border-slate-200 hidden">
+                    <div class="flex justify-between items-center mb-2">
+                        <h4 class="text-indigo-600 font-semibold m-0">测试进度</h4>
+                        <div class="text-sm text-slate-600" id="progressStatus">准备中...</div>
                     </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="progressFill"></div>
+                    <div class="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
+                        <div class="h-full bg-gradient-to-r from-indigo-500 to-purple-600 w-0 transition-all duration-300 ease-out" id="progressFill"></div>
                     </div>
                 </div>
                 
-                <div id="datasetTestResults" class="results-area" style="display: none;"></div>
+                <div id="datasetTestResults" class="mt-4 p-4 bg-white rounded-lg border border-slate-200 hidden"></div>
                 
-                <div id="samplesPreview" class="samples-preview" style="display: none;">
-                    <h4>样本预览</h4>
+                <div id="samplesPreview" class="mt-4 p-4 bg-slate-50 rounded-lg border border-slate-200 hidden">
+                    <h4 class="text-lg font-semibold text-slate-800 mb-4">样本预览</h4>
                     <div id="samplesContainer"></div>
                 </div>
             </div>
@@ -577,7 +585,7 @@
             const datasetInfo = document.getElementById('datasetInfo');
             
             if (!selectedDatasetName) {
-                datasetInfo.style.display = 'none';
+                datasetInfo.classList.add('hidden');
                 currentDataset = null;
                 return;
             }
@@ -590,7 +598,7 @@
                 document.getElementById('datasetCategories').textContent = currentDataset.categories.length;
                 document.getElementById('datasetVersion').textContent = currentDataset.version;
                 
-                datasetInfo.style.display = 'block';
+                datasetInfo.classList.remove('hidden');
             }
         }
         
@@ -615,8 +623,8 @@
             }
             
             // 显示进度
-            progressArea.style.display = 'block';
-            resultsArea.style.display = 'none';
+            progressArea.classList.remove('hidden');
+            resultsArea.classList.add('hidden');
             runDatasetBtn.disabled = true;
             runDatasetBtn.textContent = '测试进行中...';
             progressStatus.textContent = '准备测试...';
@@ -646,18 +654,18 @@
                     
                     // 显示结果
                     displayTestResults([data.report]);
-                    resultsArea.style.display = 'block';
+                    resultsArea.classList.remove('hidden');
                     
                     setTimeout(() => {
-                        progressArea.style.display = 'none';
+                        progressArea.classList.add('hidden');
                     }, 2000);
                 } else {
                     showError('测试失败: ' + (data.error || '未知错误'));
-                    progressArea.style.display = 'none';
+                    progressArea.classList.add('hidden');
                 }
             } catch (error) {
                 showError('测试失败: ' + error.message);
-                progressArea.style.display = 'none';
+                progressArea.classList.add('hidden');
             } finally {
                 runDatasetBtn.disabled = false;
                 runDatasetBtn.textContent = '🚀 运行测试集评估';
@@ -678,8 +686,8 @@
             const sampleCount = parseInt(sampleCountInput.value);
             
             // 显示进度
-            progressArea.style.display = 'block';
-            resultsArea.style.display = 'none';
+            progressArea.classList.remove('hidden');
+            resultsArea.classList.add('hidden');
             runAllDatasetsBtn.disabled = true;
             runAllDatasetsBtn.textContent = '批量测试中...';
             progressStatus.textContent = '准备批量测试...';
@@ -708,18 +716,18 @@
                     
                     // 显示结果
                     displayTestResults(data.reports);
-                    resultsArea.style.display = 'block';
+                    resultsArea.classList.remove('hidden');
                     
                     setTimeout(() => {
-                        progressArea.style.display = 'none';
+                        progressArea.classList.add('hidden');
                     }, 2000);
                 } else {
                     showError('批量测试失败: ' + (data.error || '未知错误'));
-                    progressArea.style.display = 'none';
+                    progressArea.classList.add('hidden');
                 }
             } catch (error) {
                 showError('批量测试失败: ' + error.message);
-                progressArea.style.display = 'none';
+                progressArea.classList.add('hidden');
             } finally {
                 runAllDatasetsBtn.disabled = false;
                 runAllDatasetsBtn.textContent = '📊 运行所有测试集';
@@ -866,19 +874,19 @@
                     </div>
                 </div>
                 
-                <div style="overflow-x: auto;">
-                    <table class="detailed-table">
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse text-sm detailed-table">
                         <thead>
-                            <tr>
-                                <th>样本ID</th>
-                                <th>评分对比</th>
-                                <th>类别对比</th>
-                                <th>模型响应</th>
-                                <th>响应时间</th>
-                                <th>状态</th>
+                            <tr class="bg-slate-50">
+                                <th class="px-3 py-3 text-left font-semibold text-slate-700 border-b border-slate-200">样本ID</th>
+                                <th class="px-3 py-3 text-left font-semibold text-slate-700 border-b border-slate-200">评分对比</th>
+                                <th class="px-3 py-3 text-left font-semibold text-slate-700 border-b border-slate-200">类别对比</th>
+                                <th class="px-3 py-3 text-left font-semibold text-slate-700 border-b border-slate-200">模型响应</th>
+                                <th class="px-3 py-3 text-left font-semibold text-slate-700 border-b border-slate-200">响应时间</th>
+                                <th class="px-3 py-3 text-left font-semibold text-slate-700 border-b border-slate-200">状态</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="divide-y divide-slate-200">
             `;
             
             results.forEach(result => {
@@ -929,7 +937,7 @@
             const errorResults = results.filter(r => r.error || r.score_accuracy < 0.5);
             
             if (errorResults.length === 0) {
-                return '<div class="loading">🎉 没有明显错误的样本！</div>';
+                return '<div class="text-center py-8 text-slate-500">🎉 没有明显错误的样本！</div>';
             }
             
             let html = `
@@ -991,8 +999,12 @@
                     const container = this.closest('.detailed-results');
                     
                     // 切换按钮状态
-                    container.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-                    this.classList.add('active');
+                    container.querySelectorAll('.tab-button').forEach(btn => {
+                        btn.classList.remove('active', 'text-indigo-600', 'border-indigo-600');
+                        btn.classList.add('text-slate-600', 'border-transparent');
+                    });
+                    this.classList.add('active', 'text-indigo-600', 'border-indigo-600');
+                    this.classList.remove('text-slate-600', 'border-transparent');
                     
                     // 切换内容
                     container.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
@@ -1056,13 +1068,13 @@
                     let html = '';
                     data.samples.forEach(sample => {
                         html += `
-                            <div class="sample-card">
-                                <div class="sample-header">
-                                    <div class="sample-id">${sample.id}</div>
-                                    <div class="sample-category">${sample.category}</div>
+                            <div class="bg-white border border-slate-200 rounded-lg p-4 mb-4">
+                                <div class="flex justify-between items-center mb-2">
+                                    <div class="font-semibold text-indigo-600">${sample.id}</div>
+                                    <div class="bg-slate-100 px-2 py-1 rounded text-xs">${sample.category}</div>
                                 </div>
-                                <div class="sample-content">${sample.content}</div>
-                                <div class="sample-meta">
+                                <div class="mb-2 p-3 bg-slate-50 rounded border-l-4 border-indigo-500 font-mono text-sm whitespace-pre-wrap">${sample.content}</div>
+                                <div class="flex gap-4 text-xs text-slate-600">
                                     <span>预期评分: ${sample.expected_score}</span>
                                     <span>关键词: ${sample.keywords.join(', ')}</span>
                                 </div>
@@ -1071,7 +1083,7 @@
                     });
                     
                     samplesContainer.innerHTML = html;
-                    samplesPreview.style.display = 'block';
+                    samplesPreview.classList.remove('hidden');
                 } else {
                     showError('预览样本失败: ' + (data.error || '未知错误'));
                 }
@@ -1099,55 +1111,55 @@
             
             // 生成样本详情HTML
             const html = `
-                <div class="sample-meta">
-                    <div class="meta-item">
-                        <div class="meta-label">样本ID</div>
-                        <div class="meta-value">${actualSampleId}</div>
+                <div class="grid grid-cols-4 gap-4 mb-6">
+                    <div class="bg-slate-50 p-3 rounded">
+                        <div class="text-xs font-semibold text-slate-600 mb-1">样本ID</div>
+                        <div class="text-slate-900">${actualSampleId}</div>
                     </div>
-                    <div class="meta-item">
-                        <div class="meta-label">期望评分</div>
-                        <div class="meta-value">${result.expected_score}</div>
+                    <div class="bg-slate-50 p-3 rounded">
+                        <div class="text-xs font-semibold text-slate-600 mb-1">期望评分</div>
+                        <div class="text-slate-900">${result.expected_score}</div>
                     </div>
-                    <div class="meta-item">
-                        <div class="meta-label">模型评分</div>
-                        <div class="meta-value">${result.model_score || 'N/A'}</div>
+                    <div class="bg-slate-50 p-3 rounded">
+                        <div class="text-xs font-semibold text-slate-600 mb-1">模型评分</div>
+                        <div class="text-slate-900">${result.model_score || 'N/A'}</div>
                     </div>
-                    <div class="meta-item">
-                        <div class="meta-label">评分准确性</div>
-                        <div class="meta-value">${(result.score_accuracy * 100).toFixed(1)}%</div>
+                    <div class="bg-slate-50 p-3 rounded">
+                        <div class="text-xs font-semibold text-slate-600 mb-1">评分准确性</div>
+                        <div class="text-slate-900">${(result.score_accuracy * 100).toFixed(1)}%</div>
                     </div>
-                    <div class="meta-item">
-                        <div class="meta-label">期望类别</div>
-                        <div class="meta-value">${result.expected_category}</div>
+                    <div class="bg-slate-50 p-3 rounded">
+                        <div class="text-xs font-semibold text-slate-600 mb-1">期望类别</div>
+                        <div class="text-slate-900">${result.expected_category}</div>
                     </div>
-                    <div class="meta-item">
-                        <div class="meta-label">模型类别</div>
-                        <div class="meta-value">${result.model_category || 'N/A'}</div>
+                    <div class="bg-slate-50 p-3 rounded">
+                        <div class="text-xs font-semibold text-slate-600 mb-1">模型类别</div>
+                        <div class="text-slate-900">${result.model_category || 'N/A'}</div>
                     </div>
-                    <div class="meta-item">
-                        <div class="meta-label">类别匹配</div>
-                        <div class="meta-value">${result.category_match ? '✅ 匹配' : '❌ 不匹配'}</div>
+                    <div class="bg-slate-50 p-3 rounded">
+                        <div class="text-xs font-semibold text-slate-600 mb-1">类别匹配</div>
+                        <div class="text-slate-900">${result.category_match ? '✅ 匹配' : '❌ 不匹配'}</div>
                     </div>
-                    <div class="meta-item">
-                        <div class="meta-label">响应时间</div>
-                        <div class="meta-value">${result.response_time_ms}ms</div>
+                    <div class="bg-slate-50 p-3 rounded">
+                        <div class="text-xs font-semibold text-slate-600 mb-1">响应时间</div>
+                        <div class="text-slate-900">${result.response_time_ms}ms</div>
                     </div>
                 </div>
                 
-                <div class="sample-detail">
-                    <h4>📝 原始评论</h4>
-                    <div class="sample-content">${result.comment || '无评论内容'}</div>
+                <div class="mb-6">
+                    <h4 class="text-indigo-600 mb-2 font-semibold">📝 原始评论</h4>
+                    <div class="bg-slate-50 p-4 rounded border-l-4 border-indigo-500 whitespace-pre-wrap font-mono text-sm max-h-48 overflow-y-auto">${result.comment || '无评论内容'}</div>
                 </div>
                 
-                <div class="sample-detail">
-                    <h4>🤖 模型响应</h4>
-                    <div class="sample-content">${result.model_response || '无响应内容'}</div>
+                <div class="mb-6">
+                    <h4 class="text-indigo-600 mb-2 font-semibold">🤖 模型响应</h4>
+                    <div class="bg-slate-50 p-4 rounded border-l-4 border-indigo-500 whitespace-pre-wrap font-mono text-sm max-h-48 overflow-y-auto">${result.model_response || '无响应内容'}</div>
                 </div>
                 
                 ${result.error ? `
-                <div class="sample-detail">
-                    <h4>❌ 错误信息</h4>
-                    <div class="sample-content" style="border-left-color: #dc3545; background: #fff5f5;">${result.error}</div>
+                <div class="mb-6">
+                    <h4 class="text-red-600 mb-2 font-semibold">❌ 错误信息</h4>
+                    <div class="bg-red-50 p-4 rounded border-l-4 border-red-500 whitespace-pre-wrap font-mono text-sm">${result.error}</div>
                 </div>
                 ` : ''}
             `;
