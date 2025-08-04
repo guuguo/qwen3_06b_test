@@ -4,236 +4,49 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ title }}</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'ai-primary': '#667eea',
+                        'ai-primary-light': '#8fa4f3',
+                        'ai-primary-dark': '#4c63d2',
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'shimmer': 'shimmer 1.5s infinite',
+                    },
+                    keyframes: {
+                        shimmer: {
+                            '0%': { transform: 'translateX(-100%)' },
+                            '100%': { transform: 'translateX(100%)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Plotly.js -->
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            /* 品牌主色 - AI/科技类应用 */
-            --primary-color: #667eea;
-            --primary-light: #8fa4f3;
-            --primary-dark: #4c63d2;
-            
-            /* 渐变色系 */
-            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --gradient-soft: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            --gradient-cool: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            --gradient-ai: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            
-            /* 中性色系 */
-            --neutral-50: #f8fafc;
-            --neutral-100: #f1f5f9;
-            --neutral-200: #e2e8f0;
-            --neutral-300: #cbd5e1;
-            --neutral-400: #94a3b8;
-            --neutral-500: #64748b;
-            --neutral-600: #475569;
-            --neutral-700: #334155;
-            --neutral-800: #1e293b;
-            --neutral-900: #0f172a;
-            
-            /* 功能色系 */
-            --success-color: #10b981;
-            --warning-color: #f59e0b;
-            --error-color: #ef4444;
-            --info-color: #3b82f6;
-            
-            /* 背景色系 */
-            --bg-primary: #ffffff;
-            --bg-secondary: #f8fafc;
-            --bg-tertiary: #f1f5f9;
-            --bg-overlay: rgba(15, 23, 42, 0.5);
-            
-            /* 文字色系 */
-            --text-primary: #0f172a;
-            --text-secondary: #475569;
-            --text-tertiary: #64748b;
-            --text-inverse: #ffffff;
-            
-            /* 动画时长 */
-            --duration-fast: 150ms;
-            --duration-normal: 300ms;
-            --duration-slow: 500ms;
-            
-            --easing-ease: cubic-bezier(0.4, 0, 0.2, 1);
-            --easing-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            --easing-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        /* 自定义动画 */
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
         }
         
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            line-height: 1.6;
-            font-size: 14px;
-            font-weight: 400;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-        
+        /* 保留必要的自定义样式 */
         .header {
-            background: var(--bg-primary);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--neutral-200);
-            padding: 1rem 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            transition: all var(--duration-normal) var(--easing-ease);
         }
         
-        .header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        
-        .header-brand {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-        
-        .header-logo {
-            width: 32px;
-            height: 32px;
-            background: var(--gradient-ai);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            color: var(--text-inverse);
-            font-size: 0.875rem;
-        }
-        
-        .header h1 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin: 0;
-        }
-        
-        .header-subtitle {
-            font-size: 0.75rem;
-            color: var(--text-tertiary);
-            font-weight: 400;
-            margin-top: 2px;
-        }
-        
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        
-        .status-indicator {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 0.75rem;
-            background: var(--neutral-50);
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            color: var(--text-secondary);
-        }
-        
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--success-color);
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-        
-        .main-content {
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-        }
-        
-        .section {
-            background: var(--bg-primary);
-            border-radius: 16px;
-            padding: 2rem;
-            box-shadow: 
-                0 1px 3px rgba(0, 0, 0, 0.1),
-                0 1px 2px rgba(0, 0, 0, 0.06);
-            border: 1px solid var(--neutral-200);
-            transition: all var(--duration-normal) var(--easing-ease);
-        }
-        
-        .section-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 1.5rem;
-        }
-        
-        .section-title {
-            font-size: 1.125rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .section-icon {
-            width: 20px;
-            height: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.875rem;
-        }
-        
-        .status-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1.5rem;
-        }
-        
-        .status-card {
-            background: var(--bg-primary);
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 
-                0 1px 3px rgba(0, 0, 0, 0.1),
-                0 1px 2px rgba(0, 0, 0, 0.06);
-            border: 1px solid var(--neutral-200);
-            min-height: 140px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            transition: all var(--duration-normal) var(--easing-ease);
-            position: relative;
-            overflow: hidden;
-        }
-        
+        /* 级联样式保留 */
         .status-card::before {
             content: '';
             position: absolute;
@@ -241,507 +54,17 @@
             left: 0;
             width: 4px;
             height: 100%;
-            background: var(--gradient-ai);
+            background: linear-gradient(to bottom, #6366f1, #8b5cf6);
             border-radius: 0 2px 2px 0;
         }
         
-        .status-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 
-                0 10px 25px rgba(0, 0, 0, 0.1),
-                0 4px 10px rgba(0, 0, 0, 0.06);
-            border-color: var(--primary-color);
-        }
+        /* 隐藏responseArea的CSS类 */
+        .hidden { display: none !important; }
         
-        .status-card h3 {
-            color: var(--text-primary);
-            margin-bottom: 0;
-            font-size: 0.875rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
         
-        .card-header {
-            margin-bottom: 1rem;
-        }
         
-        .card-content {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            gap: 0.75rem;
-        }
         
-        .status-indicator {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-        
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
-        
-        .status-online .status-dot {
-            background-color: var(--success-color);
-            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
-        }
-        
-        .status-offline .status-dot {
-            background-color: var(--error-color);
-            box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
-        }
-        
-        .metric-value {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            line-height: 1.2;
-            background: var(--gradient-ai);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .metric-label {
-            color: var(--text-tertiary);
-            font-size: 0.75rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-        
-        .metric-secondary {
-            color: var(--text-secondary);
-            font-size: 0.75rem;
-            font-weight: 400;
-        }
-        
-        .charts-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1.5rem;
-        }
-        
-        .chart-container {
-            background: var(--bg-primary);
-            border-radius: 12px;
-            box-shadow: 
-                0 1px 3px rgba(0, 0, 0, 0.1),
-                0 1px 2px rgba(0, 0, 0, 0.06);
-            border: 1px solid var(--neutral-200);
-            padding: 1rem;
-            overflow: hidden;
-            transition: all var(--duration-normal) var(--easing-ease);
-        }
-        
-        .chart-container:hover {
-            transform: translateY(-2px);
-            box-shadow: 
-                0 10px 25px rgba(0, 0, 0, 0.1),
-                0 4px 10px rgba(0, 0, 0, 0.06);
-        }
-        
-        .chart-title {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .test-form {
-            display: grid;
-            gap: 1.5rem;
-            max-width: none;
-        }
-        
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1.5rem;
-        }
-        
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-        
-        .form-group label {
-            font-weight: 500;
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-        
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            padding: 0.75rem 1rem;
-            border: 1px solid var(--neutral-300);
-            border-radius: 8px;
-            font-size: 0.875rem;
-            transition: all var(--duration-fast) var(--easing-ease);
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            font-family: inherit;
-        }
-        
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-        
-        .form-group textarea {
-            resize: vertical;
-            min-height: 100px;
-            font-family: 'Inter', monospace;
-        }
-        
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 500;
-            font-size: 0.875rem;
-            line-height: 1.25rem;
-            transition: all var(--duration-fast) var(--easing-ease);
-            cursor: pointer;
-            border: none;
-            text-decoration: none;
-            font-family: inherit;
-        }
-        
-        .btn-primary {
-            background: var(--gradient-ai);
-            color: var(--text-inverse);
-            box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-        }
-        
-        .btn-secondary {
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            border: 1px solid var(--neutral-300);
-        }
-        
-        .btn-secondary:hover {
-            background: var(--neutral-50);
-            border-color: var(--primary-color);
-        }
-        
-        .btn:disabled {
-            background: var(--neutral-300);
-            color: var(--neutral-500);
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-        
-        .response-area {
-            margin-top: 1rem;
-            padding: 1rem;
-            background: #f8f9fa;
-            border-radius: 4px;
-            border: 1px solid #e9ecef;
-            white-space: pre-wrap;
-            font-family: 'Monaco', 'Menlo', monospace;
-            font-size: 0.9rem;
-        }
-        
-        .logs-section {
-            background: white;
-            border-radius: 8px;
-            padding: 2rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            margin: 2rem 0;
-        }
-        
-        .logs-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-        }
-        
-        .logs-table th,
-        .logs-table td {
-            padding: 0.75rem;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        .logs-table th {
-            background: #f8f9fa;
-            font-weight: 600;
-        }
-        
-        .logs-table tr:hover {
-            background: #f8f9fa;
-        }
-        
-        .loading {
-            text-align: center;
-            padding: 2rem;
-            color: #666;
-        }
-        
-        .error {
-            color: #f44336;
-            background: #ffebee;
-            padding: 1rem;
-            border-radius: 4px;
-            margin: 1rem 0;
-        }
-        
-        .success {
-            color: #4CAF50;
-            background: #e8f5e8;
-            padding: 1rem;
-            border-radius: 4px;
-            margin: 1rem 0;
-        }
-        
-        /* 测试集管理样式 */
-        .dataset-info {
-            margin: 1rem 0;
-        }
-        
-        .info-card {
-            background: #f8f9fa;
-            border: 1px solid #e9ecef;
-            border-radius: 8px;
-            padding: 1rem;
-            margin: 1rem 0;
-        }
-        
-        .info-card h4 {
-            color: #667eea;
-            margin-bottom: 0.5rem;
-        }
-        
-        .info-metrics {
-            display: flex;
-            gap: 1rem;
-            margin-top: 0.5rem;
-            flex-wrap: wrap;
-        }
-        
-        .info-metrics .metric {
-            background: white;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.9rem;
-            border: 1px solid #dee2e6;
-        }
-        
-        .button-group {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-            margin: 1rem 0;
-        }
-        
-        .btn-primary {
-            background: #667eea;
-        }
-        
-        .btn-secondary {
-            background: #6c757d;
-        }
-        
-        .btn-outline {
-            background: transparent;
-            border: 1px solid #667eea;
-            color: #667eea;
-        }
-        
-        .btn-outline:hover {
-            background: #667eea;
-            color: white;
-        }
-        
-        .progress-area {
-            margin: 1rem 0;
-            padding: 1rem;
-            background: #f8f9fa;
-            border-radius: 8px;
-            border: 1px solid #e9ecef;
-        }
-        
-        .progress-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.5rem;
-        }
-        
-        .progress-header h4 {
-            margin: 0;
-            color: #667eea;
-        }
-        
-        .progress-status {
-            font-size: 0.9rem;
-            color: #6c757d;
-        }
-        
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: #e9ecef;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            width: 0%;
-            transition: width 0.3s ease;
-        }
-        
-        .results-area {
-            margin: 1rem 0;
-            padding: 1rem;
-            background: white;
-            border-radius: 8px;
-            border: 1px solid #e9ecef;
-        }
-        
-        .results-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin: 1rem 0;
-        }
-        
-        .result-card {
-            background: #f8f9fa;
-            padding: 1rem;
-            border-radius: 8px;
-            border-left: 4px solid #667eea;
-        }
-        
-        .result-card h5 {
-            margin: 0 0 0.5rem 0;
-            color: #667eea;
-        }
-        
-        .result-value {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #333;
-        }
-        
-        .result-label {
-            font-size: 0.8rem;
-            color: #6c757d;
-        }
-        
-        .samples-preview {
-            margin: 1rem 0;
-            padding: 1rem;
-            background: #f8f9fa;
-            border-radius: 8px;
-            border: 1px solid #e9ecef;
-        }
-        
-        .sample-card {
-            background: white;
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-            padding: 1rem;
-            margin: 0.5rem 0;
-        }
-        
-        .sample-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.5rem;
-        }
-        
-        .sample-id {
-            font-weight: 600;
-            color: #667eea;
-        }
-        
-        .sample-category {
-            background: #e9ecef;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.8rem;
-        }
-        
-        .sample-content {
-            margin: 0.5rem 0;
-            padding: 0.5rem;
-            background: #f8f9fa;
-            border-radius: 4px;
-            font-family: monospace;
-            font-size: 0.9rem;
-            white-space: pre-wrap;
-        }
-        
-        .sample-meta {
-            display: flex;
-            gap: 1rem;
-            font-size: 0.8rem;
-            color: #6c757d;
-        }
-        
-        /* 详细结果样式 */
-        .detailed-results {
-            margin-top: 2rem;
-        }
-        
-        .results-tabs {
-            display: flex;
-            border-bottom: 2px solid #e9ecef;
-            margin-bottom: 1rem;
-        }
-        
-        .tab-button {
-            background: none;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            cursor: pointer;
-            color: #6c757d;
-            font-weight: 500;
-            border-bottom: 2px solid transparent;
-            transition: all 0.3s;
-        }
-        
-        .tab-button.active {
-            color: #667eea;
-            border-bottom-color: #667eea;
-        }
-        
-        .tab-button:hover {
-            color: #667eea;
-        }
-        
+        /* 保留的必要CSS样式 */
         .tab-content {
             display: none;
         }
@@ -750,266 +73,29 @@
             display: block;
         }
         
-        .detailed-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 1rem 0;
-            font-size: 0.9rem;
-        }
-        
-        .detailed-table th,
-        .detailed-table td {
-            padding: 0.75rem;
-            text-align: left;
-            border-bottom: 1px solid #dee2e6;
-            vertical-align: top;
-        }
-        
-        .detailed-table th {
-            background: #f8f9fa;
-            font-weight: 600;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-        
-        .detailed-table tr:hover {
-            background: #f8f9fa;
-        }
-        
+        /* 保留必要的状态样式 */
         .status-correct {
-            color: #28a745;
+            color: #10b981;
             font-weight: 600;
         }
         
         .status-incorrect {
-            color: #dc3545;
+            color: #ef4444;
             font-weight: 600;
         }
         
         .status-partial {
-            color: #ffc107;
+            color: #f59e0b;
             font-weight: 600;
-        }
-        
-        .score-comparison {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .score-expected {
-            background: #e3f2fd;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-weight: 600;
-        }
-        
-        .score-actual {
-            background: #f3e5f5;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-weight: 600;
-        }
-        
-        .score-diff {
-            font-size: 0.8rem;
-            color: #6c757d;
-        }
-        
-        .category-comparison {
-            display: flex;
-            flex-direction: column;
-            gap: 0.25rem;
-        }
-        
-        .category-expected {
-            background: #e8f5e8;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.8rem;
-        }
-        
-        .category-actual {
-            background: #ffebee;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.8rem;
-        }
-        
-        .response-preview {
-            max-width: 500px;
-            max-height: 120px;
-            overflow: hidden;
-            position: relative;
-            background: #f8f9fa;
-            padding: 0.5rem;
-            border-radius: 4px;
-            font-family: monospace;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            line-height: 1.3;
-        }
-        
-        .response-preview.expandable {
-            cursor: pointer;
-        }
-        
-        .response-preview.expandable::after {
-            content: "点击查看更多...";
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            background: linear-gradient(to right, transparent, #f8f9fa 50%);
-            padding: 0.25rem 0.5rem;
-            font-size: 0.7rem;
-            color: #667eea;
-        }
-        
-        .filters-section {
-            background: #f8f9fa;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-        }
-        
-        .filters-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-        }
-        
-        .filter-group {
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .filter-group label {
-            font-size: 0.9rem;
-            font-weight: 500;
-            margin-bottom: 0.25rem;
-        }
-        
-        .filter-group select,
-        .filter-group input {
-            padding: 0.5rem;
-            border: 1px solid #dee2e6;
-            border-radius: 4px;
-            font-size: 0.9rem;
         }
         
         /* 模态框样式 */
         .modal {
             display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            animation: fadeIn 0.3s;
         }
         
         .modal.show {
             display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .modal-content {
-            background-color: white;
-            margin: 2rem;
-            padding: 2rem;
-            border-radius: 8px;
-            width: 90%;
-            max-width: 800px;
-            max-height: 80vh;
-            overflow-y: auto;
-            position: relative;
-            animation: slideIn 0.3s;
-        }
-        
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid #dee2e6;
-        }
-        
-        .modal-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #333;
-        }
-        
-        .close {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #666;
-            padding: 0;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .close:hover {
-            color: #333;
-        }
-        
-        .sample-detail {
-            margin-bottom: 1.5rem;
-        }
-        
-        .sample-detail h4 {
-            color: #667eea;
-            margin-bottom: 0.5rem;
-            font-size: 1rem;
-        }
-        
-        .sample-content {
-            background: #f8f9fa;
-            padding: 1rem;
-            border-radius: 4px;
-            border-left: 4px solid #667eea;
-            white-space: pre-wrap;
-            font-family: monospace;
-            font-size: 0.9rem;
-            line-height: 1.4;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-        
-        .sample-meta {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .meta-item {
-            background: #f8f9fa;
-            padding: 0.75rem;
-            border-radius: 4px;
-        }
-        
-        .meta-label {
-            font-weight: 600;
-            color: #666;
-            font-size: 0.8rem;
-            margin-bottom: 0.25rem;
-        }
-        
-        .meta-value {
-            color: #333;
-            font-size: 0.9rem;
         }
         
         .clickable-sample {
@@ -1022,109 +108,100 @@
             transform: scale(1.01);
         }
         
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        @keyframes slideIn {
-            from { transform: translateY(-50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        
-        /* 桌面端固定布局，无需响应式 */
     </style>
 </head>
-<body>
-    <div class="header">
-        <div class="header-content">
-            <div class="header-brand">
-                <div class="header-logo">Q3</div>
+<body class="bg-slate-50 font-sans antialiased">
+    <div class="header bg-white border-b border-slate-200 py-4 sticky top-0 z-50 transition-all duration-300">
+        <div class="max-w-6xl mx-auto px-8 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">Q3</div>
                 <div>
-                    <h1>{{ title }}</h1>
-                    <div class="header-subtitle">AI模型监控与测试平台</div>
+                    <h1 class="text-xl font-semibold text-slate-900 m-0">{{ title }}</h1>
+                    <div class="text-xs text-slate-500 font-normal mt-0.5">AI模型监控与测试平台</div>
                 </div>
             </div>
-            <div class="header-actions">
-                <div class="status-indicator">
-                    <div class="status-dot"></div>
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2 px-3 py-2 bg-slate-50 rounded-full text-xs font-medium text-slate-600">
+                    <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
                     <span>系统运行中</span>
                 </div>
             </div>
         </div>
     </div>
     
-    <div class="container">
-        <div class="main-content">
+    <div class="max-w-6xl mx-auto px-8 py-6">
+        <div class="flex flex-col gap-8">
             <!-- 系统状态 -->
-            <div class="section">
-                <div class="section-header">
-                    <div class="section-title">
-                        <div class="section-icon">📊</div>
+            <div class="bg-white rounded-xl p-8 shadow-sm border border-slate-200 transition-all duration-300">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-2 text-lg font-semibold text-slate-800">
+                        <div class="w-5 h-5 flex items-center justify-center text-sm">📊</div>
                         系统状态
                     </div>
                 </div>
-                <div class="status-grid" id="statusGrid">
-                    <div class="loading">正在加载系统状态...</div>
+                <div class="grid grid-cols-4 gap-6" id="statusGrid">
+                    <div class="text-center py-8 text-slate-500">正在加载系统状态...</div>
                 </div>
             </div>
             
             <!-- 图表区域 -->
-            <div class="section">
-                <div class="section-header">
-                    <div class="section-title">
-                        <div class="section-icon">📈</div>
+            <div class="bg-white rounded-xl p-8 shadow-sm border border-slate-200 transition-all duration-300">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-2 text-lg font-semibold text-slate-800">
+                        <div class="w-5 h-5 flex items-center justify-center text-sm">📈</div>
                         性能监控
                     </div>
                 </div>
-                <div class="charts-grid" id="chartsGrid">
-                    <div class="loading">正在加载图表数据...</div>
+                <div class="grid grid-cols-2 gap-6" id="chartsGrid">
+                    <div class="text-center py-8 text-slate-500">正在加载图表数据...</div>
                 </div>
             </div>
         
             <!-- 测试工具 -->
-            <div class="section">
-                <div class="section-header">
-                    <div class="section-title">
-                        <div class="section-icon">🧪</div>
+            <div class="bg-white rounded-xl p-8 shadow-sm border border-slate-200 transition-all duration-300">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-2 text-lg font-semibold text-slate-800">
+                        <div class="w-5 h-5 flex items-center justify-center text-sm">🧪</div>
                         推理测试
                     </div>
                 </div>
-                <div class="test-form">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="modelSelect">模型选择</label>
-                            <select id="modelSelect">
+                <div class="flex flex-col gap-6">
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="flex flex-col gap-2">
+                            <label for="modelSelect" class="text-sm font-medium text-slate-600 uppercase tracking-wide">模型选择</label>
+                            <select id="modelSelect" class="px-4 py-3 border border-slate-300 rounded-lg text-sm transition-all duration-150 bg-white text-slate-900 focus:outline-none focus:border-indigo-500 focus:ring-3 focus:ring-indigo-500/10">
                                 <option value="qwen3:0.6b">Qwen3 0.6B</option>
                                 <option value="qwen3:1.7b">Qwen3 1.7B</option>
                             </select>
                         </div>
                 
-                <div class="form-group">
-                    <label for="promptInput">测试内容</label>
-                    <textarea id="promptInput" placeholder="请输入要测试的文本内容…">这个产品真的很棒！</textarea>
-                </div>
+                        <div class="flex flex-col gap-2">
+                            <label for="promptInput" class="text-sm font-medium text-slate-600 uppercase tracking-wide">测试内容</label>
+                            <textarea id="promptInput" rows="4" class="px-4 py-3 border border-slate-300 rounded-lg text-sm transition-all duration-150 bg-white text-slate-900 placeholder-slate-500 resize-none focus:outline-none focus:border-indigo-500 focus:ring-3 focus:ring-indigo-500/10" placeholder="请输入要测试的文本内容…">这个产品真的很棒！</textarea>
+                        </div>
                     </div>
                     
-                    <div style="display: flex; gap: 1rem; justify-content: flex-start;">
-                        <button class="btn btn-primary" onclick="runTest()" id="testBtn">
+                    <div class="flex gap-4 justify-start">
+                        <button class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-medium text-sm text-white bg-gradient-to-r from-indigo-500 to-purple-600 shadow-sm transition-all duration-150 hover:-translate-y-0.5 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none" onclick="runTest()" id="testBtn">
                             <span>🚀</span>
                             运行测试
                         </button>
-                        <button class="btn btn-secondary" onclick="clearResults()">
+                        <button class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-medium text-sm text-slate-700 bg-white border border-slate-300 shadow-sm transition-all duration-150 hover:bg-slate-50 hover:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed" onclick="clearResults()">
                             <span>🗑️</span>
                             清空结果
                         </button>
                     </div>
+                    
+                    <div id="responseArea" class="mt-4 p-4 bg-slate-50 border border-slate-200 rounded-lg hidden whitespace-pre-wrap font-mono text-sm"></div>
                 </div>
-            </div>    
-                <div id="responseArea" class="response-area" style="display: none;"></div>
             </div>
         </div>
         
         <!-- 测试集管理 -->
-        <div class="test-section">
-            <h2>📋 测试集评估</h2>
+        <div class="bg-white rounded-xl p-8 shadow-sm border border-slate-200 transition-all duration-300">
+            <h2 class="text-lg font-semibold text-slate-800 mb-6 flex items-center gap-2">
+                <span>📋</span> 测试集评估
+            </h2>
             
             <!-- 测试集选择 -->
             <div class="test-form">
@@ -1192,25 +269,27 @@
         </div>
         
         <!-- 最近请求日志 -->
-        <div class="logs-section">
-            <h2>最近请求</h2>
-            <table class="logs-table" id="logsTable">
-                <thead>
-                    <tr>
-                        <th>时间</th>
-                        <th>模型</th>
-                        <th>状态</th>
-                        <th>延迟(ms)</th>
-                        <th>提示长度</th>
-                        <th>响应长度</th>
-                    </tr>
-                </thead>
-                <tbody id="logsTableBody">
-                    <tr>
-                        <td colspan="6" class="loading">正在加载日志数据...</td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="bg-white rounded-xl p-8 shadow-sm border border-slate-200 transition-all duration-300">
+            <h2 class="text-lg font-semibold text-slate-800 mb-6">最近请求</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full border-collapse" id="logsTable">
+                    <thead>
+                        <tr class="border-b border-slate-200">
+                            <th class="px-3 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wide bg-slate-50">时间</th>
+                            <th class="px-3 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wide bg-slate-50">模型</th>
+                            <th class="px-3 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wide bg-slate-50">状态</th>
+                            <th class="px-3 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wide bg-slate-50">延迟(ms)</th>
+                            <th class="px-3 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wide bg-slate-50">提示长度</th>
+                            <th class="px-3 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wide bg-slate-50">响应长度</th>
+                        </tr>
+                    </thead>
+                    <tbody id="logsTableBody" class="divide-y divide-slate-200">
+                        <tr>
+                            <td colspan="6" class="text-center py-8 text-slate-500">正在加载日志数据...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
     
@@ -1257,47 +336,47 @@
             const systemMetrics = data.system || {};
             
             statusGrid.innerHTML = `
-                <div class="status-card">
-                    <div class="card-header">
-                        <h3>Ollama 服务</h3>
-                    </div>
-                    <div class="card-content">
-                        <div class="metric-value">${ollamaIndicator}${data.ollama.status === 'online' ? '在线' : '离线'}</div>
-                        <div class="metric-label">URL: ${data.ollama.url}</div>
-                        <div class="metric-label">模型数量: ${data.ollama.models.length}</div>
-                    </div>
-                </div>
-                
-                <div class="status-card">
-                    <div class="card-header">
-                        <h3>CPU 使用率</h3>
-                    </div>
-                    <div class="card-content">
-                        <div class="metric-value">${(systemMetrics.cpu_percent || 0).toFixed(1)}%</div>
-                        <div class="metric-label">处理器使用率</div>
-                        <div class="metric-label">&nbsp;</div>
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-200 min-h-[140px] flex flex-col justify-between transition-all duration-300 relative overflow-hidden hover:-translate-y-0.5 hover:shadow-lg hover:border-indigo-500 group status-card">
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="text-sm font-medium text-slate-600 uppercase tracking-wide">Ollama 服务</h3>
+                            <div class="w-2 h-2 ${data.ollama.status === 'online' ? 'bg-emerald-500' : 'bg-red-500'} rounded-full animate-pulse"></div>
+                        </div>
+                        <div class="text-3xl font-bold text-slate-900 mb-1 bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent">${data.ollama.status === 'online' ? '在线' : '离线'}</div>
+                        <div class="text-sm text-slate-500">URL: ${data.ollama.url}</div>
+                        <div class="text-sm text-slate-500">模型数量: ${data.ollama.models.length}</div>
                     </div>
                 </div>
                 
-                <div class="status-card">
-                    <div class="card-header">
-                        <h3>内存使用</h3>
-                    </div>
-                    <div class="card-content">
-                        <div class="metric-value">${(systemMetrics.memory_percent || 0).toFixed(1)}%</div>
-                        <div class="metric-label">${(systemMetrics.memory_used_gb || 0).toFixed(2)} GB 已使用</div>
-                        <div class="metric-label">总计: ${(systemMetrics.memory_total_gb || 0).toFixed(2)} GB</div>
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-200 min-h-[140px] flex flex-col justify-between transition-all duration-300 relative overflow-hidden hover:-translate-y-0.5 hover:shadow-lg hover:border-indigo-500 group status-card">
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="text-sm font-medium text-slate-600 uppercase tracking-wide">CPU 使用率</h3>
+                        </div>
+                        <div class="text-3xl font-bold text-slate-900 mb-1 bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent">${(systemMetrics.cpu_percent || 0).toFixed(1)}%</div>
+                        <div class="text-xs text-slate-500 uppercase tracking-wide">处理器使用率</div>
                     </div>
                 </div>
                 
-                <div class="status-card">
-                    <div class="card-header">
-                        <h3>磁盘使用</h3>
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-200 min-h-[140px] flex flex-col justify-between transition-all duration-300 relative overflow-hidden hover:-translate-y-0.5 hover:shadow-lg hover:border-indigo-500 group status-card">
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="text-sm font-medium text-slate-600 uppercase tracking-wide">内存使用</h3>
+                        </div>
+                        <div class="text-3xl font-bold text-slate-900 mb-1 bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent">${(systemMetrics.memory_percent || 0).toFixed(1)}%</div>
+                        <div class="text-xs text-slate-500 uppercase tracking-wide">${(systemMetrics.memory_used_gb || 0).toFixed(2)} GB 已使用</div>
+                        <div class="text-xs text-slate-400">总计: ${(systemMetrics.memory_total_gb || 0).toFixed(2)} GB</div>
                     </div>
-                    <div class="card-content">
-                        <div class="metric-value">${(systemMetrics.disk_usage_percent || 0).toFixed(1)}%</div>
-                        <div class="metric-label">${(systemMetrics.disk_used_gb || 0).toFixed(2)} GB 已使用</div>
-                        <div class="metric-label">总计: ${(systemMetrics.disk_total_gb || 0).toFixed(2)} GB</div>
+                </div>
+                
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-200 min-h-[140px] flex flex-col justify-between transition-all duration-300 relative overflow-hidden hover:-translate-y-0.5 hover:shadow-lg hover:border-indigo-500 group status-card">
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="text-sm font-medium text-slate-600 uppercase tracking-wide">磁盘使用</h3>
+                        </div>
+                        <div class="text-3xl font-bold text-slate-900 mb-1 bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent">${(systemMetrics.disk_usage_percent || 0).toFixed(1)}%</div>
+                        <div class="text-xs text-slate-500 uppercase tracking-wide">${(systemMetrics.disk_used_gb || 0).toFixed(2)} GB 已使用</div>
+                        <div class="text-xs text-slate-400">总计: ${(systemMetrics.disk_total_gb || 0).toFixed(2)} GB</div>
                     </div>
                 </div>
             `;
@@ -1325,7 +404,7 @@
             const chartsGrid = document.getElementById('chartsGrid');
             
             if (!charts || Object.keys(charts).length === 0) {
-                chartsGrid.innerHTML = '<div class="loading">暂无图表数据</div>';
+                chartsGrid.innerHTML = '<div class="text-center py-8 text-slate-500">暂无图表数据</div>';
                 return;
             }
             
@@ -1333,7 +412,7 @@
             
             Object.entries(charts).forEach(([chartId, chartConfig]) => {
                 const chartContainer = document.createElement('div');
-                chartContainer.className = 'chart-container';
+                chartContainer.className = 'bg-white rounded-xl shadow-sm border border-slate-200 p-4 overflow-hidden transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg';
                 chartContainer.id = chartId;
                 chartsGrid.appendChild(chartContainer);
                 
@@ -1350,18 +429,23 @@
             const tableBody = document.getElementById('logsTableBody');
             
             if (!requests || requests.length === 0) {
-                tableBody.innerHTML = '<tr><td colspan="6" class="loading">暂无请求数据</td></tr>';
+                tableBody.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-slate-500">暂无请求数据</td></tr>';
                 return;
             }
             
             tableBody.innerHTML = requests.map(req => `
-                <tr>
-                    <td>${new Date(req.timestamp).toLocaleString()}</td>
-                    <td>${req.model}</td>
-                    <td><span class="status-indicator status-${req.status === 'success' ? 'online' : 'offline'}"></span>${req.status}</td>
-                    <td>${req.latency_ms.toFixed(1)}</td>
-                    <td>${req.prompt_length}</td>
-                    <td>${req.response_length}</td>
+                <tr class="hover:bg-slate-50">
+                    <td class="px-3 py-4 text-slate-900">${new Date(req.timestamp).toLocaleString()}</td>
+                    <td class="px-3 py-4 text-slate-900">${req.model}</td>
+                    <td class="px-3 py-4">
+                        <div class="inline-flex items-center gap-2">
+                            <div class="w-2 h-2 ${req.status === 'success' ? 'bg-emerald-500' : 'bg-red-500'} rounded-full"></div>
+                            <span class="text-sm font-medium ${req.status === 'success' ? 'text-emerald-700' : 'text-red-700'}">${req.status}</span>
+                        </div>
+                    </td>
+                    <td class="px-3 py-4 text-slate-900">${req.latency_ms.toFixed(1)}</td>
+                    <td class="px-3 py-4 text-slate-900">${req.prompt_length}</td>
+                    <td class="px-3 py-4 text-slate-900">${req.response_length}</td>
                 </tr>
             `).join('');
         }
@@ -1383,7 +467,7 @@
             
             testBtn.disabled = true;
             testBtn.textContent = '测试中...';
-            responseArea.style.display = 'block';
+            responseArea.classList.remove('hidden');
             responseArea.textContent = '正在处理请求...';
             
             try {
@@ -1447,6 +531,13 @@
         function showError(message) {
             console.error(message);
             // 可以在这里添加更好的错误显示逻辑
+        }
+        
+        // 清空测试结果
+        function clearResults() {
+            const responseArea = document.getElementById('responseArea');
+            responseArea.classList.add('hidden');
+            responseArea.textContent = '';
         }
         
         // 加载测试集列表
@@ -2092,11 +1183,11 @@
     </script>
     
     <!-- 样本详情模态框 -->
-    <div id="sampleModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">样本详情</h3>
-                <button class="close" onclick="closeSampleModal()">&times;</button>
+    <div id="sampleModal" class="modal fixed inset-0 z-50 bg-black bg-opacity-50 items-center justify-center">
+        <div class="bg-white m-8 p-8 rounded-lg w-full max-w-4xl max-h-[80vh] overflow-y-auto relative">
+            <div class="flex justify-between items-center mb-6 pb-4 border-b border-slate-200">
+                <h3 class="text-xl font-semibold text-slate-800">样本详情</h3>
+                <button class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-600 text-2xl font-light" onclick="closeSampleModal()">&times;</button>
             </div>
             <div id="sampleModalBody">
                 <!-- 样本详情内容将在这里动态加载 -->

@@ -1,0 +1,1 @@
+{"timestamp": "2025-08-04T16:39:27.377736", "model": "qwen3:0.6b", "prompt_length": 9, "response_length": 462, "latency_ms": 2705.198049545288, "status": "success", "error": null, "tokens_per_second": 2.217952212781068, "memory_usage_mb": null}
