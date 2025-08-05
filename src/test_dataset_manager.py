@@ -253,42 +253,32 @@ class TestDatasetManager:
     def create_test_prompts(self, dataset_name: str, 
                           test_samples: List[TestSample]) -> List[str]:
         """
-        为测试样本创建提示词
-        
-        使用新的提示词管理系统，从配置文件中加载提示词模板
-        
-        Args:
-            dataset_name: 测试集名称
-            test_samples: 测试样本列表
-            
-        Returns:
-            List[str]: 格式化的提示词列表
+        为测试样本创建提示词 (新版：基于数据集配置)
         """
         prompts = []
-        
-        try:
-            # 使用MD提示词管理器
-            md_manager = get_md_prompt_manager()
+        md_manager = get_md_prompt_manager()
+
+        # 从数据集配置中获取提示词文件名
+        dataset_info = self.get_dataset_info(dataset_name)
+        if not dataset_info or 'prompt_template_file' not in dataset_info:
+            self.logger.error(f"数据集 '{dataset_name}' 的JSON配置中缺少 'prompt_template_file' 字段。")
+            # 作为备用，返回旧的逻辑
+            return self._create_fallback_prompts(dataset_name, test_samples)
+
+        template_filename = dataset_info['prompt_template_file']
+        self.logger.info(f"从配置中加载提示词文件: {template_filename}")
+
+        for sample in test_samples:
+            sample_data = {
+                'content': sample.content,
+                'category': sample.category,
+                'expected_score': sample.expected_score
+            }
+            # 调用新的、直接的渲染函数
+            prompt = md_manager.render_prompt_from_file(template_filename, sample_data)
+            prompts.append(prompt)
             
-            for sample in test_samples:
-                # 准备样本数据
-                sample_data = {
-                    'content': sample.content,
-                    'category': sample.category,
-                    'expected_score': sample.expected_score
-                }
-                
-                # 使用MD提示词管理器渲染提示词
-                prompt = md_manager.render_prompt(dataset_name, sample_data)
-                prompts.append(prompt)
-                
-            self.logger.info(f"使用MD提示词管理器为 {dataset_name} 生成了 {len(prompts)} 个提示词")
-            
-        except Exception as e:
-            self.logger.warning(f"MD提示词管理器失败，使用硬编码备用方法: {str(e)}")
-            # 备用方法：使用原始硬编码逻辑
-            prompts = self._create_fallback_prompts(dataset_name, test_samples)
-        
+        self.logger.info(f"为 {dataset_name} 生成了 {len(prompts)} 个提示词")
         return prompts
     
     def _create_fallback_prompts(self, dataset_name: str, 
@@ -393,43 +383,39 @@ class TestDatasetManager:
                 except Exception as e:
                     self.logger.debug(f"响应质量检查失败 - 样本 {sample.id}: {str(e)}")
                 
-                if model_result:
-                    # 计算准确性
-                    score_accuracy = self._calculate_score_accuracy(
-                        model_result.get('score'), sample.expected_score
-                    )
-                    
-                    category_match = self._check_category_match(
-                        model_result.get('category'), sample.category, dataset_name
-                    )
-                    
-                    test_result = TestResult(
-                        sample_id=sample.id,
-                        comment=sample.content,  # 添加原始评论内容
-                        model_response=model_response_text,
-                        model_score=model_result.get('score'),
-                        model_category=model_result.get('category'),
-                        expected_score=sample.expected_score,
-                        expected_category=sample.category,
-                        score_accuracy=score_accuracy,
-                        category_match=category_match,
-                        response_time_ms=response_time
-                    )
-                else:
-                    # 解析失败
-                    test_result = TestResult(
-                        sample_id=sample.id,
-                        comment=sample.content,  # 添加原始评论内容
-                        model_response=model_response_text,
-                        model_score=None,
-                        model_category=None,
-                        expected_score=sample.expected_score,
-                        expected_category=sample.category,
-                        score_accuracy=0.0,
-                        category_match=False,
-                        response_time_ms=response_time,
-                        error="无法解析模型响应"
-                    )
+                # 即使 model_result 为空或不完整，也尝试获取分数和类别
+                model_score = model_result.get('score') if model_result else None
+                model_category = model_result.get('category') if model_result else None
+
+                # 计算准确性
+                score_accuracy = self._calculate_score_accuracy(
+                    model_score, sample.expected_score
+                )
+                
+                category_match = self._check_category_match(
+                    model_category, sample.category, dataset_name
+                )
+                
+                # 判断是否有错误
+                error_msg = None
+                if model_result is None:
+                    error_msg = "无法解析模型响应"
+                elif 'score' not in model_result or 'category' not in model_result:
+                    error_msg = "响应中缺少score或category字段"
+
+                test_result = TestResult(
+                    sample_id=sample.id,
+                    comment=sample.content,
+                    model_response=model_response_text,
+                    model_score=model_score,
+                    model_category=model_category,
+                    expected_score=sample.expected_score,
+                    expected_category=sample.category,
+                    score_accuracy=score_accuracy,
+                    category_match=category_match,
+                    response_time_ms=response_time,
+                    error=error_msg
+                )
                 
                 results.append(test_result)
                 

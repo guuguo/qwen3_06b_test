@@ -240,38 +240,40 @@ class MarkdownPromptManager:
         
         return None
     
-    def render_prompt(self, dataset_name: str, sample_data: Dict[str, Any]) -> str:
+    def render_prompt_from_file(self, template_filename: str, sample_data: Dict[str, Any]) -> str:
         """
-        渲染提示词
-        
-        Args:
-            dataset_name: 数据集名称
-            sample_data: 样本数据
-            
-        Returns:
-            渲染后的提示词
+        根据指定的文件名渲染提示词，绕过所有复杂的查找逻辑。
         """
         try:
-            # 查找对应的MD文件
-            md_file = self._find_md_file(dataset_name)
-            if not md_file:
+            md_file = self.prompts_dir / template_filename
+            if not md_file.exists():
+                self.logger.error(f"指定的提示词文件不存在: {md_file}")
                 return self._fallback_prompt(sample_data)
-            
-            # 解析配置
+
+            # 解析文件（会使用缓存）
             config = self._parse_md_file(md_file)
-            prompt_template = config.get('prompt_template', '')
-            
+            prompt_template = config.get('prompt_template')
+
             if not prompt_template:
-                return self._fallback_prompt(sample_data)
-            
+                # 尝试从文件根部查找模板
+                with open(md_file, 'r', encoding='utf-8') as f:
+                    content = f.read()
+                
+                # 寻找模型指令
+                match = re.search(r'## --- 模型指令 \(从此开始\) ---(.*)--- 任务开始 ---', content, re.DOTALL)
+                if match:
+                    prompt_template = match.group(1).strip()
+                else: # 如果找不到，就用整个文件
+                    prompt_template = content
+
+            if not prompt_template:
+                 return self._fallback_prompt(sample_data)
+
             # 变量替换
-            rendered_prompt = self._replace_variables(prompt_template, sample_data)
-            
-            self.logger.debug(f"成功渲染提示词 - 数据集: {dataset_name}")
-            return rendered_prompt
-            
+            return self._replace_variables(prompt_template, sample_data)
+
         except Exception as e:
-            self.logger.error(f"渲染提示词失败: {str(e)}")
+            self.logger.error(f"从文件渲染提示词失败 '{template_filename}': {e}")
             return self._fallback_prompt(sample_data)
     
     def _find_md_file(self, dataset_name: str) -> Optional[Path]:

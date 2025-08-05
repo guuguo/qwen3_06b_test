@@ -2,7 +2,8 @@
   "dataset_info": {
     "name": "漫画评论区广告检测测试集",
     "description": "基于真实漫画评论的广告检测数据集，用于识别评论区中的广告、推广、诈骗等非正常评论内容",
-    "version": "1.0.0", 
+    "version": "1.0.0",
+    "prompt_template_file": "漫画评论广告检测.md", 
     "created_date": "2024-08-04",
     "total_samples": 52,
     "categories": [

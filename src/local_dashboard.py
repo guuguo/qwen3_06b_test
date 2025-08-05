@@ -32,6 +32,7 @@ from simple_monitor import SimpleFileMonitor, SimplePerformanceMonitor, create_s
 from config_manager import get_config_manager, get_config
 from test_dataset_manager import TestDatasetManager
 from local_tester import SimpleLocalTester
+from qps_evaluator import QPSEvaluator, create_qps_evaluator
 
 
 class LocalDashboard:
@@ -122,6 +123,9 @@ class LocalDashboard:
             # 创建本地测试器
             self.local_tester = SimpleLocalTester(self.ollama_client)
             
+            # 创建QPS评估器
+            self.qps_evaluator = create_qps_evaluator(self.ollama_client)
+            
             self.logger.info("组件初始化完成")
             
         except Exception as e:
@@ -146,6 +150,45 @@ class LocalDashboard:
             return response
         
         return response[:self.max_response_length] + '...'
+    
+    def _separate_thinking_and_answer(self, response: str) -> tuple:
+        """
+        分离模型响应中的思考过程和最终回答
+        
+        Args:
+            response: 完整的模型响应
+            
+        Returns:
+            tuple: (思考过程, 最终回答)
+        """
+        if not response:
+            return None, response
+        
+        # 尝试识别思考过程的分界点
+        separators = [
+            '\n评分：',
+            '\n类别：', 
+            '\n严重度：',
+            '评分：',
+            '类别：',
+            '严重度：'
+        ]
+        
+        for separator in separators:
+            if separator in response:
+                parts = response.split(separator, 1)
+                if len(parts) == 2:
+                    thinking_part = parts[0].strip()
+                    answer_part = (separator.strip() + parts[1]).strip()
+                    
+                    # 如果思考部分太短（少于50字符），可能不是真正的思考过程
+                    if len(thinking_part) < 50:
+                        return None, response
+                    
+                    return thinking_part, answer_part
+        
+        # 如果没有找到明确的分界点，返回空思考过程
+        return None, response
     
     def _register_routes(self) -> None:
         """注册路由"""
@@ -579,10 +622,16 @@ class LocalDashboard:
                         else:
                             clean_sample_id = 'Unknown'
                     
+                    # 分离思考过程和最终回答
+                    thinking_process, final_answer = self._separate_thinking_and_answer(result.model_response)
+                    
                     detailed_results.append({
                         'sample_id': clean_sample_id,
                         'comment': result.comment,  # 添加原始评论内容
                         'model_response': self._truncate_response(result.model_response),
+                        'thinking_process': self._truncate_response(thinking_process) if thinking_process else None,
+                        'final_answer': self._truncate_response(final_answer),
+                        'thinking_enabled': enable_thinking,  # 记录是否启用思考
                         'model_score': result.model_score,
                         'model_category': result.model_category,
                         'expected_score': result.expected_score,
@@ -650,10 +699,16 @@ class LocalDashboard:
                     # 准备详细结果数据
                     detailed_results = []
                     for result in report.detailed_results:
+                        # 分离思考过程和最终回答
+                        thinking_process, final_answer = self._separate_thinking_and_answer(result.model_response)
+                        
                         detailed_results.append({
                             'sample_id': result.sample_id,
                             'comment': result.comment,  # 添加原始评论内容
                             'model_response': self._truncate_response(result.model_response),
+                            'thinking_process': self._truncate_response(thinking_process) if thinking_process else None,
+                            'final_answer': self._truncate_response(final_answer),
+                            'thinking_enabled': enable_thinking,  # 记录是否启用思考
                             'model_score': result.model_score,
                             'model_category': result.model_category,
                             'expected_score': result.expected_score,
@@ -692,6 +747,132 @@ class LocalDashboard:
                 return jsonify({'error': str(e)}), 500
                 
         self.logger.info("路由注册完成")
+        
+        # QPS评估相关API
+        @self.app.route('/api/qps/start', methods=['POST'])
+        def api_qps_start():
+            """启动QPS评估测试"""
+            try:
+                data = request.get_json()
+                if not data:
+                    return jsonify({'error': '缺少请求数据'}), 400
+                
+                # 获取测试配置
+                test_name = data.get('test_name', '性能测试')
+                model = data.get('model', 'qwen3:0.6b')
+                concurrent_users = data.get('concurrent_users', 5)
+                duration_seconds = data.get('duration_seconds', 60)
+                prompt_template = data.get('prompt_template', '你好，请介绍一下你自己。')
+                
+                # 创建测试配置
+                config = self.qps_evaluator.create_test_config(
+                    test_name=test_name,
+                    model=model,
+                    concurrent_users=concurrent_users,
+                    duration_seconds=duration_seconds,
+                    prompt_template=prompt_template
+                )
+                
+                # 启动测试
+                test_id = self.qps_evaluator.start_qps_test(config)
+                
+                return jsonify({
+                    'test_id': test_id,
+                    'message': 'QPS测试已启动',
+                    'config': {
+                        'test_name': test_name,
+                        'model': model,
+                        'concurrent_users': concurrent_users,
+                        'duration_seconds': duration_seconds
+                    }
+                })
+                
+            except Exception as e:
+                self.logger.error(f"启动QPS测试失败: {e}")
+                return jsonify({'error': str(e)}), 500
+        
+        @self.app.route('/api/qps/progress/<test_id>')
+        def api_qps_progress(test_id):
+            """获取QPS测试进度"""
+            try:
+                progress = self.qps_evaluator.get_test_progress(test_id)
+                if progress is None:
+                    return jsonify({'error': '测试ID不存在'}), 404
+                
+                return jsonify(progress)
+                
+            except Exception as e:
+                self.logger.error(f"获取QPS测试进度失败: {e}")
+                return jsonify({'error': str(e)}), 500
+        
+        @self.app.route('/api/qps/results')
+        def api_qps_results():
+            """获取所有QPS测试结果列表"""
+            try:
+                results = self.qps_evaluator.get_all_test_results()
+                
+                # 转换为简化的列表格式
+                result_list = []
+                for result in results:
+                    result_list.append({
+                        'test_id': result.test_id,
+                        'test_name': result.test_name,
+                        'model': result.model,
+                        'start_time': result.start_time,
+                        'duration_seconds': result.duration_seconds,
+                        'concurrent_users': result.concurrent_users,
+                        'qps': result.qps,
+                        'avg_latency_ms': result.avg_latency_ms,
+                        'error_rate': result.error_rate,
+                        'total_requests': result.total_requests,
+                        'successful_requests': result.successful_requests
+                    })
+                
+                return jsonify({
+                    'results': result_list,
+                    'total_count': len(result_list)
+                })
+                
+            except Exception as e:
+                self.logger.error(f"获取QPS测试结果失败: {e}")
+                return jsonify({'error': str(e)}), 500
+        
+        @self.app.route('/api/qps/results/<test_id>')
+        def api_qps_result_detail(test_id):
+            """获取QPS测试详细结果"""
+            try:
+                result = self.qps_evaluator.get_test_result(test_id)
+                if result is None:
+                    return jsonify({'error': '测试结果不存在'}), 404
+                
+                # 转换为字典格式
+                from dataclasses import asdict
+                return jsonify(asdict(result))
+                
+            except Exception as e:
+                self.logger.error(f"获取QPS测试详细结果失败: {e}")
+                return jsonify({'error': str(e)}), 500
+        
+        @self.app.route('/api/qps/stop', methods=['POST'])
+        def api_qps_stop():
+            """停止当前QPS测试"""
+            try:
+                success = self.qps_evaluator.stop_current_test()
+                if success:
+                    return jsonify({'message': '测试已停止'})
+                else:
+                    return jsonify({'message': '没有正在运行的测试'})
+                    
+            except Exception as e:
+                self.logger.error(f"停止QPS测试失败: {e}")
+                return jsonify({'error': str(e)}), 500
+        
+        @self.app.route('/qps')
+        def qps_page():
+            """QPS评估页面"""
+            return render_template('qps.html', 
+                                 title="QPS性能评估",
+                                 refresh_interval=get_config('web_dashboard.refresh_interval', 5))
         
         # 调试：打印所有注册的路由
         for rule in self.app.url_map.iter_rules():
