@@ -27,6 +27,7 @@ import statistics
 
 from ollama_integration import OllamaIntegration, create_ollama_client
 from config_manager import get_config
+from test_dataset_manager import TestDatasetManager
 
 
 @dataclass
@@ -41,6 +42,7 @@ class QPSTestConfig:
     warmup_requests: int = 10
     timeout_seconds: int = 30
     enable_thinking: bool = False  # 是否启用思考模式
+    dataset_name: str = None  # 测试集名称
 
 
 @dataclass
@@ -68,6 +70,7 @@ class QPSTestResult:
     throughput_tokens_per_second: float
     detailed_metrics: Dict[str, Any]
     errors: List[str]
+    dataset_name: str = None  # 使用的测试集名称
 
 
 @dataclass
@@ -106,12 +109,28 @@ class QPSEvaluator:
         
         self.logger = logging.getLogger(__name__)
         
+        # 测试集管理器
+        self.dataset_manager = TestDatasetManager()
+        
         # 当前测试状态
         self.current_test: Optional[str] = None
         self.test_progress: Dict[str, Any] = {}
         self.test_results: Dict[str, QPSTestResult] = {}
         
         self.logger.info(f"QPS评估器初始化完成，结果目录: {self.results_dir}")
+    
+    def get_available_datasets(self) -> List[Dict[str, Any]]:
+        """
+        获取可用的测试集列表
+        
+        Returns:
+            List[Dict]: 测试集信息列表
+        """
+        try:
+            return self.dataset_manager.get_available_datasets()
+        except Exception as e:
+            self.logger.error(f"获取测试集列表失败: {e}")
+            return []
     
     def create_test_config(self,
                           test_name: str,
@@ -120,7 +139,8 @@ class QPSEvaluator:
                           duration_seconds: int,
                           prompt_template: str = "你好，请介绍一下你自己。",
                           test_prompts: Optional[List[str]] = None,
-                          enable_thinking: bool = False) -> QPSTestConfig:
+                          enable_thinking: bool = False,
+                          dataset_name: str = None) -> QPSTestConfig:
         """
         创建测试配置
         
@@ -132,10 +152,34 @@ class QPSEvaluator:
             prompt_template: 提示模板
             test_prompts: 测试提示列表
             enable_thinking: 是否启用思考模式
+            dataset_name: 测试集名称，如果指定则使用测试集数据
             
         Returns:
             QPSTestConfig: 测试配置
         """
+        # 如果指定了测试集，从测试集加载数据
+        if dataset_name:
+            try:
+                dataset = self.dataset_manager.load_dataset(dataset_name)
+                if dataset:
+                    # 获取测试集中的样本数据  
+                    test_samples = self.dataset_manager.get_test_samples(dataset_name)
+                    # 生成基于测试集的提示词
+                    dataset_prompts = self.dataset_manager.create_test_prompts(dataset_name, test_samples)
+                    if dataset_prompts:
+                        test_prompts = dataset_prompts
+                        # 使用测试集的第一个提示作为模板展示
+                        if test_prompts:
+                            prompt_template = f"使用测试集: {dataset_name}"
+                        self.logger.info(f"从测试集 {dataset_name} 加载了 {len(test_prompts)} 个测试提示")
+                    else:
+                        self.logger.warning(f"无法从测试集 {dataset_name} 生成提示词，使用默认提示")
+                else:
+                    self.logger.warning(f"无法加载测试集 {dataset_name}，使用默认提示")
+            except Exception as e:
+                self.logger.error(f"加载测试集 {dataset_name} 失败: {e}，使用默认提示")
+        
+        # 如果没有指定测试集或测试集加载失败，使用默认提示
         if test_prompts is None:
             test_prompts = [
                 "你好，请介绍一下你自己。",
@@ -152,7 +196,8 @@ class QPSEvaluator:
             duration_seconds=duration_seconds,
             prompt_template=prompt_template,
             test_prompts=test_prompts,
-            enable_thinking=enable_thinking
+            enable_thinking=enable_thinking,
+            dataset_name=dataset_name
         )
     
     def start_qps_test(self, config: QPSTestConfig) -> str:
@@ -479,7 +524,8 @@ class QPSEvaluator:
             error_rate=error_rate,
             throughput_tokens_per_second=avg_tokens_per_second,
             detailed_metrics=detailed_metrics,
-            errors=unique_errors
+            errors=unique_errors,
+            dataset_name=config.dataset_name  # 添加测试集信息
         )
     
     def _create_latency_buckets(self, latencies: List[float]) -> Dict[str, int]:
@@ -564,6 +610,11 @@ class QPSEvaluator:
             try:
                 with open(result_file, 'r', encoding='utf-8') as f:
                     data = json.load(f)
+                    # 为向后兼容，添加默认字段
+                    if 'enable_thinking' not in data:
+                        data['enable_thinking'] = False
+                    if 'dataset_name' not in data:
+                        data['dataset_name'] = None
                     result = QPSTestResult(**data)
                     if result.test_id not in self.test_results:
                         results.append(result)

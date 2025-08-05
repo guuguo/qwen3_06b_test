@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  qwen3-dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: qwen3-dashboard
+    ports:
+      - "5000:5000"    # Web界面
+      - "11434:11434"  # Ollama API
+    volumes:
+      # 持久化存储
+      - ollama_models:/root/.ollama           # Ollama模型存储
+      - ./data:/app/data                      # 应用数据
+      - ./test_results:/app/test_results      # 测试结果
+      - ./logs:/app/logs                      # 日志文件
+    environment:
+      # CPU优化配置
+      - OLLAMA_NUM_PARALLEL=2
+      - OLLAMA_MAX_LOADED_MODELS=1
+      - OLLAMA_MAX_QUEUE=8
+      - OLLAMA_NUM_THREADS=0              # 自动检测
+      - OLLAMA_KEEP_ALIVE=30s
+      - OLLAMA_HOST=0.0.0.0:11434
+      
+      # Flask配置
+      - FLASK_HOST=0.0.0.0
+      - FLASK_PORT=5000
+      - FLASK_ENV=production
+      
+      # 可选：预下载模型
+      - PRELOAD_MODEL=qwen3:0.6b-q4_k_m
+    
+    # 资源限制
+    deploy:
+      resources:
+        limits:
+          cpus: '8.0'        # 限制CPU使用
+          memory: 6G         # 内存限制
+        reservations:
+          cpus: '2.0'        # CPU预留
+          memory: 2G         # 内存预留
+    
+    # 健康检查
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    
+    # 重启策略
+    restart: unless-stopped
+    
+    # 日志配置
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "3"
+
+# 命名卷
+volumes:
+  ollama_models:
+    driver: local
+
+# 网络配置
+networks:
+  default:
+    name: qwen3-network

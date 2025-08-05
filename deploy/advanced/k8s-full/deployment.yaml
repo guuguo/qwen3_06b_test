@@ -1,0 +1,109 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ollama-deployment
+  namespace: ollama-system
+  labels:
+    app: ollama
+    component: model-service
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: ollama
+      component: model-service
+  template:
+    metadata:
+      labels:
+        app: ollama
+        component: model-service
+    spec:
+      containers:
+      - name: ollama
+        image: ollama-qwen:latest  # 将在构建脚本中替换
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 11434
+          name: http
+          protocol: TCP
+        
+        # 环境变量从 ConfigMap 获取
+        envFrom:
+        - configMapRef:
+            name: ollama-config
+        
+        # 资源限制
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "1000m"
+          limits:
+            memory: "4Gi"
+            cpu: "2000m"
+        
+        # 存储挂载
+        volumeMounts:
+        - name: ollama-models
+          mountPath: /home/ollama/.ollama
+        - name: ollama-cache
+          mountPath: /tmp/ollama
+        
+        # 健康检查
+        livenessProbe:
+          httpGet:
+            path: /api/tags
+            port: 11434
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 10
+          failureThreshold: 3
+        
+        readinessProbe:
+          httpGet:
+            path: /api/tags
+            port: 11434
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        
+        # 启动探针
+        startupProbe:
+          httpGet:
+            path: /api/tags
+            port: 11434
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 30
+      
+      # 存储卷
+      volumes:
+      - name: ollama-models
+        persistentVolumeClaim:
+          claimName: ollama-models-pvc
+      - name: ollama-cache
+        persistentVolumeClaim:
+          claimName: ollama-cache-pvc
+      
+      # 安全配置
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      
+      # 节点选择器（可选）
+      # nodeSelector:
+      #   gpu: "true"
+      
+      # 容忍度（可选，用于调度到特定节点）
+      # tolerations:
+      # - key: "gpu"
+      #   operator: "Equal"
+      #   value: "true"
+      #   effect: "NoSchedule"

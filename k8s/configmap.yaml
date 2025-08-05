@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ollama-config
+  namespace: ollama-system
+  labels:
+    app: ollama
+    component: config
+data:
+  # Ollama 服务配置
+  OLLAMA_HOST: "0.0.0.0"
+  OLLAMA_PORT: "11434"
+  MODEL_NAME: "qwen3:0.6b"
+  
+  # 性能调优配置
+  OLLAMA_NUM_PARALLEL: "4"
+  OLLAMA_MAX_LOADED_MODELS: "1"
+  OLLAMA_FLASH_ATTENTION: "1"
+  
+  # 日志配置
+  OLLAMA_DEBUG: "false"
+  OLLAMA_VERBOSE: "false"

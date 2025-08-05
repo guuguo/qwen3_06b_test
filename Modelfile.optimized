@@ -1,0 +1,11 @@
+FROM qwen3:0.6b
+
+PARAMETER num_ctx 8192
+PARAMETER temperature 0.6
+PARAMETER top_p 0.9
+PARAMETER top_k 40
+PARAMETER repeat_penalty 1.05
+PARAMETER stop <|im_start|>
+PARAMETER stop <|im_end|>
+
+SYSTEM "你是一个高效的AI助手，专门用于快速响应用户查询。请简洁明了地回答问题，避免冗长的解释。"

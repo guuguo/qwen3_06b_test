@@ -1,0 +1,80 @@
+# Ollama K8s 一体化部署配置 (简化版)
+# 包含: Namespace + Deployment + Service
+
+---
+# 命名空间
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ollama-system
+  labels:
+    name: ollama-system
+
+---
+# 应用部署
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ollama-deployment
+  namespace: ollama-system
+  labels:
+    app: ollama
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ollama
+  template:
+    metadata:
+      labels:
+        app: ollama
+    spec:
+      containers:
+      - name: ollama
+        image: ollama-qwen:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 11434
+        env:
+        - name: OLLAMA_HOST
+          value: "0.0.0.0"
+        - name: OLLAMA_PORT
+          value: "11434"
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "1000m"
+          limits:
+            memory: "4Gi"
+            cpu: "2000m"
+        readinessProbe:
+          httpGet:
+            path: /api/tags
+            port: 11434
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /api/tags
+            port: 11434
+          initialDelaySeconds: 60
+          periodSeconds: 30
+
+---
+# 服务暴露
+apiVersion: v1
+kind: Service
+metadata:
+  name: ollama-service
+  namespace: ollama-system
+  labels:
+    app: ollama
+spec:
+  type: ClusterIP
+  ports:
+  - port: 11434
+    targetPort: 11434
+    protocol: TCP
+    name: http
+  selector:
+    app: ollama

@@ -17,6 +17,8 @@
         loadSystemStatus();
         loadMetrics();
         loadDatasets();
+        loadAvailableModels();
+        loadModels(); // 添加模型列表加载
         startAutoRefresh();
         
         // 绑定事件
@@ -325,6 +327,45 @@
             option.textContent = `${dataset.display_name} (${dataset.total_samples} 样本)`;
             datasetSelect.appendChild(option);
         });
+    }
+    
+    // 加载可用的模型列表
+    async function loadAvailableModels() {
+        try {
+            const response = await fetch('/api/qps/models');
+            if (response.ok) {
+                const models = await response.json();
+                const modelSelect = document.getElementById('testModelSelect');
+                
+                // 清空现有选项
+                modelSelect.innerHTML = '';
+                
+                // 添加模型选项
+                models.forEach((model, index) => {
+                    const option = document.createElement('option');
+                    option.value = model;
+                    option.textContent = model;
+                    modelSelect.appendChild(option);
+                    
+                    // 默认选择第一个模型
+                    if (index === 0) {
+                        option.selected = true;
+                    }
+                });
+                
+                console.log(`Dashboard: 加载了 ${models.length} 个模型:`, models);
+            } else {
+                console.error('Dashboard: 加载模型列表失败:', response.status);
+                // 如果API失败，显示错误信息
+                const modelSelect = document.getElementById('testModelSelect');
+                modelSelect.innerHTML = '<option value="" disabled selected>加载模型失败</option>';
+            }
+        } catch (error) {
+            console.error('Dashboard: 加载模型列表异常:', error);
+            // 显示错误信息
+            const modelSelect = document.getElementById('testModelSelect');
+            modelSelect.innerHTML = '<option value="" disabled selected>网络错误</option>';
+        }
     }
     
     // 加载测试集信息
@@ -1138,5 +1179,146 @@
         modalBody.innerHTML = html;
         modal.classList.add('show');
     };
+    
+    // ================== Ollama模型管理功能 ==================
+    
+    // 加载模型列表
+    window.loadModels = async function() {
+        try {
+            const response = await fetch('/api/ollama/models');
+            const data = await response.json();
+            
+            if (response.ok && data.models) {
+                displayModels(data.models);
+            } else {
+                Utils.showError('加载模型列表失败: ' + (data.error || '未知错误'));
+            }
+        } catch (error) {
+            Utils.showError('加载模型列表失败: ' + error.message);
+        }
+    };
+    
+    // 显示模型列表
+    function displayModels(models) {
+        const modelsList = document.getElementById('modelsList');
+        
+        if (models.length === 0) {
+            modelsList.innerHTML = '<div class="text-center py-8 text-slate-500">暂无已安装的模型</div>';
+            return;
+        }
+        
+        const modelsHtml = models.map(model => `
+            <div class="flex items-center justify-between p-4 bg-slate-50 rounded-lg border hover:bg-slate-100 transition-colors">
+                <div class="flex-1">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
+                            <span class="text-indigo-600 font-semibold">🤖</span>
+                        </div>
+                        <div>
+                            <div class="font-medium text-slate-800">${model.name}</div>
+                            <div class="text-sm text-slate-500">
+                                ${model.size_str} • 修改时间: ${model.modified_at}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="confirmDeleteModel('${model.name}')" 
+                            class="px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors text-sm">
+                        删除
+                    </button>
+                </div>
+            </div>
+        `).join('');
+        
+        modelsList.innerHTML = modelsHtml;
+    }
+    
+    // 刷新模型列表
+    window.refreshModels = function() {
+        const btn = document.getElementById('refreshModelsBtn');
+        if (btn) {
+            btn.disabled = true;
+            btn.textContent = '刷新中...';
+        }
+        
+        loadModels().finally(() => {
+            if (btn) {
+                btn.disabled = false;
+                btn.textContent = '刷新模型列表';
+            }
+        });
+    };
+    
+    // 拉取模型
+    window.pullModel = async function() {
+        const modelNameInput = document.getElementById('modelName');
+        const useMirrorCheckbox = document.getElementById('useMirror');
+        
+        const modelName = modelNameInput.value.trim();
+        const useMirror = useMirrorCheckbox.checked;
+        
+        if (!modelName) {
+            Utils.showError('请输入模型名称');
+            return;
+        }
+        
+        try {
+            const response = await fetch('/api/ollama/models/pull', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    model_name: modelName,
+                    use_mirror: useMirror
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                Utils.showSuccess(data.message || '模型拉取任务已开始');
+                modelNameInput.value = '';
+                
+                // 5秒后自动刷新模型列表
+                setTimeout(() => {
+                    refreshModels();
+                }, 5000);
+            } else {
+                Utils.showError('拉取模型失败: ' + (data.error || '未知错误'));
+            }
+        } catch (error) {
+            Utils.showError('拉取模型失败: ' + error.message);
+        }
+    };
+    
+    // 确认删除模型
+    window.confirmDeleteModel = function(modelName) {
+        if (confirm(`确定要删除模型 "${modelName}" 吗？此操作不可撤销。`)) {
+            deleteModel(modelName);
+        }
+    };
+    
+    // 删除模型
+    async function deleteModel(modelName) {
+        try {
+            const response = await fetch(`/api/ollama/models/${encodeURIComponent(modelName)}`, {
+                method: 'DELETE'
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                Utils.showSuccess(data.message || '模型删除成功');
+                refreshModels();
+            } else {
+                Utils.showError('删除模型失败: ' + (data.error || '未知错误'));
+            }
+        } catch (error) {
+            Utils.showError('删除模型失败: ' + error.message);
+        }
+    }
+    
     
 })();

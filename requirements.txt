@@ -59,8 +59,11 @@ mypy>=1.5.0
 # orjson>=3.9.0           # 快速JSON处理
 
 # 部署相关
-# supervisor>=4.2.5
-# nginx-python>=1.1.0
+supervisor>=4.2.5
+ollama>=0.1.7
+
+# Docker优化
+python-dotenv>=1.0.0
 
 # 文档生成
 # sphinx>=7.1.0

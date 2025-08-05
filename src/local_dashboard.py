@@ -547,6 +547,127 @@ class LocalDashboard:
                 self.logger.error(f"获取数据集提示词失败: {e}")
                 return jsonify({'error': str(e)}), 500
 
+        # Ollama模型管理API
+        @self.app.route('/api/ollama/models', methods=['GET'])
+        def api_ollama_models():
+            """获取已安装的Ollama模型列表"""
+            try:
+                # 直接调用Ollama API获取详细信息
+                import requests
+                response = requests.get(f"{self.ollama_client.base_url}/api/tags", timeout=10)
+                
+                if response.status_code != 200:
+                    raise Exception(f"Ollama API调用失败: HTTP {response.status_code}")
+                
+                data = response.json()
+                models_data = []
+                
+                for model in data.get('models', []):
+                    # 格式化模型大小
+                    size_bytes = model.get('size', 0)
+                    if size_bytes > 1024 * 1024 * 1024:
+                        size_str = f"{size_bytes / (1024 * 1024 * 1024):.1f} GB"
+                    elif size_bytes > 1024 * 1024:
+                        size_str = f"{size_bytes / (1024 * 1024):.0f} MB" 
+                    else:
+                        size_str = f"{size_bytes} B"
+                    
+                    # 格式化修改时间
+                    modified_at = model.get('modified_at', '')
+                    if modified_at:
+                        try:
+                            from datetime import datetime
+                            dt = datetime.fromisoformat(modified_at.replace('Z', '+00:00'))
+                            modified_str = dt.strftime('%Y-%m-%d %H:%M')
+                        except:
+                            modified_str = modified_at
+                    else:
+                        modified_str = 'Unknown'
+                    
+                    models_data.append({
+                        'name': model.get('name', ''),
+                        'digest': model.get('digest', ''),
+                        'size': size_bytes,
+                        'size_str': size_str,
+                        'modified_at': modified_str
+                    })
+                
+                return jsonify({'models': models_data})
+                
+            except Exception as e:
+                self.logger.error(f"获取模型列表失败: {e}")
+                return jsonify({'error': str(e)}), 500
+        
+        @self.app.route('/api/ollama/models/pull', methods=['POST'])
+        def api_ollama_pull_model():
+            """拉取新模型"""
+            try:
+                data = request.get_json()
+                model_name = data.get('model_name', '').strip()
+                use_mirror = data.get('use_mirror', False)
+                
+                if not model_name:
+                    return jsonify({'error': '模型名称不能为空'}), 400
+                
+                # 如果使用镜像源，修改模型名称
+                if use_mirror and not model_name.startswith('hf-mirror.com/'):
+                    # 处理不同格式的模型名称
+                    if '/' in model_name and not model_name.startswith('hf-mirror.com/'):
+                        # 已经包含仓库路径的模型
+                        model_name = f"hf-mirror.com/{model_name}"
+                    elif ':' in model_name:
+                        # 标准ollama格式的模型，转换为HF格式
+                        base_name = model_name.split(':')[0]
+                        tag = model_name.split(':')[1]
+                        model_name = f"hf-mirror.com/{base_name}:{tag}"
+                
+                self.logger.info(f"开始拉取模型: {model_name}")
+                
+                # 在后台线程中执行拉取操作
+                def pull_model_task():
+                    try:
+                        # 使用OllamaIntegration的pull_model方法
+                        success = self.ollama_client.pull_model(model_name, timeout=600)
+                        if success:
+                            self.logger.info(f"模型拉取完成: {model_name}")
+                        else:
+                            self.logger.error(f"模型拉取失败: {model_name}")
+                    except Exception as e:
+                        self.logger.error(f"模型拉取失败: {e}")
+                
+                # 启动后台任务
+                import threading
+                pull_thread = threading.Thread(target=pull_model_task, daemon=True)
+                pull_thread.start()
+                
+                return jsonify({
+                    'message': f'开始拉取模型 {model_name}，请稍候刷新模型列表查看结果',
+                    'model_name': model_name
+                })
+                
+            except Exception as e:
+                self.logger.error(f"拉取模型失败: {e}")
+                return jsonify({'error': str(e)}), 500
+        
+        @self.app.route('/api/ollama/models/<path:model_name>', methods=['DELETE'])
+        def api_ollama_delete_model(model_name):
+            """删除指定模型"""
+            try:
+                self.logger.info(f"开始删除模型: {model_name}")
+                success = self.ollama_client.delete_model(model_name)
+                
+                if success:
+                    self.logger.info(f"模型删除完成: {model_name}")
+                    return jsonify({
+                        'message': f'模型 {model_name} 删除成功'
+                    })
+                else:
+                    raise Exception("删除操作失败")
+                
+            except Exception as e:
+                self.logger.error(f"删除模型失败: {e}")
+                return jsonify({'error': str(e)}), 500
+
         # 静态文件路由
         @self.app.route('/static/<path:filename>')
         def static_files(filename):
@@ -794,6 +915,7 @@ class LocalDashboard:
                 duration_seconds = data.get('duration_seconds', 60)
                 prompt_template = data.get('prompt_template', '你好，请介绍一下你自己。')
                 enable_thinking = data.get('enable_thinking', False)  # 获取思考模式配置
+                dataset_name = data.get('dataset_name')  # 获取测试集名称
                 
                 # 创建测试配置
                 config = self.qps_evaluator.create_test_config(
@@ -802,7 +924,8 @@ class LocalDashboard:
                     concurrent_users=concurrent_users,
                     duration_seconds=duration_seconds,
                     prompt_template=prompt_template,
-                    enable_thinking=enable_thinking
+                    enable_thinking=enable_thinking,
+                    dataset_name=dataset_name
                 )
                 
                 # 启动测试
@@ -897,6 +1020,26 @@ class LocalDashboard:
                     
             except Exception as e:
                 self.logger.error(f"停止QPS测试失败: {e}")
+                return jsonify({'error': str(e)}), 500
+        
+        @self.app.route('/api/qps/datasets')
+        def api_qps_datasets():
+            """获取可用的QPS测试集列表"""
+            try:
+                datasets = self.qps_evaluator.get_available_datasets()
+                return jsonify(datasets)
+            except Exception as e:
+                self.logger.error(f"获取测试集列表失败: {e}")
+                return jsonify({'error': str(e)}), 500
+        
+        @self.app.route('/api/qps/models')
+        def api_qps_models():
+            """获取可用的模型列表"""
+            try:
+                models = self.ollama_client.list_models()
+                return jsonify(models)
+            except Exception as e:
+                self.logger.error(f"获取模型列表失败: {e}")
                 return jsonify({'error': str(e)}), 500
         
         @self.app.route('/qps')

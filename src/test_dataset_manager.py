@@ -898,6 +898,38 @@ class TestDatasetManager:
         if dataset:
             return dataset.get('dataset_info')
         return None
+    
+    def get_available_datasets(self) -> List[Dict[str, Any]]:
+        """
+        获取所有可用的测试集列表
+        
+        Returns:
+            List[Dict]: 测试集信息列表，包含name, display_name, total_samples等字段
+        """
+        datasets = []
+        
+        # 遍历测试集目录中的所有JSON文件
+        for dataset_file in self.datasets_dir.glob("*.json"):
+            try:
+                dataset_name = dataset_file.stem  # 文件名不含扩展名
+                dataset_info = self.get_dataset_info(dataset_name)
+                
+                if dataset_info:
+                    datasets.append({
+                        'name': dataset_name,
+                        'display_name': dataset_info.get('name', dataset_name),
+                        'description': dataset_info.get('description', ''),
+                        'total_samples': dataset_info.get('total_samples', 0),
+                        'version': dataset_info.get('version', '1.0.0'),
+                        'created_date': dataset_info.get('created_date', ''),
+                        'categories': dataset_info.get('categories', [])
+                    })
+            except Exception as e:
+                self.logger.warning(f"加载测试集 {dataset_file.name} 信息失败: {e}")
+        
+        # 按名称排序
+        datasets.sort(key=lambda x: x['display_name'])
+        return datasets
 
 
 if __name__ == "__main__":

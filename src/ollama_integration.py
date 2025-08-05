@@ -210,12 +210,12 @@ class OllamaIntegration:
             self.logger.error(f"Ollama 服务状态检查异常: {e}")
             return False
     
-    def list_models(self, use_cache: bool = True) -> List[str]:
+    def list_models(self, use_cache: bool = False) -> List[str]:
         """
         获取可用模型列表
         
         Args:
-            use_cache: 是否使用缓存
+            use_cache: 是否使用缓存（默认False，因为模型列表查询很快且需要实时性）
             
         Returns:
             List[str]: 模型名称列表
@@ -223,7 +223,7 @@ class OllamaIntegration:
         Raises:
             OllamaConnectionError: 连接失败
         """
-        # 检查缓存
+        # 检查缓存（仅在明确要求时使用）
         if use_cache and self._models_cache is not None:
             cache_age = time.time() - self._models_cache_time
             if cache_age < self._cache_ttl:
@@ -242,12 +242,12 @@ class OllamaIntegration:
                 data = response.json()
                 models = [model['name'] for model in data.get('models', [])]
                 
-                # 更新缓存
+                # 更新缓存（备用）
                 self._models_cache = models
                 self._models_cache_time = time.time()
                 
                 self._update_stats(True, latency)
-                self.logger.info(f"获取模型列表成功: {len(models)} 个模型")
+                self.logger.debug(f"获取模型列表成功: {len(models)} 个模型 (耗时: {latency*1000:.1f}ms)")
                 return models
             else:
                 self._update_stats(False, latency)

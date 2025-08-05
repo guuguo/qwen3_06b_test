@@ -6,6 +6,8 @@ let progressInterval = null;
 document.addEventListener('DOMContentLoaded', function() {
     refreshResults();
     initThinkingToggle();
+    loadAvailableDatasets();
+    loadAvailableModels();
 });
 
 // 初始化思考模式开关
@@ -24,6 +26,71 @@ function initThinkingToggle() {
                 hint.textContent = '关闭可提升QPS性能';
             }
         });
+    }
+}
+
+// 加载可用的测试集列表
+async function loadAvailableDatasets() {
+    try {
+        const response = await fetch('/api/qps/datasets');
+        if (response.ok) {
+            const datasets = await response.json();
+            const datasetSelect = document.getElementById('datasetSelect');
+            
+            // 清空现有选项（保留默认选项）
+            while (datasetSelect.options.length > 1) {
+                datasetSelect.removeChild(datasetSelect.lastChild);
+            }
+            
+            // 添加测试集选项
+            datasets.forEach(dataset => {
+                const option = document.createElement('option');
+                option.value = dataset.name;
+                option.textContent = `${dataset.display_name} (${dataset.total_samples}个样本)`;
+                datasetSelect.appendChild(option);
+            });
+        }
+    } catch (error) {
+        console.error('加载测试集列表失败:', error);
+    }
+}
+
+// 加载可用的模型列表
+async function loadAvailableModels() {
+    try {
+        const response = await fetch('/api/qps/models');
+        if (response.ok) {
+            const models = await response.json();
+            const modelSelect = document.getElementById('modelSelect');
+            
+            // 清空现有选项
+            modelSelect.innerHTML = '';
+            
+            // 添加模型选项
+            models.forEach((model, index) => {
+                const option = document.createElement('option');
+                option.value = model;
+                option.textContent = model;
+                modelSelect.appendChild(option);
+                
+                // 默认选择第一个模型
+                if (index === 0) {
+                    option.selected = true;
+                }
+            });
+            
+            console.log(`加载了 ${models.length} 个模型:`, models);
+        } else {
+            console.error('加载模型列表失败:', response.status);
+            // 如果API失败，显示错误信息
+            const modelSelect = document.getElementById('modelSelect');
+            modelSelect.innerHTML = '<option value="" disabled selected>加载模型失败</option>';
+        }
+    } catch (error) {
+        console.error('加载模型列表异常:', error);
+        // 显示错误信息
+        const modelSelect = document.getElementById('modelSelect');
+        modelSelect.innerHTML = '<option value="" disabled selected>网络错误</option>';
     }
 }
 
@@ -107,16 +174,18 @@ async function startQPSTest() {
         const durationSecondsEl = document.getElementById('durationSeconds');
         const promptTemplateEl = document.getElementById('promptTemplate');
         const enableThinkingEl = document.getElementById('enableThinkingToggle');
+        const datasetSelectEl = document.getElementById('datasetSelect');
         
         // 检查元素是否存在
-        if (!testNameEl || !modelSelectEl || !concurrentUsersEl || !durationSecondsEl || !promptTemplateEl || !enableThinkingEl) {
+        if (!testNameEl || !modelSelectEl || !concurrentUsersEl || !durationSecondsEl || !promptTemplateEl || !enableThinkingEl || !datasetSelectEl) {
             console.error('某些表单元素不存在:', {
                 testName: !!testNameEl,
                 modelSelect: !!modelSelectEl,
                 concurrentUsers: !!concurrentUsersEl,
                 durationSeconds: !!durationSecondsEl,
                 promptTemplate: !!promptTemplateEl,
-                enableThinking: !!enableThinkingEl
+                enableThinking: !!enableThinkingEl,
+                datasetSelect: !!datasetSelectEl
             });
             showNotification('表单元素不存在，请刷新页面', 'error');
             return;
@@ -128,7 +197,8 @@ async function startQPSTest() {
             concurrent_users: parseInt(concurrentUsersEl.value) || 5,
             duration_seconds: parseInt(durationSecondsEl.value) || 60,
             prompt_template: promptTemplateEl.value || '你好，请介绍一下你自己。',
-            enable_thinking: enableThinkingEl.checked || false
+            enable_thinking: enableThinkingEl.checked || false,
+            dataset_name: datasetSelectEl.value || null
         };
         
         // 调试信息
@@ -293,10 +363,13 @@ function updateResultsTable(results) {
             ) : 
             '<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">未知</span>';
         
+        const datasetInfo = result.dataset_name ? result.dataset_name : '默认提示';
+        
         return `
         <tr class="clickable-row border-b border-slate-100 hover:bg-slate-50" onclick="showTestDetail('${result.test_id}')">
             <td class="py-3 px-4">${result.test_name}</td>
             <td class="py-3 px-4">${result.model}</td>
+            <td class="py-3 px-4"><span class="text-xs bg-slate-100 px-2 py-1 rounded">${datasetInfo}</span></td>
             <td class="py-3 px-4">${new Date(result.start_time).toLocaleString()}</td>
             <td class="py-3 px-4">${result.concurrent_users}</td>
             <td class="py-3 px-4">${thinkingMode}</td>
@@ -369,6 +442,7 @@ function showDetailModal(result) {
                     <div><span class="font-medium">测试时长:</span> ${result.duration_seconds.toFixed(1)}秒</div>
                     <div><span class="font-medium">并发用户数:</span> ${result.concurrent_users}</div>
                     <div><span class="font-medium">思考模式:</span> ${result.enable_thinking !== undefined ? (result.enable_thinking ? '<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800">启用</span>' : '<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">禁用</span>') : '<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">未知</span>'}</div>
+                    <div><span class="font-medium">测试集:</span> <span class="text-xs bg-slate-100 px-2 py-1 rounded">${result.dataset_name || '默认提示'}</span></div>
                 </div>
             </div>
             
