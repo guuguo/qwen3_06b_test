@@ -40,6 +40,7 @@ class QPSTestConfig:
     test_prompts: List[str]
     warmup_requests: int = 10
     timeout_seconds: int = 30
+    enable_thinking: bool = False  # 是否启用思考模式
 
 
 @dataclass
@@ -52,6 +53,7 @@ class QPSTestResult:
     end_time: str
     duration_seconds: float
     concurrent_users: int
+    enable_thinking: bool  # 是否启用思考模式
     total_requests: int
     successful_requests: int
     failed_requests: int
@@ -90,7 +92,7 @@ class QPSEvaluator:
     
     def __init__(self, 
                  ollama_client: Optional[OllamaIntegration] = None,
-                 results_dir: str = "./qps_results"):
+                 results_dir: str = "./test_results/qps"):
         """
         初始化QPS评估器
         
@@ -117,7 +119,8 @@ class QPSEvaluator:
                           concurrent_users: int,
                           duration_seconds: int,
                           prompt_template: str = "你好，请介绍一下你自己。",
-                          test_prompts: Optional[List[str]] = None) -> QPSTestConfig:
+                          test_prompts: Optional[List[str]] = None,
+                          enable_thinking: bool = False) -> QPSTestConfig:
         """
         创建测试配置
         
@@ -128,6 +131,7 @@ class QPSEvaluator:
             duration_seconds: 测试持续时间（秒）
             prompt_template: 提示模板
             test_prompts: 测试提示列表
+            enable_thinking: 是否启用思考模式
             
         Returns:
             QPSTestConfig: 测试配置
@@ -147,7 +151,8 @@ class QPSEvaluator:
             concurrent_users=concurrent_users,
             duration_seconds=duration_seconds,
             prompt_template=prompt_template,
-            test_prompts=test_prompts
+            test_prompts=test_prompts,
+            enable_thinking=enable_thinking
         )
     
     def start_qps_test(self, config: QPSTestConfig) -> str:
@@ -245,10 +250,21 @@ class QPSEvaluator:
         """
         self.logger.info(f"开始预热模型: {config.model}")
         
+        # 获取当前测试ID以更新进度
+        test_id = self.current_test
+        
         for i in range(config.warmup_requests):
             try:
                 prompt = config.test_prompts[i % len(config.test_prompts)]
-                self.ollama_client.inference_with_metrics(config.model, prompt)
+                # 根据配置决定是否启用思考模式
+                self.ollama_client.inference_with_metrics(config.model, prompt, enable_thinking=config.enable_thinking)
+                
+                # 更新预热进度 (5% - 10%)
+                if test_id and test_id in self.test_progress:
+                    progress = 5 + int((i + 1) / config.warmup_requests * 5)
+                    self.test_progress[test_id]['progress'] = progress
+                    self.logger.debug(f"预热进度: {i+1}/{config.warmup_requests} ({progress}%)")
+                
                 time.sleep(0.1)  # 短暂延迟
             except Exception as e:
                 self.logger.warning(f"预热请求失败: {e}")
@@ -284,7 +300,7 @@ class QPSEvaluator:
                 prompt = config.test_prompts[request_counter % len(config.test_prompts)]
                 
                 # 执行请求
-                result = self._execute_single_request(request_id, config.model, prompt, config.timeout_seconds)
+                result = self._execute_single_request(request_id, config.model, prompt, config.timeout_seconds, config.enable_thinking)
                 worker_results.append(result)
                 
                 # 更新进度
@@ -311,7 +327,7 @@ class QPSEvaluator:
         self.logger.info(f"并发测试完成，总请求数: {len(request_results)}")
         return request_results
     
-    def _execute_single_request(self, request_id: str, model: str, prompt: str, timeout: int) -> RequestResult:
+    def _execute_single_request(self, request_id: str, model: str, prompt: str, timeout: int, enable_thinking: bool = False) -> RequestResult:
         """
         执行单个请求
         
@@ -320,6 +336,7 @@ class QPSEvaluator:
             model: 模型名称
             prompt: 提示
             timeout: 超时时间
+            enable_thinking: 是否启用思考模式
             
         Returns:
             RequestResult: 请求结果
@@ -327,7 +344,8 @@ class QPSEvaluator:
         start_time = time.time()
         
         try:
-            result = self.ollama_client.inference_with_metrics(model, prompt)
+            # 根据配置决定是否启用思考模式
+            result = self.ollama_client.inference_with_metrics(model, prompt, enable_thinking=enable_thinking)
             end_time = time.time()
             
             if isinstance(result, dict) and result.get('status') == 'success':
@@ -447,6 +465,7 @@ class QPSEvaluator:
             end_time=datetime.fromtimestamp(end_time).isoformat(),
             duration_seconds=duration,
             concurrent_users=config.concurrent_users,
+            enable_thinking=config.enable_thinking,  # 添加思考模式配置
             total_requests=total_requests,
             successful_requests=successful_requests,
             failed_requests=failed_requests,
@@ -606,7 +625,7 @@ def create_qps_evaluator(ollama_client: Optional[OllamaIntegration] = None) -> Q
     Returns:
         QPSEvaluator: QPS评估器实例
     """
-    results_dir = get_config('qps_evaluation.results_dir', './qps_results')
+    results_dir = get_config('qps_evaluation.results_dir', './test_results/qps')
     return QPSEvaluator(ollama_client, results_dir)
 
 

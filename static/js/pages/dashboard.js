@@ -328,17 +328,21 @@
     }
     
     // 加载测试集信息
-    window.loadDatasetInfo = function() {
+    window.loadDatasetInfo = async function() {
         const datasetSelect = document.getElementById('datasetSelect');
         const selectedDatasetName = datasetSelect.value;
-        const datasetInfo = document.getElementById('datasetInfo');
-        
+        const datasetInfoEl = document.getElementById('datasetInfo');
+        const promptPreviewEl = document.getElementById('promptPreview');
+        const promptLoadingMsg = document.getElementById('prompt-loading-message');
+
         if (!selectedDatasetName) {
-            datasetInfo.classList.add('hidden');
+            datasetInfoEl.classList.add('hidden');
+            promptPreviewEl.classList.add('hidden');
+            promptLoadingMsg.style.display = 'block';
             currentDataset = null;
             return;
         }
-        
+
         currentDataset = currentDatasets.find(d => d.name === selectedDatasetName);
         if (currentDataset) {
             document.getElementById('datasetTitle').textContent = currentDataset.display_name;
@@ -346,8 +350,32 @@
             document.getElementById('datasetSamples').textContent = currentDataset.total_samples;
             document.getElementById('datasetCategories').textContent = currentDataset.categories.length;
             document.getElementById('datasetVersion').textContent = currentDataset.version;
-            
-            datasetInfo.classList.remove('hidden');
+            datasetInfoEl.classList.remove('hidden');
+
+            // 加载并显示提示词
+            promptLoadingMsg.style.display = 'none';
+            promptPreviewEl.classList.remove('hidden');
+            document.getElementById('promptFileName').textContent = '加载中...';
+            document.getElementById('promptContent').textContent = '正在从服务器获取提示词内容...';
+
+            try {
+                const response = await fetch(`/api/datasets/${selectedDatasetName}/prompt`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    document.getElementById('promptFileName').textContent = data.file_name;
+                    const promptContentEl = document.getElementById('promptContent');
+                    promptContentEl.textContent = data.content;
+                    // 如果有高亮插件，可以在这里调用
+                    // hljs.highlightElement(promptContentEl);
+                } else {
+                    document.getElementById('promptFileName').textContent = '加载失败';
+                    document.getElementById('promptContent').textContent = `错误: ${data.error || '未知错误'}`;
+                }
+            } catch (error) {
+                document.getElementById('promptFileName').textContent = '加载失败';
+                document.getElementById('promptContent').textContent = `获取提示词时发生网络错误: ${error.message}`;
+            }
         }
     };
     

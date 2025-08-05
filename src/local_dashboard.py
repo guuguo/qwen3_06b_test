@@ -517,6 +517,36 @@ class LocalDashboard:
                 self.logger.error(f"获取测试集样本失败: {e}")
                 return jsonify({'error': str(e)}), 500
         
+        @self.app.route('/api/datasets/<dataset_name>/prompt')
+        def api_dataset_prompt(dataset_name):
+            """获取数据集关联的提示词文件内容"""
+            try:
+                # 获取数据集信息
+                dataset_info = self.dataset_manager.get_dataset_info(dataset_name)
+                if not dataset_info or 'prompt_template_file' not in dataset_info:
+                    return jsonify({'error': '该数据集未配置提示词文件'}), 404
+
+                template_filename = dataset_info['prompt_template_file']
+                
+                # 从md_manager读取文件内容
+                md_manager = get_md_prompt_manager()
+                md_file_path = md_manager.prompts_dir / template_filename
+
+                if not md_file_path.exists():
+                    return jsonify({'error': f'提示词文件不存在: {template_filename}'}), 404
+
+                with open(md_file_path, 'r', encoding='utf-8') as f:
+                    content = f.read()
+
+                return jsonify({
+                    'file_name': template_filename,
+                    'content': content
+                })
+
+            except Exception as e:
+                self.logger.error(f"获取数据集提示词失败: {e}")
+                return jsonify({'error': str(e)}), 500
+
         # 静态文件路由
         @self.app.route('/static/<path:filename>')
         def static_files(filename):
@@ -763,6 +793,7 @@ class LocalDashboard:
                 concurrent_users = data.get('concurrent_users', 5)
                 duration_seconds = data.get('duration_seconds', 60)
                 prompt_template = data.get('prompt_template', '你好，请介绍一下你自己。')
+                enable_thinking = data.get('enable_thinking', False)  # 获取思考模式配置
                 
                 # 创建测试配置
                 config = self.qps_evaluator.create_test_config(
@@ -770,7 +801,8 @@ class LocalDashboard:
                     model=model,
                     concurrent_users=concurrent_users,
                     duration_seconds=duration_seconds,
-                    prompt_template=prompt_template
+                    prompt_template=prompt_template,
+                    enable_thinking=enable_thinking
                 )
                 
                 # 启动测试

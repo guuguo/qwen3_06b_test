@@ -5,7 +5,27 @@ let progressInterval = null;
 // 页面加载时初始化
 document.addEventListener('DOMContentLoaded', function() {
     refreshResults();
+    initThinkingToggle();
 });
+
+// 初始化思考模式开关
+function initThinkingToggle() {
+    const toggle = document.getElementById('enableThinkingToggle');
+    const text = document.getElementById('thinkingModeText');
+    const hint = document.getElementById('thinkingModeHint');
+    
+    if (toggle && text && hint) {
+        toggle.addEventListener('change', function() {
+            if (this.checked) {
+                text.textContent = '启用思考';
+                hint.textContent = '显示模型推理过程';
+            } else {
+                text.textContent = '关闭思考';
+                hint.textContent = '关闭可提升QPS性能';
+            }
+        });
+    }
+}
 
 // 标签页切换
 function showTab(tabName) {
@@ -80,13 +100,39 @@ async function startQPSTest() {
         startBtn.disabled = true;
         startBtn.innerHTML = '🔄 启动中...';
         
+        // 获取表单元素并检查是否存在
+        const testNameEl = document.getElementById('testName');
+        const modelSelectEl = document.getElementById('modelSelect');
+        const concurrentUsersEl = document.getElementById('concurrentUsers');
+        const durationSecondsEl = document.getElementById('durationSeconds');
+        const promptTemplateEl = document.getElementById('promptTemplate');
+        const enableThinkingEl = document.getElementById('enableThinkingToggle');
+        
+        // 检查元素是否存在
+        if (!testNameEl || !modelSelectEl || !concurrentUsersEl || !durationSecondsEl || !promptTemplateEl || !enableThinkingEl) {
+            console.error('某些表单元素不存在:', {
+                testName: !!testNameEl,
+                modelSelect: !!modelSelectEl,
+                concurrentUsers: !!concurrentUsersEl,
+                durationSeconds: !!durationSecondsEl,
+                promptTemplate: !!promptTemplateEl,
+                enableThinking: !!enableThinkingEl
+            });
+            showNotification('表单元素不存在，请刷新页面', 'error');
+            return;
+        }
+        
         const config = {
-            test_name: document.getElementById('testName').value,
-            model: document.getElementById('modelSelect').value,
-            concurrent_users: parseInt(document.getElementById('concurrentUsers').value),
-            duration_seconds: parseInt(document.getElementById('durationSeconds').value),
-            prompt_template: document.getElementById('promptTemplate').value
+            test_name: testNameEl.value || '性能测试',
+            model: modelSelectEl.value || 'qwen3:0.6b',
+            concurrent_users: parseInt(concurrentUsersEl.value) || 5,
+            duration_seconds: parseInt(durationSecondsEl.value) || 60,
+            prompt_template: promptTemplateEl.value || '你好，请介绍一下你自己。',
+            enable_thinking: enableThinkingEl.checked || false
         };
+        
+        // 调试信息
+        console.log('发送QPS测试配置:', config);
         
         const response = await fetch('/api/qps/start', {
             method: 'POST',
@@ -166,11 +212,15 @@ function startProgressMonitoring(testId) {
 
 // 更新进度显示
 function updateProgress(progress) {
-    const progressBar = document.getElementById('progressBar');
-    const progressText = document.getElementById('progressText');
+    const progressBar = document.getElementById('currentProgressBar');
+    const progressText = document.getElementById('currentProgress');
     
-    progressBar.style.width = `${progress.progress}%`;
-    progressText.textContent = `${progress.progress}% (${progress.status})`;
+    if (progressBar) {
+        progressBar.style.width = `${progress.progress}%`;
+    }
+    if (progressText) {
+        progressText.textContent = `${progress.progress}%`;
+    }
 }
 
 // 停止当前测试
@@ -226,7 +276,7 @@ function updateResultsTable(results) {
     if (results.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="8" class="text-center py-8 text-slate-500">
+                <td colspan="9" class="text-center py-8 text-slate-500">
                     暂无测试结果
                 </td>
             </tr>
@@ -234,12 +284,22 @@ function updateResultsTable(results) {
         return;
     }
     
-    tbody.innerHTML = results.map(result => `
+    tbody.innerHTML = results.map(result => {
+        // 处理思考模式显示
+        const thinkingMode = result.enable_thinking !== undefined ? 
+            (result.enable_thinking ? 
+                '<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800">启用</span>' : 
+                '<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">禁用</span>'
+            ) : 
+            '<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">未知</span>';
+        
+        return `
         <tr class="clickable-row border-b border-slate-100 hover:bg-slate-50" onclick="showTestDetail('${result.test_id}')">
             <td class="py-3 px-4">${result.test_name}</td>
             <td class="py-3 px-4">${result.model}</td>
             <td class="py-3 px-4">${new Date(result.start_time).toLocaleString()}</td>
             <td class="py-3 px-4">${result.concurrent_users}</td>
+            <td class="py-3 px-4">${thinkingMode}</td>
             <td class="py-3 px-4 font-medium">${result.qps.toFixed(2)}</td>
             <td class="py-3 px-4">${result.avg_latency_ms.toFixed(0)}ms</td>
             <td class="py-3 px-4 ${result.error_rate > 5 ? 'text-red-600' : result.error_rate > 1 ? 'text-yellow-600' : 'text-green-600'}">${result.error_rate.toFixed(1)}%</td>
@@ -249,7 +309,8 @@ function updateResultsTable(results) {
                 </button>
             </td>
         </tr>
-    `).join('');
+        `;
+    }).join('');
 }
 
 // 更新结果统计
@@ -307,6 +368,7 @@ function showDetailModal(result) {
                     <div><span class="font-medium">结束时间:</span> ${new Date(result.end_time).toLocaleString()}</div>
                     <div><span class="font-medium">测试时长:</span> ${result.duration_seconds.toFixed(1)}秒</div>
                     <div><span class="font-medium">并发用户数:</span> ${result.concurrent_users}</div>
+                    <div><span class="font-medium">思考模式:</span> ${result.enable_thinking !== undefined ? (result.enable_thinking ? '<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800">启用</span>' : '<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">禁用</span>') : '<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">未知</span>'}</div>
                 </div>
             </div>
             
