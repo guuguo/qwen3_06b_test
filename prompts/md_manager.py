@@ -46,8 +46,14 @@ class MarkdownPromptManager:
                 config = self._parse_md_file(md_file)
                 dataset_id = config.get('dataset_id')
                 if dataset_id:
-                    mapping[md_file.stem] = dataset_id
-                    self.logger.debug(f"映射: {md_file.stem} -> {dataset_id}")
+                    # 支持多个数据集ID（列表或单个字符串）
+                    if isinstance(dataset_id, list):
+                        for id in dataset_id:
+                            mapping[id] = md_file.stem
+                            self.logger.debug(f"映射: {id} -> {md_file.stem}")
+                    else:
+                        mapping[dataset_id] = md_file.stem
+                        self.logger.debug(f"映射: {dataset_id} -> {md_file.stem}")
             except Exception as e:
                 self.logger.warning(f"解析文件失败 {md_file}: {str(e)}")
         
@@ -148,7 +154,11 @@ class MarkdownPromptManager:
                     }
                     
                     eng_key = key_mapping.get(key, key.lower().replace(' ', '_'))
-                    config[eng_key] = value
+                    # 处理多个数据集ID（用逗号分隔）
+                    if eng_key == 'dataset_id' and ',' in value:
+                        config[eng_key] = [id.strip() for id in value.split(',')]
+                    else:
+                        config[eng_key] = value
         
         return config
     
@@ -218,20 +228,15 @@ class MarkdownPromptManager:
         return keywords
     
     def get_dataset_by_name(self, dataset_name: str) -> Optional[str]:
-        """根据数据集名称获取数据集ID"""
-        # 直接匹配
+        """根据数据集名称获取对应的MD文件名"""
+        # 直接匹配数据集ID
         if dataset_name in self._dataset_mapping:
             return self._dataset_mapping[dataset_name]
         
-        # 尝试ID匹配
-        for file_name, dataset_id in self._dataset_mapping.items():
-            if dataset_id == dataset_name:
-                return dataset_id
-        
-        # 模糊匹配
-        for file_name, dataset_id in self._dataset_mapping.items():
-            if dataset_name in file_name or file_name in dataset_name:
-                return dataset_id
+        # 模糊匹配文件名
+        for dataset_id, file_name in self._dataset_mapping.items():
+            if dataset_name in dataset_id or dataset_id in dataset_name:
+                return file_name
         
         return None
     
@@ -271,11 +276,22 @@ class MarkdownPromptManager:
     
     def _find_md_file(self, dataset_name: str) -> Optional[Path]:
         """查找对应的MD文件"""
-        # 优先匹配数据集ID
+        # 使用映射直接查找
+        file_name = self.get_dataset_by_name(dataset_name)
+        if file_name:
+            md_file = self.prompts_dir / f"{file_name}.md"
+            if md_file.exists():
+                return md_file
+        
+        # 备用：遍历所有文件匹配数据集ID
         for md_file in self.prompts_dir.glob("*.md"):
             try:
                 config = self._parse_md_file(md_file)
-                if config.get('dataset_id') == dataset_name:
+                dataset_id = config.get('dataset_id')
+                if isinstance(dataset_id, list):
+                    if dataset_name in dataset_id:
+                        return md_file
+                elif dataset_id == dataset_name:
                     return md_file
             except:
                 continue

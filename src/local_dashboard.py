@@ -522,8 +522,9 @@ class LocalDashboard:
                 model_name = data.get('model', 'qwen3:0.6b')
                 dataset_name = data.get('dataset')
                 sample_count = data.get('sample_count', 10)
+                enable_thinking = data.get('enable_thinking', True)  # 默认启用思考
                 
-                self.logger.info(f"开始测试集评估: model={model_name}, dataset={dataset_name}, samples={sample_count}")
+                self.logger.info(f"开始测试集评估: model={model_name}, dataset={dataset_name}, samples={sample_count}, thinking={enable_thinking}")
                 
                 if not dataset_name:
                     self.logger.error("缺少测试集名称")
@@ -551,6 +552,7 @@ class LocalDashboard:
                     model_name, 
                     dataset_name, 
                     sample_count=sample_count,
+                    enable_thinking=enable_thinking,
                     progress_callback=lambda current, total, sample_id: self.progress_callback(current, total, sample_id)
                 )
                 end_time = time.time()
@@ -632,12 +634,14 @@ class LocalDashboard:
                 
                 model_name = data.get('model', 'qwen3:0.6b')
                 sample_count = data.get('sample_count', 5)
+                enable_thinking = data.get('enable_thinking', True)  # 默认启用思考
                 
                 # 运行所有测试集评估
                 start_time = time.time()
                 reports = self.local_tester.run_all_dataset_evaluations(
                     model_name, 
-                    sample_count=sample_count
+                    sample_count=sample_count,
+                    enable_thinking=enable_thinking
                 )
                 end_time = time.time()
                 

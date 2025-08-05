@@ -454,7 +454,39 @@ class TestDatasetManager:
     def _parse_model_response(self, response_text: str, dataset_name: str) -> Optional[Dict[str, Any]]:
         """解析模型响应"""
         try:
-            # 尝试解析JSON
+            # 优先使用MD管理器解析
+            md_manager = get_md_prompt_manager()
+            parsed = md_manager.parse_response(dataset_name, response_text)
+            
+            if parsed:
+                # 标准化字段名，确保兼容性
+                result = {}
+                
+                # 处理评分字段（确保0不被误认为None）
+                if 'ad_score' in parsed:
+                    result['score'] = parsed['ad_score']
+                elif 'severity_score' in parsed:
+                    result['score'] = parsed['severity_score']
+                elif 'score' in parsed:
+                    result['score'] = parsed['score']
+                
+                # 处理类别字段
+                if 'category' in parsed:
+                    result['category'] = parsed['category']
+                
+                # 处理分析字段
+                if 'analysis' in parsed:
+                    result['analysis'] = parsed['analysis']
+                
+                # 调试日志
+                self.logger.info(f"MD管理器解析成功 - dataset: {dataset_name}, score: {result.get('score')}, category: {result.get('category')}")
+                return result
+            
+        except Exception as e:
+            self.logger.warning(f"MD管理器解析失败: {e}")
+        
+        # 备用：尝试JSON解析
+        try:
             if '{' in response_text and '}' in response_text:
                 json_start = response_text.find('{')
                 json_end = response_text.rfind('}') + 1
@@ -462,25 +494,24 @@ class TestDatasetManager:
                 
                 parsed = json.loads(json_text)
                 
-                if dataset_name == 'call_semantic_complaints':
-                    return {
-                        'category': parsed.get('category'),
-                        'score': parsed.get('severity_score'),
-                        'analysis': parsed.get('analysis')
-                    }
-                elif dataset_name == 'manga_comment_ad_detection':
-                    return {
-                        'category': parsed.get('category'),
-                        'score': parsed.get('ad_score'),
-                        'analysis': parsed.get('analysis')
-                    }
-                else:
-                    return parsed
+                # 标准化字段名
+                result = {}
+                if 'ad_score' in parsed:
+                    result['score'] = parsed['ad_score']
+                elif 'severity_score' in parsed:
+                    result['score'] = parsed['severity_score']
+                if 'category' in parsed:
+                    result['category'] = parsed['category']
+                if 'analysis' in parsed:
+                    result['analysis'] = parsed['analysis']
+                
+                self.logger.info(f"JSON解析成功 - dataset: {dataset_name}, score: {result.get('score')}")
+                return result
                     
         except Exception as e:
             self.logger.warning(f"JSON解析失败: {e}")
         
-        # 尝试文本解析
+        # 最后备用：简单文本解析
         try:
             result = {}
             lines = response_text.split('\n')

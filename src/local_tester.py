@@ -1129,6 +1129,7 @@ class SimpleLocalTester:
     def run_dataset_evaluation(self, model: str, dataset_name: str,
                              sample_count: Optional[int] = None,
                              categories: Optional[List[str]] = None,
+                             enable_thinking: bool = True,
                              progress_callback: Optional[callable] = None) -> EvaluationReport:
         """
         运行测试集评估
@@ -1138,6 +1139,7 @@ class SimpleLocalTester:
             dataset_name: 测试集名称
             sample_count: 样本数量限制
             categories: 筛选特定类别
+            enable_thinking: 是否启用模型思考过程
             progress_callback: 进度回调函数，接收(current_index, total_count, current_sample_id)
             
         Returns:
@@ -1175,7 +1177,7 @@ class SimpleLocalTester:
                 if progress_callback:
                     progress_callback(i + 1, total_count, current_sample_id)
                 
-                response = self.ollama.inference_with_metrics(model, prompt)
+                response = self.ollama.inference_with_metrics(model, prompt, enable_thinking=enable_thinking)
                 model_responses.append(response)
             except Exception as e:
                 current_sample_id = test_samples[i].id if hasattr(test_samples[i], 'id') else f'sample_{i+1}'
@@ -1216,13 +1218,15 @@ class SimpleLocalTester:
         return report
     
     def run_all_dataset_evaluations(self, model: str,
-                                   sample_count: Optional[int] = None) -> Dict[str, EvaluationReport]:
+                                   sample_count: Optional[int] = None,
+                                   enable_thinking: bool = True) -> Dict[str, EvaluationReport]:
         """
         运行所有可用测试集的评估
         
         Args:
             model: 测试模型名称
             sample_count: 每个测试集的样本数量限制
+            enable_thinking: 是否启用模型思考过程
             
         Returns:
             Dict[str, EvaluationReport]: 所有测试集的评估报告
@@ -1235,7 +1239,7 @@ class SimpleLocalTester:
         for dataset_name in available_datasets:
             try:
                 self.logger.info(f"评估测试集: {dataset_name}")
-                report = self.run_dataset_evaluation(model, dataset_name, sample_count)
+                report = self.run_dataset_evaluation(model, dataset_name, sample_count, enable_thinking=enable_thinking)
                 reports[dataset_name] = report
                 
                 # 显示简要结果

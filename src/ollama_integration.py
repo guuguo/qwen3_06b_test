@@ -283,6 +283,7 @@ class OllamaIntegration:
                              model: str, 
                              prompt: str,
                              stream: bool = False,
+                             enable_thinking: bool = True,
                              **options) -> InferenceMetrics:
         """
         带指标收集的推理接口
@@ -291,6 +292,7 @@ class OllamaIntegration:
             model: 模型名称
             prompt: 输入提示
             stream: 是否流式输出
+            enable_thinking: 是否启用模型思考过程
             **options: 其他推理选项
             
         Returns:
@@ -320,8 +322,13 @@ class OllamaIntegration:
             "model": model,
             "prompt": prompt,
             "stream": stream,
+            "think": enable_thinking,  # 直接控制思考开关
             **options
         }
+        
+        # 记录思考开关状态
+        thinking_status = "启用" if enable_thinking else "禁用"
+        self.logger.info(f"模型推理请求 - 模型: {model}, 思考: {thinking_status} (think: {enable_thinking})")
         
         try:
             response = self.session.post(

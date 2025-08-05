@@ -204,6 +204,28 @@
         }
     }
     
+    // 思考开关事件监听
+    const enableThinkingToggle = document.getElementById('enableThinkingToggle');
+    const thinkingModeText = document.getElementById('thinkingModeText');
+    const thinkingModeHint = document.getElementById('thinkingModeHint');
+    
+    if (enableThinkingToggle) {
+        enableThinkingToggle.addEventListener('change', function() {
+            if (this.checked) {
+                thinkingModeText.textContent = '启用思考';
+                thinkingModeHint.textContent = '显示模型推理过程';
+            } else {
+                thinkingModeText.textContent = '禁用思考';
+                thinkingModeHint.textContent = '仅显示最终结果';
+            }
+        });
+    }
+    
+    // 工具函数：安全显示数值（避免0被显示为N/A）
+    function safeDisplayValue(value, defaultValue = 'N/A') {
+        return (value !== null && value !== undefined) ? value : defaultValue;
+    }
+    
     // 将原有的所有函数保持不变，只是移到这个模块化的结构中
     // 这里包含所有原来的函数：runTest, clearResults, loadDatasets, 等等...
     
@@ -499,7 +521,8 @@
                 },
                 body: JSON.stringify({
                     model: modelName,
-                    sample_count: sampleCount
+                    sample_count: sampleCount,
+                    enable_thinking: enableThinking
                 })
             });
             
@@ -767,7 +790,7 @@
                     <td class="px-3 py-3">
                         <div class="space-y-1">
                             <div class="text-xs text-slate-600">期望: ${result.expected_score}</div>
-                            <div class="text-xs text-slate-900">实际: ${result.model_score || 'N/A'}</div>
+                            <div class="text-xs text-slate-900">实际: ${safeDisplayValue(result.model_score)}</div>
                             ${result.score_diff !== null ? `<div class="text-xs text-slate-500">差值: ±${result.score_diff.toFixed(1)}</div>` : ''}
                         </div>
                     </td>
@@ -1016,7 +1039,7 @@
                 </div>
                 <div class="bg-slate-50 p-3 rounded border">
                     <div class="text-xs font-semibold text-slate-600 mb-1">模型评分</div>
-                    <div class="text-slate-900 font-medium">${result.model_score || 'N/A'}</div>
+                    <div class="text-slate-900 font-medium">${safeDisplayValue(result.model_score)}</div>
                 </div>
                 <div class="bg-slate-50 p-3 rounded border">
                     <div class="text-xs font-semibold text-slate-600 mb-1">评分准确性</div>
