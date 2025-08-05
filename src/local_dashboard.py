@@ -57,6 +57,9 @@ class LocalDashboard:
         self.port = port
         self.debug = debug
         
+        # 配置参数
+        self.max_response_length = 0  # 模型响应显示的最大长度（0=无限制，>0=限制字符数）
+        
         # 设置日志
         self.logger = logging.getLogger(__name__)
         
@@ -124,6 +127,25 @@ class LocalDashboard:
         except Exception as e:
             self.logger.error(f"组件初始化失败: {e}")
             raise
+    
+    def _truncate_response(self, response: str) -> str:
+        """
+        截断模型响应以控制显示长度
+        
+        Args:
+            response: 原始响应内容
+            
+        Returns:
+            截断后的响应内容
+        """
+        # 如果设置为0或负数，则不限制长度
+        if self.max_response_length <= 0:
+            return response
+            
+        if len(response) <= self.max_response_length:
+            return response
+        
+        return response[:self.max_response_length] + '...'
     
     def _register_routes(self) -> None:
         """注册路由"""
@@ -558,7 +580,7 @@ class LocalDashboard:
                     detailed_results.append({
                         'sample_id': clean_sample_id,
                         'comment': result.comment,  # 添加原始评论内容
-                        'model_response': result.model_response[:500] + '...' if len(result.model_response) > 500 else result.model_response,
+                        'model_response': self._truncate_response(result.model_response),
                         'model_score': result.model_score,
                         'model_category': result.model_category,
                         'expected_score': result.expected_score,
@@ -627,7 +649,7 @@ class LocalDashboard:
                         detailed_results.append({
                             'sample_id': result.sample_id,
                             'comment': result.comment,  # 添加原始评论内容
-                            'model_response': result.model_response[:500] + '...' if len(result.model_response) > 500 else result.model_response,
+                            'model_response': self._truncate_response(result.model_response),
                             'model_score': result.model_score,
                             'model_category': result.model_category,
                             'expected_score': result.expected_score,

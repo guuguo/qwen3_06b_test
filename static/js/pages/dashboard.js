@@ -344,6 +344,7 @@
         const datasetSelect = document.getElementById('datasetSelect');
         const testModelSelect = document.getElementById('testModelSelect');
         const sampleCountInput = document.getElementById('sampleCountInput');
+        const enableThinkingToggle = document.getElementById('enableThinkingToggle');
         const runDatasetBtn = document.getElementById('runDatasetBtn');
         const progressArea = document.getElementById('datasetTestProgress');
         const resultsArea = document.getElementById('datasetTestResults');
@@ -353,6 +354,7 @@
         const datasetName = datasetSelect.value;
         const modelName = testModelSelect.value;
         const sampleCount = parseInt(sampleCountInput.value);
+        const enableThinking = enableThinkingToggle.checked;
         
         if (!datasetName) {
             Utils.showError('请选择测试集');
@@ -377,7 +379,8 @@
                 body: JSON.stringify({
                     dataset: datasetName,
                     model: modelName,
-                    sample_count: sampleCount
+                    sample_count: sampleCount,
+                    enable_thinking: enableThinking
                 })
             });
             
@@ -466,6 +469,7 @@
     window.runAllDatasetsTest = async function() {
         const testModelSelect = document.getElementById('testModelSelect');
         const sampleCountInput = document.getElementById('sampleCountInput');
+        const enableThinkingToggle = document.getElementById('enableThinkingToggle');
         const runAllDatasetsBtn = document.getElementById('runAllDatasetsBtn');
         const progressArea = document.getElementById('datasetTestProgress');
         const resultsArea = document.getElementById('datasetTestResults');
@@ -474,6 +478,7 @@
         
         const modelName = testModelSelect.value;
         const sampleCount = parseInt(sampleCountInput.value);
+        const enableThinking = enableThinkingToggle.checked;
         
         // 显示进度
         progressArea.classList.remove('hidden');
@@ -745,6 +750,12 @@
             if (!window.testResults) window.testResults = {};
             window.testResults[`result_${index}`] = result;
             
+            // 明确地验证sampleId内容
+            console.log(`即将显示的样本ID: "${sampleId}" (长度: ${sampleId.length})`);
+            if (sampleId.length > 20) {
+                console.error('检测到异常长的样本ID:', sampleId.substring(0, 100));
+            }
+            
             html += `
                 <tr class="result-row hover:bg-slate-50" data-status="${scoreStatus}" data-category="${result.category_match}">
                     <td class="px-3 py-3">
@@ -811,7 +822,7 @@
                     <tbody class="divide-y divide-red-100">
         `;
         
-        errorResults.forEach(result => {
+        errorResults.forEach((result, index) => {
             const errorType = result.error ? '解析错误' : '评分偏差';
             const description = result.error || `评分偏差过大 (期望: ${result.expected_score}, 实际: ${result.model_score})`;
             const suggestion = result.error ? '检查模型输出格式' : '调整评分标准或提示词';
@@ -822,11 +833,15 @@
             // 获取评论内容，优先使用comment字段，其次使用comment_text
             const commentText = result.comment || result.comment_text || result.original_comment || '无评论内容';
             
+            // 将结果数据存储到全局变量中
+            if (!window.testResults) window.testResults = {};
+            window.testResults[`error_result_${index}`] = result;
+            
             html += `
                 <tr class="hover:bg-red-50">
                     <td class="px-3 py-3">
                         <strong class="clickable-sample text-indigo-600 hover:text-indigo-800 cursor-pointer" 
-                                onclick="showSampleDetail('${sampleId}', ${JSON.stringify(result).replace(/'/g, '&apos;')})"
+                                onclick="showSampleDetail('${sampleId}', 'error_result_${index}')"
                                 title="${commentText.replace(/"/g, '&quot;').substring(0, 200)}${commentText.length > 200 ? '...' : ''}"
                         >${sampleId}</strong>
                     </td>

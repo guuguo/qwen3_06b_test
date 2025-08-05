@@ -21,6 +21,14 @@ from typing import Dict, List, Optional, Any, Tuple, Union
 from dataclasses import dataclass, asdict
 from pathlib import Path
 import statistics
+import sys
+
+# 添加prompts目录到Python路径
+current_dir = Path(__file__).parent.parent
+prompts_dir = current_dir / "prompts"
+sys.path.append(str(prompts_dir))
+
+from md_manager import get_md_prompt_manager
 
 
 @dataclass
@@ -247,6 +255,47 @@ class TestDatasetManager:
         """
         为测试样本创建提示词
         
+        使用新的提示词管理系统，从配置文件中加载提示词模板
+        
+        Args:
+            dataset_name: 测试集名称
+            test_samples: 测试样本列表
+            
+        Returns:
+            List[str]: 格式化的提示词列表
+        """
+        prompts = []
+        
+        try:
+            # 使用MD提示词管理器
+            md_manager = get_md_prompt_manager()
+            
+            for sample in test_samples:
+                # 准备样本数据
+                sample_data = {
+                    'content': sample.content,
+                    'category': sample.category,
+                    'expected_score': sample.expected_score
+                }
+                
+                # 使用MD提示词管理器渲染提示词
+                prompt = md_manager.render_prompt(dataset_name, sample_data)
+                prompts.append(prompt)
+                
+            self.logger.info(f"使用MD提示词管理器为 {dataset_name} 生成了 {len(prompts)} 个提示词")
+            
+        except Exception as e:
+            self.logger.warning(f"MD提示词管理器失败，使用硬编码备用方法: {str(e)}")
+            # 备用方法：使用原始硬编码逻辑
+            prompts = self._create_fallback_prompts(dataset_name, test_samples)
+        
+        return prompts
+    
+    def _create_fallback_prompts(self, dataset_name: str, 
+                               test_samples: List[TestSample]) -> List[str]:
+        """
+        备用提示词创建方法（保持与原始逻辑兼容）
+        
         Args:
             dataset_name: 测试集名称
             test_samples: 测试样本列表
@@ -303,7 +352,8 @@ class TestDatasetManager:
 请提供你的分析结果。"""
             
             prompts.append(prompt)
-        
+            
+        self.logger.info(f"使用备用方法为 {dataset_name} 生成了 {len(prompts)} 个提示词")
         return prompts
     
     def evaluate_model_responses(self, dataset_name: str,
@@ -333,6 +383,15 @@ class TestDatasetManager:
                 
                 # 尝试解析JSON响应
                 model_result = self._parse_model_response(model_response_text, dataset_name)
+                
+                # 使用MD提示词管理器进行响应质量检查
+                try:
+                    md_manager = get_md_prompt_manager()
+                    validation_errors = md_manager.validate_response(dataset_name, model_response_text)
+                    if validation_errors:
+                        self.logger.warning(f"响应质量检查发现问题 - 样本 {sample.id}: {'; '.join(validation_errors)}")
+                except Exception as e:
+                    self.logger.debug(f"响应质量检查失败 - 样本 {sample.id}: {str(e)}")
                 
                 if model_result:
                     # 计算准确性
