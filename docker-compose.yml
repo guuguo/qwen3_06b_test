@@ -1,4 +1,5 @@
-version: '3.8'
+# Docker Compose file for Qwen3 Dashboard
+name: qwen3-dashboard
 
 services:
   qwen3-dashboard:
@@ -7,27 +8,36 @@ services:
       dockerfile: Dockerfile
     container_name: qwen3-dashboard
     ports:
-      - "5000:5000"    # Web界面
+      - "9080:5000"    # Web界面 (专属端口避免冲突)
       - "11434:11434"  # Ollama API
     volumes:
       # 持久化存储
       - ollama_models:/root/.ollama           # Ollama模型存储
-      - ./data:/app/data                      # 应用数据
-      - ./test_results:/app/test_results      # 测试结果
-      - ./logs:/app/logs                      # 日志文件
+      # 统一的工作目录映射
+      - ./workspace:/app/workspace            # 统一工作目录
+      - ./workspace/data:/app/data            # 应用数据
+      - ./workspace/test_results:/app/test_results      # 测试结果
+      - ./workspace/logs:/app/logs            # 统一日志目录
     environment:
-      # CPU优化配置
-      - OLLAMA_NUM_PARALLEL=2
+      # CPU优化配置 - 充分利用8核CPU
+      - OLLAMA_NUM_PARALLEL=2            # 允许2个并行请求
       - OLLAMA_MAX_LOADED_MODELS=1
-      - OLLAMA_MAX_QUEUE=8
-      - OLLAMA_NUM_THREADS=0              # 自动检测
-      - OLLAMA_KEEP_ALIVE=30s
+      - OLLAMA_MAX_QUEUE=8               # 增加队列长度
+      - OLLAMA_NUM_THREADS=8             # 使用全部CPU核心
+      - OLLAMA_KEEP_ALIVE=60s            # 延长模型保持时间
       - OLLAMA_HOST=0.0.0.0:11434
+      - OLLAMA_CONTEXT_LENGTH=4096       # 增加上下文长度
+      
+      # 内存映射优化 - 启用mmap提升I/O性能
+      - OLLAMA_NO_MMAP=0                 # 关闭no-mmap标志，启用内存映射
       
       # Flask配置
       - FLASK_HOST=0.0.0.0
       - FLASK_PORT=5000
       - FLASK_ENV=production
+      
+      # 时区配置
+      - TZ=Asia/Shanghai                 # 设置中国时区
       
       # 可选：预下载模型
       - PRELOAD_MODEL=qwen3:0.6b-q4_k_m
@@ -36,11 +46,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '8.0'        # 限制CPU使用
-          memory: 6G         # 内存限制
+          cpus: '8.0'       # CPU限制
+          memory: 8G        # 内存限制
         reservations:
-          cpus: '2.0'        # CPU预留
-          memory: 2G         # 内存预留
+          cpus: '2.0'       # CPU预留
+          memory: 2G        # 内存预留
     
     # 健康检查
     healthcheck:

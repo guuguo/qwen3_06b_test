@@ -40,7 +40,7 @@ class QPSTestConfig:
     prompt_template: str
     test_prompts: List[str]
     warmup_requests: int = 10
-    timeout_seconds: int = 30
+    timeout_seconds: int = 120
     enable_thinking: bool = False  # 是否启用思考模式
     dataset_name: str = None  # 测试集名称
 

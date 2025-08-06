@@ -17,10 +17,25 @@ for i in {1..30}; do
     sleep 1
 done
 
-# 检查是否需要预下载模型
+# 预下载推荐的CPU优化模型
+echo "📥 Pre-downloading CPU-optimized models..."
+
+# 下载量化版本（更快推理）
+echo "📦 Downloading qwen3:0.6b-q4_k_m (quantized, balanced performance)..."
+ollama pull qwen3:0.6b-q4_k_m || {
+    echo "⚠️  Failed to download qwen3:0.6b-q4_k_m"
+}
+
+# 下载普通版本（更高质量）
+echo "📦 Downloading qwen3:0.6b (original, higher quality)..."
+ollama pull qwen3:0.6b || {
+    echo "⚠️  Failed to download qwen3:0.6b"
+}
+
+# 检查是否有额外指定的模型
 PRELOAD_MODEL=${PRELOAD_MODEL:-""}
-if [ -n "$PRELOAD_MODEL" ]; then
-    echo "📥 Pre-downloading model: $PRELOAD_MODEL"
+if [ -n "$PRELOAD_MODEL" ] && [ "$PRELOAD_MODEL" != "qwen3:0.6b-q4_k_m" ] && [ "$PRELOAD_MODEL" != "qwen3:0.6b" ]; then
+    echo "📥 Pre-downloading additional model: $PRELOAD_MODEL"
     ollama pull $PRELOAD_MODEL || {
         echo "⚠️  Failed to download $PRELOAD_MODEL, continuing without preload"
     }

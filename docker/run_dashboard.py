@@ -74,7 +74,12 @@ def main():
     
     # 导入并启动Dashboard
     try:
-        from src.local_dashboard import create_local_dashboard
+        # 添加src路径到Python路径
+        src_path = os.path.join('/app', 'src')
+        if src_path not in sys.path:
+            sys.path.insert(0, src_path)
+        
+        from local_dashboard import create_local_dashboard
         
         logger.info("创建Dashboard实例...")
         dashboard = create_local_dashboard(

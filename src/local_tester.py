@@ -36,7 +36,7 @@ class TestConfig:
     concurrent_users: int = 5
     test_duration: int = 60
     iterations: int = 100
-    timeout: int = 30
+    timeout: int = 120
     warmup_iterations: int = 5
 
 

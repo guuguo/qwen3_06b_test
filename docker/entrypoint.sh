@@ -99,7 +99,7 @@ if __name__ == '__main__':
 EOF
 
 # 启动健康检查服务（后台）
-python3.11 /app/health.py &
+python /app/health.py &
 
 echo "✅ Starting services with supervisor..."
 

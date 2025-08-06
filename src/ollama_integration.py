@@ -72,7 +72,7 @@ class OllamaIntegration:
     
     def __init__(self, 
                  base_url: str = "http://localhost:11434",
-                 timeout: int = 30,
+                 timeout: int = 120,
                  max_retries: int = 3,
                  retry_backoff_factor: float = 0.3,
                  pool_connections: int = 10,
