@@ -32,9 +32,8 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements.txt
 
-# 安装Ollama - 直接下载二进制文件
-RUN wget -O /usr/local/bin/ollama https://github.com/ollama/ollama/releases/download/v0.1.44/ollama-linux-amd64 \
-    && chmod +x /usr/local/bin/ollama
+# 安装Ollama (CPU版本)
+RUN curl -fsSL https://ollama.com/install.sh | sh
 
 # 复制应用代码
 COPY src/ ./src/
