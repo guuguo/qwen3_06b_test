@@ -7,12 +7,13 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV OLLAMA_HOST=0.0.0.0:11434
 
 # 使用中国镜像源加速下载
-RUN echo "deb https://mirrors.ustc.edu.cn/debian/ bookworm main" > /etc/apt/sources.list && \
-    echo "deb https://mirrors.ustc.edu.cn/debian/ bookworm-updates main" >> /etc/apt/sources.list && \
-    echo "deb https://mirrors.ustc.edu.cn/debian-security bookworm-security main" >> /etc/apt/sources.list
+RUN rm -f /etc/apt/sources.list.d/* && \
+    echo "deb https://mirrors.ustc.edu.cn/debian/ bookworm main contrib non-free" > /etc/apt/sources.list && \
+    echo "deb https://mirrors.ustc.edu.cn/debian/ bookworm-updates main contrib non-free" >> /etc/apt/sources.list && \
+    echo "deb https://mirrors.ustc.edu.cn/debian-security bookworm-security main contrib non-free" >> /etc/apt/sources.list
 
 # 安装系统依赖
-RUN apt-get update --fix-missing && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     wget \
     supervisor \
