@@ -119,11 +119,18 @@ build_image() {
     
     cd "$PROJECT_DIR"
     
+    # 设置构建优化参数
+    export DOCKER_BUILDKIT=1
+    export BUILDKIT_PROGRESS=plain
+    
+    log_info "开始构建，网络较慢时可能需要10-20分钟，请耐心等待..."
+    
     # 构建镜像 (使用缓存加速)
-    if $DOCKER_COMPOSE build; then
+    if $DOCKER_COMPOSE build --progress=plain; then
         log_success "Docker镜像构建成功"
     else
         log_error "Docker镜像构建失败"
+        log_warning "如果是网络超时，可以重新运行: ./docker/deploy.sh build"
         exit 1
     fi
 }

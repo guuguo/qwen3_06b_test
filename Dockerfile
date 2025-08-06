@@ -6,22 +6,29 @@ ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV OLLAMA_HOST=0.0.0.0:11434
 
+# 使用中国镜像源加速下载
+RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list && \
+    sed -i 's/security.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
+
 # 安装系统依赖
-RUN apt-get update && apt-get install -y \
+RUN apt-get update --fix-missing && apt-get install -y --no-install-recommends \
     curl \
     wget \
     supervisor \
     build-essential \
     procps \
     bc \
-    && rm -rf /var/lib/apt/lists/*
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /tmp/* \
+    && rm -rf /var/tmp/*
 
 # 创建应用目录
 WORKDIR /app
 
 # 复制requirements.txt并安装Python依赖
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements.txt
 
 # 安装Ollama (CPU版本)
 RUN curl -fsSL https://ollama.com/install.sh | sh
