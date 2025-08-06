@@ -1,0 +1,182 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: qwen3-dashboard
+  labels:
+    name: qwen3-dashboard
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: qwen3-config
+  namespace: qwen3-dashboard
+data:
+  OLLAMA_NUM_PARALLEL: "2"
+  OLLAMA_MAX_LOADED_MODELS: "1"
+  OLLAMA_MAX_QUEUE: "8"
+  OLLAMA_NUM_THREADS: "8"
+  OLLAMA_KEEP_ALIVE: "60s"
+  OLLAMA_HOST: "0.0.0.0:11434"
+  OLLAMA_CONTEXT_LENGTH: "4096"
+  OLLAMA_NO_MMAP: "0"
+  FLASK_HOST: "0.0.0.0"
+  FLASK_PORT: "5000"
+  FLASK_ENV: "production"
+  TZ: "Asia/Shanghai"
+  PRELOAD_MODEL: "qwen3:0.6b-q4_k_m"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: qwen3-ollama-models
+  namespace: qwen3-dashboard
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: standard
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: qwen3-workspace
+  namespace: qwen3-dashboard
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: standard
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qwen3-dashboard
+  namespace: qwen3-dashboard
+  labels:
+    app: qwen3-dashboard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qwen3-dashboard
+  template:
+    metadata:
+      labels:
+        app: qwen3-dashboard
+    spec:
+      containers:
+      - name: qwen3-dashboard
+        image: qwen3-dashboard:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 5000
+          name: web
+        - containerPort: 11434
+          name: ollama-api
+        envFrom:
+        - configMapRef:
+            name: qwen3-config
+        volumeMounts:
+        - name: ollama-models
+          mountPath: /root/.ollama
+        - name: workspace
+          mountPath: /app/workspace
+        - name: workspace
+          mountPath: /app/data
+          subPath: data
+        - name: workspace
+          mountPath: /app/test_results
+          subPath: test_results
+        - name: workspace
+          mountPath: /app/logs
+          subPath: logs
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "1000m"
+          limits:
+            memory: "8Gi"
+            cpu: "4000m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 10
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+      volumes:
+      - name: ollama-models
+        persistentVolumeClaim:
+          claimName: qwen3-ollama-models
+      - name: workspace
+        persistentVolumeClaim:
+          claimName: qwen3-workspace
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: qwen3-dashboard-service
+  namespace: qwen3-dashboard
+  labels:
+    app: qwen3-dashboard
+spec:
+  selector:
+    app: qwen3-dashboard
+  ports:
+  - name: web
+    port: 9080
+    targetPort: 5000
+    protocol: TCP
+  - name: ollama-api
+    port: 11434
+    targetPort: 11434
+    protocol: TCP
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: qwen3-dashboard-ingress
+  namespace: qwen3-dashboard
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-body-size: "100m"
+spec:
+  rules:
+  - host: qwen3.example.com  # 替换为你的域名
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: qwen3-dashboard-service
+            port:
+              number: 9080
+  - host: qwen3-api.example.com  # 替换为你的API域名
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: qwen3-dashboard-service
+            port:
+              number: 11434

@@ -36,15 +36,15 @@ check_requirements() {
     log_info "检查系统要求..."
     
     # 检查Docker
-    if ! command -v docker &> /dev/null; then
+    if ! command -v docker >/dev/null 2>&1; then
         log_error "Docker未安装，请先安装Docker"
         exit 1
     fi
     
     # 检查Docker Compose（优先使用新版本命令）
-    if docker compose version &> /dev/null; then
+    if docker compose version >/dev/null 2>&1; then
         DOCKER_COMPOSE="docker compose"
-    elif command -v docker-compose &> /dev/null; then
+    elif command -v docker-compose >/dev/null 2>&1; then
         DOCKER_COMPOSE="docker-compose"
     else
         log_error "Docker Compose未安装，请先安装Docker Compose"
@@ -107,9 +107,9 @@ build_image() {
     
     # 确保DOCKER_COMPOSE变量已设置
     if [ -z "$DOCKER_COMPOSE" ]; then
-        if docker compose version &> /dev/null; then
+        if docker compose version >/dev/null 2>&1; then
             DOCKER_COMPOSE="docker compose"
-        elif command -v docker-compose &> /dev/null; then
+        elif command -v docker-compose >/dev/null 2>&1; then
             DOCKER_COMPOSE="docker-compose"
         else
             log_error "Docker Compose未安装，请先安装Docker Compose"
@@ -141,9 +141,9 @@ force_rebuild() {
     
     # 确保DOCKER_COMPOSE变量已设置
     if [ -z "$DOCKER_COMPOSE" ]; then
-        if docker compose version &> /dev/null; then
+        if docker compose version >/dev/null 2>&1; then
             DOCKER_COMPOSE="docker compose"
-        elif command -v docker-compose &> /dev/null; then
+        elif command -v docker-compose >/dev/null 2>&1; then
             DOCKER_COMPOSE="docker-compose"
         else
             log_error "Docker Compose未安装，请先安装Docker Compose"
