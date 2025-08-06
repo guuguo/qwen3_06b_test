@@ -126,7 +126,7 @@ build_image() {
     log_info "开始构建，网络较慢时可能需要10-20分钟，请耐心等待..."
     
     # 构建镜像 (使用缓存加速)
-    if $DOCKER_COMPOSE build --progress=plain; then
+    if $DOCKER_COMPOSE --progress=plain build; then
         log_success "Docker镜像构建成功"
     else
         log_error "Docker镜像构建失败"
@@ -154,7 +154,7 @@ force_rebuild() {
     cd "$PROJECT_DIR"
     
     # 强制重建镜像
-    if $DOCKER_COMPOSE build --no-cache; then
+    if $DOCKER_COMPOSE --progress=plain build --no-cache; then
         log_success "Docker镜像强制重建成功"
     else
         log_error "Docker镜像强制重建失败"

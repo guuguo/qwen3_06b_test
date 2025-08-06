@@ -7,8 +7,9 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV OLLAMA_HOST=0.0.0.0:11434
 
 # 使用中国镜像源加速下载
-RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list && \
-    sed -i 's/security.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
+RUN echo "deb https://mirrors.ustc.edu.cn/debian/ bookworm main" > /etc/apt/sources.list && \
+    echo "deb https://mirrors.ustc.edu.cn/debian/ bookworm-updates main" >> /etc/apt/sources.list && \
+    echo "deb https://mirrors.ustc.edu.cn/debian-security bookworm-security main" >> /etc/apt/sources.list
 
 # 安装系统依赖
 RUN apt-get update --fix-missing && apt-get install -y --no-install-recommends \
